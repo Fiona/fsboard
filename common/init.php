@@ -19,13 +19,9 @@ See gpl.txt for a full copy of this license.
  * Among other things....
  * 
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Main
- * 
- * @started 01 Aug 2005
- * @edited 07 Aug 2007
  */
 
 
@@ -216,6 +212,8 @@ require ROOT."common/class/xml.class.php";
 require ROOT."common/class/parser.class.php";
 // Hook list for plugins
 require ROOT."common/plugin_hooks.php";
+// Form system
+require ROOT."common/class/form.class.php";
 
 
 

@@ -2,38 +2,22 @@
 /* 
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
 FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       Registration Page       *
-*       Started by Fiona        *
-*       02nd Aug 2005           *
-*********************************
-*       Last edit by Fiona      *
-*       24th Feb 2005           *
-*********************************
-
-As well as handling user registration,
-this also deals with account validation
 */
+
+/**
+ * Registration page
+ * Deals with creating new accounts validation of them by the user
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Main
+ */
 
 
 
@@ -61,29 +45,24 @@ $output -> page_title = $lang['register_page_title'];
 switch ($secondary_mode)
 {
 
-        case "form":
+	case "form":
+		show_registration_form();
+        break;
 
-            show_registration_form();
-        	break;
+	case "create":
+		create_account();
+        break;
 
-        case "create":
+	case "activateform":
+		show_activation_form();
+        break;
 
-            create_account();
-        	break;
+	case "activate":
+		activate_account();
+        break;
 
-        case "activateform":
-
-            show_activation_form();
-        	break;
-
-        case "activate":
-
-            activate_account();
-        	break;
-
-        case "main":
-
-            show_registration_form();
+	default:
+		show_registration_form();
         
 }
 
@@ -94,34 +73,26 @@ switch ($secondary_mode)
 function show_registration_form($entered_data = "")
 {
 
-        global $cache, $template_register, $template_global, $output, $lang, $user;
+	global $cache, $template_register, $template_global, $output, $lang, $user;
 
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
+	// If we are logged in, we need a error
+	if(!$user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_logged_in']));
+		return;
+	}
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return;
+	// Check if the admin has disabled registration
+	if($cache -> cache['config']['reg_disable_new'])
+	{
+		$output -> add($template_global -> normal_error($lang['error_no_register']));
+		return;
+	}
         
-        }
+	// If admin has rules turned on, we need to show them
+	$before = ($cache -> cache['config']['rules_on']) ? $template_register -> forum_rules() : "";
 
-        // Check if the admin has disabled registration
-        if ($cache -> cache['config']['reg_disable_new'])
-        {
-        
-                $output -> add($template_global -> normal_error($lang['error_no_register']));
-                return;
-
-        }
-        
-        // If admin has rules turned on, we need to show them
-        if ($cache -> cache['config']['rules_on'])
-        {
-
-                $output -> add($template_register -> forum_rules());
-        
-        }
-
+        /*
         // **************************
         // Custom profile fields!
         // **************************
@@ -186,18 +157,72 @@ function show_registration_form($entered_data = "")
 				"email" 	=> ""
 			);
 
+		*/
+        
 		// Plugin
-		hook_register_before_reg_form($entered_data);
+		//hook_register_before_reg_form($entered_data);
 
 		
-        // **************************
-        // Do the form!
-        // **************************
-        $output -> add($template_register -> registration_form($entered_data, $custom_profile_fields, $javascript_custom));
+	// **************************
+	// Our form
+	// **************************
+	$form = new form(array(
+        "meta" => array(
+			"name" => "register",
+        	"title" => $lang['new_user_registration'],
+        	"description" => $lang['register_notice'],
+			"before" => $before,
+			"validation_func" => "form_register_validate",
+			"complete_func" => "form_register_complete"	
+        ),
+        
+        "#username" => array(
+        	"type" => "text",
+        	"name" => $lang['desired_username'],
+        	"description" => $lang['reg_username_notice'],
+        	"required" => True
+        ),
+        "#email" => array(
+        	"type" => "text",
+        	"name" => $lang['email_address'],
+        	"required" => True
+        ),
+        "#password" => array(
+        	"type" => "password",
+        	"name" => $lang['desired_password'],
+        	"description" => $lang['reg_password_notice'],
+        	"required" => True
+        ),
+        "#password2" => array(
+        	"type" => "password",
+        	"name" => $lang['desired_password2'],
+        	"description" => $lang['reg_password_notice2'],
+        	"identical_to" => "#password"
+        ),
+        "#submit" => array(
+        	"type" => "submit",
+        	"value" => $lang['register_submit']
+        ),
+        
+	));
+	
+	$output -> add($form -> render());
+	// $output -> add($template_register -> registration_form($entered_data, $custom_profile_fields, $javascript_custom));
 
-		// Plugin
-		hook_register_after_reg_form($entered_data);
+	// Plugin
+	//hook_register_after_reg_form($entered_data);
 
+}
+
+
+function form_register_validate($form_state)
+{
+		
+}
+
+function form_register_complete($form_state)
+{
+		
 }
 
 
