@@ -1,0 +1,1096 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<template_set_file fsboard_version="0.1" time="14-08-08 8:15 pm">
+
+	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
+
+		<template name="Control Panel Avatar Gallery" class_name="template_control_panel" function_name="cp_avatar_gallery"><![CDATA[<table border=1 width="95%">
+  <tr><td><b>{$lang['avatar_gallery_page_title']}</b></td></tr>
+
+  <tr>
+    <td>
+      {$lang['avatar_gallery_page_message']}
+    </td>
+  </tr>
+
+  <tr>
+    <td align="right">
+      <b>{$lang['avatar_gallery_change_category']}</b>
+
+      <form action="index.php?m=control&amp;m2=avatar_gallery" method="POST">
+      
+        <select name="cat_id">
+          <FOREACH "$categories as $cat_id => $cat_info">
+            <option value="{$cat_id}" <IF "$selected_category == $cat_id">selected="selected"<ENDIF>>{$cat_info['name']} ({$cat_info['image_num']})</option>
+          <ENDFOREACH>
+        </select>
+
+        <input type="submit" value="{$lang['avatar_gallery_change_cat_submit']}" />
+      
+      </form>
+
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+    
+      <FOREACH "$avatars as $avatar_id => $avatar_info">
+      
+        <div style="float : left; padding : 5px;">
+          <a href="index.php?m=control&amp;m2=avatar_update&amp;method=gallery&amp;id={$avatar_id}">
+            <img src="{$avatar_info['filename']}" alt="{$avatar_info['name']}" title="{$avatar_info['name']}" border="0" />
+          </a>
+          <br />
+          <a href="index.php?m=control&amp;m2=avatar_update&amp;method=gallery&amp;id={$avatar_id}">
+            {$avatar_info['name']}
+          </a>
+        </div>
+        
+      <ENDFOREACH>
+      
+    </td>
+  </tr>
+
+  <tr>
+    <td align="right">
+      <a href="index.php?m=control&amp;m2=avatar">&lt; {$lang['avatar_back_to_main']}</a>
+    </td>
+  </tr>
+
+</table>]]></template>
+		<template_parameters><![CDATA[$categories, $selected_category, $avatars]]></template_parameters>
+		<template name="Control Panel Avatar Main" class_name="template_control_panel" function_name="cp_avatar_main"><![CDATA[<table border=1 width="95%">
+  <tr><td><b>{$lang['avatar_main_page_title']}</b></td></tr>
+  
+  <tr>
+    <td>
+      <IF "$user_info['avatar_address'] === false">
+        {$lang['avatar_main_page_no_avatar']}
+      <ELSE>
+        <img src="{$user_info['avatar_address']}" alt="{$lang['avatar_main_page_avatar_img_alt']}" />
+        {$lang['avatar_main_page_your_avatar']}
+      <ENDIF>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <b>{$lang['avatar_main_page_change_avatar_title']}</b>
+    </td>
+  </tr>  
+  <tr>
+    <td>
+      {$lang['avatar_main_page_change_avatar_message']}
+      
+      <ul>
+        <li><a href="index.php?m=control&amp;m2=avatar_gallery">{$lang['avatar_main_page_gallery']}</a></li>
+        <li><a href="index.php?m=control&amp;m2=avatar_upload">{$lang['avatar_main_page_upload']}</a></li>
+        <li><a href="index.php?m=control&amp;m2=avatar_external">{$lang['avatar_main_page_external']}</a></li>
+      </ul>
+    </td>
+  </tr>  
+
+</table>]]></template>
+		<template_parameters><![CDATA[$user_info]]></template_parameters>
+		<template name="Control Panel Avatar Upload" class_name="template_control_panel" function_name="cp_avatar_upload"><![CDATA[<table border=1 width="95%">
+  <tr><td><b>{$lang['avatar_upload_page_title']}</b></td></tr>
+
+  <tr>
+    <td>
+      {$lang['avatar_upload_page_message']}
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <b>{$lang['avatar_upload_select_file']}</b>
+
+      <form action="index.php?m=control&amp;m2=avatar_update&amp;method=upload" enctype="multipart/form-data" method="POST">
+      
+        <input type="file" name="avatar_image" /><br />
+       
+        <span style="font-size : 9px;">
+          <IF "$limits['width'] && $limits['height']">{$lang['avatar_upload_dimension_limit']}<br /><ENDIF>
+          <IF "$limits['filesize']">{$lang['avatar_upload_filesize_limit']}<br /><ENDIF>
+        </span>
+
+        <input type="submit" value="{$lang['avatar_upload_submit']}" />
+      
+      </form>
+
+    </td>
+  </tr>
+
+  <tr>
+    <td align="right">
+      <a href="index.php?m=control&amp;m2=avatar">&lt; {$lang['avatar_back_to_main']}</a>
+    </td>
+  </tr>
+
+</table>]]></template>
+		<template_parameters><![CDATA[$limits]]></template_parameters>
+		<template name="Control Panel Front Page" class_name="template_control_panel" function_name="cp_front_page"><![CDATA[<table border=1 width="95%">
+  <tr><td><b>{$lang['front_page_title']}</b></td></tr>
+  <tr><td>{$lang['front_page_message']}</td></tr>
+
+  <tr><td><b>{$lang['front_page_notepad_title']}</b></td></tr>
+  <tr>
+    <td>
+      {$lang['front_page_notepad_message']}<br />
+      <form method="POST" action="index.php?m=control&amp;m2=save_notes">
+        <textarea name="notepad"><IF "$input['notepad']">{$input['notepad']}<ELSE>{$user_info['notepad']}<ENDIF></textarea><br />
+        <input type="submit" value="{$lang['front_page_notepad_submit']}" />
+      </form>
+    </td>
+  </tr>
+
+  <tr><td><b>{$lang['front_page_subscribed_title']}</b></td></tr>
+  <tr>
+    <td>
+       {$lang['front_page_subscribed_message']}
+    </td>
+  </tr>
+
+</table>]]></template>
+		<template_parameters><![CDATA[$user_info, $input]]></template_parameters>
+		<template name="Control Panel Menu" class_name="template_control_panel" function_name="control_panel_menu"><![CDATA[<div id="cp_menu_wrap">
+
+  <b>{$lang['menu_private_messages']}</b><br />
+
+  <a href="#">{$lang['menu_send_message']}</a><br />
+  <img src="{$GLOBAL_OTHER['imgdir']}/menu_extra_icon.gif" alt="" /> <a href="#">{$lang['menu_inbox']}</a><br />
+  <img src="{$GLOBAL_OTHER['imgdir']}/menu_extra_icon.gif" alt="" /> <a href="#">{$lang['menu_outbox']}</a><br />
+  <img src="{$GLOBAL_OTHER['imgdir']}/menu_extra_icon.gif" alt="" /> <a href="#">{$lang['menu_drafts']}</a><br />
+  <a href="#">{$lang['menu_edit_folders']}</a><br />
+  <a href="#">{$lang['menu_friends_list']}</a><br />
+  <a href="#">{$lang['menu_ignore_list']}</a><br /><br />
+
+  <b>{$lang['menu_profile_settings']}</b><br />
+  <a href="#">{$lang['menu_profile_information']}</a><br />
+  <a href="index.php?m=control&amp;m2=avatar">{$lang['menu_change_avatar']}</a><br />
+  <a href="#">{$lang['menu_edit_signature']}</a><br /><br />
+
+  <b>{$lang['menu_board_settings']}</b><br />
+  <a href="#">{$lang['menu_change_email']}</a><br />
+  <a href="#">{$lang['menu_change_password']}</a><br />
+  <a href="#">{$lang['menu_change_username']}</a><br />
+  <a href="#">{$lang['menu_general_options']}</a><br />
+  <a href="#">{$lang['menu_display_settings']}</a><br />
+  <a href="#">{$lang['menu_location_time_settings']}</a>
+
+</div>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Wrapper" class_name="template_control_panel" function_name="control_panel_wrap"><![CDATA[<h1>{$lang['title_control_panel']}</h1>
+<table border=2 width="95%" cellpadding=5 align=center>
+  <tr>
+    <td width="15%"  valign="top">
+      {$menu}
+    </td>
+    <td width="80%" valign="top" align=center>
+      {$contents}
+    </td>
+  </tr>
+</table>]]></template>
+		<template_parameters><![CDATA[$menu, $contents]]></template_parameters>
+		<template name="BBCode : Code box" class_name="template_global" function_name="bbcode_code_box"><![CDATA[<div class="bbcode_code_box"><div class="bbcode_code_name_text">{$code_name}<div><hr /></div></div><span class="bbcode_code_box_inner">{$code_text}</span></div>]]></template>
+		<template_parameters><![CDATA[$code_text, $code_name]]></template_parameters>
+		<template name="BBCode : Quote box close" class_name="template_global" function_name="bbcode_quote_box_close"><![CDATA[</div>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="BBCode : Quote box open" class_name="template_global" function_name="bbcode_quote_box_open"><![CDATA[<div class="bbcode_quote_box"><div class="bbcode_quote_quoter_text">{$quoter}<div><hr /></div></div>]]></template>
+		<template_parameters><![CDATA[$quoter]]></template_parameters>
+		<template name="Error Box (Normal)" class_name="template_global" function_name="normal_error"><![CDATA[<br />
+        <table width=60% align="center" style="border-collapse: collapse;">
+                <tr>
+                        <td class="strip3" colspan=2>
+                                <p><b>{$lang['error_found']}:</b></p>
+                        </td>
+                </tr>
+                <tr>
+                        <td class="errorcell2" colspan=2>
+                                <p>$msg</p>
+                        </td>
+                </tr>
+        </table>]]></template>
+		<template_parameters><![CDATA[$msg]]></template_parameters>
+		<template name="Generic Message Box" class_name="template_global" function_name="message"><![CDATA[<br />
+        <table width=60% align="center" style="border-collapse: collapse;">
+                <tr>
+                        <td class="strip3">
+                                <p><b>{$msg_title}</b></p>
+                        </td>
+                </tr>
+                <tr>
+                        <td  class="normalcell" style="padding:10px">
+                                <p>{$msg}</p>
+                        </td>
+                </tr>
+        </table>
+        <br />]]></template>
+		<template_parameters><![CDATA[$msg_title="", $msg=""]]></template_parameters>
+		<template name="Main Page Footer" class_name="template_global" function_name="main_page_footer"><![CDATA[<table width=95% align="center" style="margin-top : 10px; border-collapse : collapse;">
+                <tr>
+                        <td class="quicklinks-ends quicklinks-l">
+                                 
+                        </td>
+
+                        <td class="quicklinks" align=right>
+                                <p><a href="{$cache -> cache['config']['home_address']}">{$cache -> cache['config']['home_name']}</a> &#149; <a href="{$cache -> cache['config']['contact_link']}">{$lang['contact_us']}</a> &#149; <a href="#top">{$lang['back_to_top']}</a></p>
+
+                        </td>
+
+                        <td class="quicklinks-ends quicklinks-r">
+                                 
+                        </td>
+                </tr>
+        </table>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Main Page Header" class_name="template_global" function_name="main_page_header"><![CDATA[<table width=95% align="center" style="border-collapse : collapse;">
+                <tr>
+                        <td class="logo_header">
+                                <a href="{$cache -> cache['config']['board_url']}"><img src="{$GLOBAL_OTHER['imgdir']}/logo.png" alt="{$cache -> cache['config']['board_name']}" border=0></a>
+                        </td>
+                        <td class="user_links_header" align="right" valign="bottom" style="padding : 15px">
+
+                                <p class="logged_in_as_msg">
+                                        <IF "$user -> is_guest">
+                                        {$lang['not_logged_in']}
+                                        <ELSE>
+                                        {$lang['logged_in_as']} <b><a href="index.php?m=profile&amp;uid={$user -> user_id}">{$user -> info['username']}</a></b>
+                                        <ENDIF>
+                                </p>
+
+                                <p class="user_tools_links">
+                                        <IF "$user -> is_guest">
+                                        <a href="index.php?m=reg">Register</a> - <a href="index.php?m=login">Login</a>
+                                        <ELSE>
+                                        <a href="index.php?m=control">{$lang['profile_settings']}</a>   -   <a href="index.php?m=login&amp;m2=logout">{$lang['logout']}</a>
+                                        <ENDIF>
+                                </p>
+
+                                <p class="admin_links">
+                                        <IF "$user -> perms['perm_admin_area']">
+                                        <a href="admin/index.php" target="_blank">{$lang['admin_area']}</a>
+                                        <ENDIF>
+
+                                        <IF "$user -> perms['perm_admin_area'] && $user -> perms['perm_global_mod']">
+                                        -
+                                        <ENDIF>
+
+                                        <IF "$user -> perms['perm_global_mod']">
+                                        <a href="mod/index.php" target="_blank">{$lang['mod_area']}</a>
+                                        <ENDIF>
+
+                                        <IF "$user -> is_guest">
+                                        $quick_login
+                                        <ENDIF>
+                                </p>
+
+                        </td>
+                </tr>
+        </table>
+
+        <table width=95% align="center" style="border-collapse : collapse;">
+                <tr>
+                        <td class="quicklinks-ends quicklinks-l">
+                                 
+                        </td>
+                        <td class="quicklinks">
+                                <p>
+                                        $quick_links (Quick links)
+                                </p>
+                        </td>
+                        <td class="quicklinks-ends quicklinks-r">
+                                 
+                        </td>
+                </tr>
+
+                <tr>
+                        <td colspan=3>
+                                <p style="margin-top:10px">$last_visit</p>
+                        </td>
+
+                </tr>
+        </table>
+<a name="top"></a>]]></template>
+		<template_parameters><![CDATA[$img_dir, $quick_links, $last_visit, $quick_login]]></template_parameters>
+		<template name="Main Page Wrapper" class_name="template_global" function_name="global_wrapper"><![CDATA[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset={$charset}">
+    <title>$title ({$lang['powered_by']}  FSBoard)</title>
+    <style type="text/css">
+$theme_css
+    </style>
+    
+    <script type="text/javascript" src="jscript/jquery.js"></script>
+    <script type="text/javascript" src="jscript/board_script.js"></script>
+</head>
+
+<body>
+
+$page
+
+        <br /><br /><p class="footer">
+                $debug_level_1<br />
+
+                <!-- I'ld like it if you didn't delete this -->
+                <a href="http://www.fsboard.com/">FSBoard</a> Development Version {$cache -> cache['config']['current_version']} &copy; 2006 <a href="mailto:fiona@fsboard.com">Fiona Burrows</a><br />
+                <!-- I'ld like it if you didn't delete this -->
+
+                {$cache -> cache['config']['copyright_text']}
+                <br />
+        </p>
+
+        <div style="margin:5px">
+                $debug_level_2
+        </div>
+
+</body>
+
+</html>]]></template>
+		<template_parameters><![CDATA[$title, $theme_css, $charset, $page, $debug_level_1, $debug_level_2]]></template_parameters>
+		<template name="Maintenance Mode Page" class_name="template_global" function_name="maintenance"><![CDATA[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+    <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset={$lang['charset']}">
+    <title>{$cache -> cache['config']['board_name']}</title>
+    <style>
+{$stylesheet}
+    </style>
+
+</head>
+
+<body>
+
+        <br />
+        <table width=60% align="center" style="border-collapse: collapse;">
+                <tr>
+                        <td class="strip3" colspan=2>
+                                <p><b>{$lang['were_closed']}</b></p>
+                        </td>
+                </tr>
+                <tr>
+                        <td class="normalcell" style="padding : 10px;" align="center">
+                                <p>{$cache -> cache['config']['maintenance_reason']}</p>
+                        </td>
+                </tr>
+        </table>
+
+</body>
+
+</html>]]></template>
+		<template_parameters><![CDATA[$stylesheet]]></template_parameters>
+		<template name="PHP Footer Include" class_name="template_global" function_name="php_footer_include"><![CDATA[// PHP script that is evaluated at the end of the script
+// Is not included in the admin area]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="PHP Header Include" class_name="template_global" function_name="php_header_include"><![CDATA[// PHP script that is evaluated at the start of the script
+// Is not included in the admin area]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Quick Login Form" class_name="template_global" function_name="quick_login"><![CDATA[<script language="JavaScript" type="text/javascript">
+        <!--
+        function ValidateQuicklogin() {
+                var Check = 0;
+                if (document.quickloginform.username.value == '') { Check = 1; }
+                if (document.quickloginform.password.value == '') { Check = 1; }
+        
+                if (Check == 1) {
+                        alert('{$lang['quicklogin_form_error']}');
+                        return false;
+                } else {
+                        document.quickloginform.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+        
+<form action="index.php?m=login&m2=login" method="post" name="quickloginform" onsubmit="return ValidateQuicklogin()">
+  <input type="text" class="quicklogin_inputtext" name="username" style="width : 60px" />
+  <input  type="password" class="quicklogin_inputtext" name="password" style="width : 60px" />
+  <input class="quicklogin_submitbutton" type="submit" name="submit" value="{$lang['quicklogin_submit']}" />
+  <br /><font class="quicklogin_message">Login with your username and password.</font>
+</form>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Redirection Page" class_name="template_global" function_name="redirect"><![CDATA[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+    <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset={$GLOBAL_OTHER['charset']}">
+    <title>{$lang['redirecting']}</title>
+    {$header}
+    <style type="text/css">
+{$stylesheet}
+    </style>
+
+</head>
+
+<body>
+
+        <br />
+        <table width=60% align="center" style="border-collapse: collapse;">
+                <tr>
+                        <td class="strip3">
+                                <p><b>{$lang['redirecting']}</b></p>
+                        </td>
+                </tr>
+                <tr>
+                        <td class="normalcell" style="padding : 10px;" align="center">
+                                <p>{$msg}<br /> <br />
+                                {$lang['forwarding_you']} <a href="{$redirect_to}">{$lang['here']}</a>.</p>
+                        </td>
+                </tr>
+        </table>
+
+</body>
+
+</html>]]></template>
+		<template_parameters><![CDATA[$msg, $redirect_to, $header, $stylesheet]]></template_parameters>
+		<template name="Account Login Form" class_name="template_login" function_name="login_form"><![CDATA[<br />
+        <script language="JavaScript" type="text/javascript">
+        <!--
+        function ValidateForm() {
+                var Check = 0;
+                if (document.loginform.username.value == '') { Check = 1; }
+                if (document.loginform.password.value == '') { Check = 1; }
+        
+                if (Check == 1) {
+                        alert('{$lang['error_login']}');
+                        return false;
+                } else {
+                        document.loginform.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+        
+        <form action="index.php?m=login&m2=login" method="post" name="loginform" onsubmit="return ValidateForm()">
+        
+                <table width=60% align="center" style="border-collapse: collapse;">
+                        <tr>
+                                <td class="strip2" colspan=2>
+                                        <p>{$lang['enter_login_info']}</p>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['login_username']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="text" class="inputtext" name="username" value="{$entered_data['username']}" style="width : 95%" tabindex="1">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['login_password']}:</b><br />
+                                        <font class="small_text"><a href="index.php?m=login&m2=passwordform" tabindex="6">{$lang['login_forgot_password']}</a></font></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="password" class="inputtext" name="password" style="width : 95%" tabindex="2">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['stay_logged_in']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="checkbox" class="inputtext" name="stay_logged_in" value="1" {$entered_data['stay_logged_in']} tabindex="3">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                       <p><b>{$lang['login_invisible']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="checkbox" class="inputtext" name="invisible" value="1" {$entered_data['invisible']} tabindex="4">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="strip2" align="center" colspan=2>
+                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['login_submit']}" tabindex="5">
+                                </td>
+                        </tr>
+                </table>
+        </form>]]></template>
+		<template_parameters><![CDATA[$entered_data]]></template_parameters>
+		<template name="Reset Password (Initial)" class_name="template_login" function_name="lost_password_form"><![CDATA[<br />
+        <script language="JavaScript" type="text/javascript">
+        <!--
+        function ValidateForm() {
+                var Check = 0;
+                if (document.passwordform.username.value == '') { Check = 1; }
+        
+                if (Check == 1) {
+                        alert('{$lang['error_login']}');
+                        return false;
+                } else {
+                        document.passwordform.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+        
+        <form action="index.php?m=login&m2=newpasswordemail" method="post" name="passwordform" onsubmit="return ValidateForm()">
+        
+                <table width=60% align="center" style="border-collapse: collapse;">
+                        <tr>
+                                <td class="strip2" colspan=2>
+                                        <p>{$lang['reset_password_form_notice']}</p>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_username']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="text" class="inputtext" name="username" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="strip2" align="center" colspan=2>
+                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['password_form_submit']}">
+                                </td>
+                        </tr>
+                </table>
+        </form>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Reset Password (Long)" class_name="template_login" function_name="password_form2_long"><![CDATA[<br />
+        <script language="JavaScript" type="text/javascript">
+        <!--
+        function ValidateForm() {
+                var Check = 0;
+                if (document.passwordform2.userid.value == '') { Check = 1; }
+                if (document.passwordform2.code.value == '') { Check = 1; }
+                if (document.passwordform2.password.value == '') { Check = 1; }
+                if (document.passwordform2.password2.value == '') { Check = 1; }
+        
+                if (Check == 1) {
+                        alert('{$lang['error_login']}');
+                        return false;
+                } else {
+                        document.passwordform2.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+        
+        <form action="index.php?m=login&m2=resetpassword" method="post" name="passwordform2" onsubmit="return ValidateForm()">
+        
+                <table width=60% align="center" style="border-collapse: collapse;">
+                        <tr>
+                                <td class="strip2" colspan=2>
+                                        <p>{$lang['reset_password_form2_long_notice']}</p>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_userid']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="text" class="inputtext" name="userid" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_code']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="text" class="inputtext" name="code" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="strip2" colspan=2>
+                                        <p>{$lang['reset_password_form2_notice']}</p>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_password']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="password" class="inputtext" name="password" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_password2']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="password" class="inputtext" name="password2" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="strip2" align="center" colspan=2>
+                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['password_form2_submit']}">
+                                </td>
+                        </tr>
+                </table>
+        </form>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Reset Password (Short)" class_name="template_login" function_name="password_form2_short"><![CDATA[<br />
+        <script language="JavaScript" type="text/javascript">
+        <!--
+        function ValidateForm() {
+                var Check = 0;
+                if (document.passwordform2.password.value == '') { Check = 1; }
+                if (document.passwordform2.password2.value == '') { Check = 1; }
+        
+                if (Check == 1) {
+                        alert('{$lang['error_login']}');
+                        return false;
+                } else {
+                        document.passwordform2.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+        
+        <form action="index.php?m=login&m2=resetpassword" method="post" name="passwordform2" onsubmit="return ValidateForm()">
+        
+                <table width=60% align="center" style="border-collapse: collapse;">
+                        <tr>
+                                <td class="strip2" colspan=2>
+                                        <p>{$lang['reset_password_form2_notice']}</p>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_password']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="password" class="inputtext" name="password" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="normalcell" width=50%>
+                                        <p><b>{$lang['password_form_password2']}:</b></p>
+                                </td>
+                                <td class="normalcell" width=50%>
+                                        <input type="password" class="inputtext" name="password2" style="width : 99%">
+                                </td>
+                        </tr>
+                        <tr>
+                                <td class="strip2" align="center" colspan=2>
+                                        <input type="hidden" name="userid" value="{$entered_data['userid']}">
+                                        <input type="hidden" name="code" value="{$entered_data['code']}">
+                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['password_form2_submit']}">
+                                </td>
+                        </tr>
+                </table>
+        </form>]]></template>
+		<template_parameters><![CDATA[$entered_data]]></template_parameters>
+		<template name="Account Activaiton Form" class_name="template_register" function_name="activate_form"><![CDATA[<br />
+        <script language='JavaScript' type="text/javascript">
+        <!--
+        function ValidateForm() {
+                var Check = 0;
+                if (document.activateform.userid.value == '') { Check = 1; }
+                if (document.activateform.code.value == '') { Check = 1; }
+
+                if (Check == 1) {
+                        alert('{$lang['error_activate_form']}');
+                        return false;
+                } else {
+                        document.activateform.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+
+        <form action="index.php?m=reg&m2=activate" method="post" name="activateform" onsubmit="return ValidateForm()">
+                        <table width=60% align="center" style="border-collapse: collapse;">
+                                <tr>
+                                        <td class="strip2" colspan=2>
+                                                <p><b>{$lang['user_activation']}</b></p>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="strip3" width=100% colspan=2>
+                                                <p>{$lang['activate_notice']}</p>
+                                        </td>
+                                </tr>                                
+                                <tr>
+                                        <td class="normalcell" width=50%>
+                                                <p><b>{$lang['user_id']}:</b></p>
+                                        </td>
+                                        <td class="normalcell" width=50%>
+                                                <input type="text" class="inputtext" name="userid" value="{$user_id}" style="width : 98%">
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="normalcell" width=50%>
+                                                <p><b>{$lang['activation_code']}:</b></p>
+                                        </td>
+                                        <td class="normalcell" width=50%>
+                                                <input type="text" class="inputtext" name="code" style="width : 98%">
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="strip2" align="center" colspan=2>
+                                                <input type="hidden" name="activateform" value="true">
+                                                <input class="submitbutton" type="submit" name="submit" value="{$lang['activate_submit']}">
+                                        </td>
+                                </tr>
+                        </table>
+        </form>]]></template>
+		<template_parameters><![CDATA[$user_id]]></template_parameters>
+		<template name="Account Registration Form" class_name="template_register" function_name="registration_form"><![CDATA[<br />
+        <script language='JavaScript' type="text/javascript">
+        <!--
+        function ValidateForm() {
+                var Check = 0;
+                if (document.regform.username.value == '') { Check = 1; }
+                if (document.regform.password.value == '') { Check = 1; }
+                if (document.regform.password2.value == '') { Check = 1; }
+                if (document.regform.email.value == '') { Check = 1; }
+$javascript_custom
+
+                if (Check == 1) {
+                        alert('{$lang['error_reg_form']}');
+                        return false;
+                } else {
+                        document.regform.submit.disabled = true;
+                        return true;
+                }
+        }
+        //-->
+        </script>
+
+        <form action="index.php?m=reg&m2=create" method="post" name="regform" onsubmit="return ValidateForm()">
+                        <table width=60% align="center" style="border-collapse: collapse;">
+                                <tr>
+                                        <td class="strip2" colspan=2>
+                                                <p><b>{$lang['new_user_registration']}</b></p>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="strip3" width=100% colspan=2>
+                                                <p>{$lang['register_notice']}</p>
+                                        </td>
+                                </tr>                                
+                                <tr>
+                                        <td class="normalcell" width=50%>
+                                                <p><b>{$lang['desired_username']}:</b><br />
+                                                {$lang['reg_username_notice']}</p>
+                                        </td>
+                                        <td class="normalcell" width=50%>
+                                                <input type="text" class="inputtext" name="username" value="{$entered_data['username']}" style="width : 98%">
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="normalcell" width=50%>
+                                                <p><b>{$lang['email_address']}:</b></p>
+                                        </td>
+                                        <td class="normalcell" width=50%>
+                                                <input type="text" class="inputtext" name="email" value="{$entered_data['email']}" style="width : 98%">
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="normalcell" width=50%>
+                                                <p><b>{$lang['desired_password']}:</b><br />
+                                                {$lang['reg_password_notice']}</p>
+                                        </td>
+                                        <td class="normalcell" width=50%>
+                                                <input type="password" class="inputtext" name="password" style="width : 98%">
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="normalcell" width=50%>
+                                                <p><b>{$lang['desired_password2']}:</b><br />
+                                                {$lang['reg_password_notice2']}</p>
+                                        </td>
+                                        <td class="normalcell" width=50%>
+                                                <input type="password" class="inputtext" name="password2" style="width : 98%">
+                                        </td>
+                                </tr>
+$custom_profile_fields
+                                <tr>
+                                        <td class="strip2" align="center" colspan=2>
+                                                <input class="submitbutton" type="submit" name="submit" value="{$lang['register_submit']}">
+                                        </td>
+                                </tr>
+                        </table>
+        </form>]]></template>
+		<template_parameters><![CDATA[$entered_data, $custom_profile_fields, $javascript_custom]]></template_parameters>
+		<template name="Forum Rules Box" class_name="template_register" function_name="forum_rules"><![CDATA[<br />
+
+                        <table width=60% align="center" style="border-collapse: collapse;">
+                                <tr>
+                                        <td class="strip2" colspan=2>
+                                                <p><b>{$cache -> cache['config']['rules_title']}</b></p>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td class="normalcell" width=100% colspan=2>
+                                                <p>{$cache -> cache['config']['rules_text']}</p>
+                                        </td>
+                                </tr>
+                        </table>]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
+		<template name="Registration: Custom field - Dropdown input" class_name="template_register" function_name="reg_custom_dropdown"><![CDATA[<select name="$name" class="inputtext" style="width : <IF "$width">$width<ELSE>98%<ENDIF>">
+<FOREACH "$options as $value => $text">
+     <option value="$value">$text</option>
+<ENDFOREACH>
+</select>]]></template>
+		<template_parameters><![CDATA[$name, $width, $options]]></template_parameters>
+		<template name="Registration: Custom field - Row" class_name="template_register" function_name="reg_custom_row"><![CDATA[<tr>
+  <td class="normalcell" width=50%>
+    <p>
+      <b>$name:</b><br />
+<IF "$desc">$desc<ENDIF>
+    </p>
+  </td>
+  <td class="normalcell" width=50%>
+        $input
+  </td>
+</tr>]]></template>
+		<template_parameters><![CDATA[$name, $desc, $input]]></template_parameters>
+		<template name="Registration: Custom field - Text input" class_name="template_register" function_name="reg_custom_text"><![CDATA[<input type="text" name="$name" <IF "$value">value = "$value"<ENDIF> class="inputtext" style="width : <IF "$width">$width<ELSE>98%<ENDIF>" <IF "$maxlength">maxlength="$maxlength"<ENDIF>>]]></template>
+		<template_parameters><![CDATA[$name, $value, $width, $maxlength]]></template_parameters>
+		<template name="Registration: Custom field - Textbox input" class_name="template_register" function_name="reg_custom_textbox"><![CDATA[<textarea name="$name" class="inputtext" style="width : <IF "$width">$width<ELSE>98%<ENDIF>"><IF "$value">$value<ENDIF></textarea>]]></template>
+		<template_parameters><![CDATA[$name, $value, $width]]></template_parameters>
+		<template name="Registration: Custom field - Yes or no input" class_name="template_register" function_name="reg_custom_yesno"><![CDATA[{$lang['yes']} <input type="radio" class="inputtext" name="$name" value="1" <IF "$value">checked="checked"<ENDIF>>
+{$lang['no']} <input type="radio" class="inputtext" name="$name" value="0" <IF "!$value">checked="checked"<ENDIF>>]]></template>
+		<template_parameters><![CDATA[$name, $value]]></template_parameters>
+		<template name="Custom profile field" class_name="template_view_profile" function_name="profile_view_custom"><![CDATA[<table class="global_table profile_view_table">
+  <tr>
+    <td>
+
+      <table class="global_table profile_view_table_info">
+        <tr>
+          <td class="table_header_middle" colspan=2>
+            {$lang['other_information']}
+          </td>
+        </tr>
+
+<FOREACH "$entries as $field">
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            {$field['name']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$field['value']}
+          </td>
+        </tr>
+<ENDFOREACH>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+<br />]]></template>
+		<template_parameters><![CDATA[$entries]]></template_parameters>
+		<template name="Profile view" class_name="template_view_profile" function_name="profile"><![CDATA[<table class="global_table profile_view_table">
+  <tr>
+   <td class="table_header_top" colspan="3">
+     {$lang['profile_page_title']}
+   </td>
+  </tr>
+
+  <tr>
+    <td class="normalcell profile_view_avatar_cell" rowspan="5">
+       {$info['display_username']}<br />
+       <IF "$info['avatar'] === false">
+       <img src="{$GLOBAL_OTHER['imgdir']}/profile-noavatar.gif" alt="{$lang['foos_avatar']}" />
+       <ELSE>
+       <img src="{$info['avatar']}" alt="{$lang['foos_avatar']}" />
+       <ENDIF>
+       
+       <br/>{$info['user_title']}
+    </td>
+    <td class="normalcell profile_view_left_cell">
+       {$lang['registration_date']}
+    </td>
+    <td class="normalcell profile_view_right_cell">
+       {$info['registered']}
+    </td>
+  </tr>
+  <tr>
+    <td class="normalcell profile_view_left_cell">
+      {$lang['last_active_date']}
+    </td>
+    <td class="normalcell  profile_view_right_cell">
+      {$info['last_active']}
+      </td>
+  </tr>
+  <tr>
+    <td class="normalcell profile_view_left_cell">
+      {$lang['last_post_date']}
+    </td>
+    <td class="normalcell  profile_view_right_cell">
+      {$info['last_post']}
+    </td>
+  </tr>
+  <tr>
+    <td class="normalcell profile_view_left_cell">
+      {$lang['posts']}
+    </td>
+    <td class="normalcell  profile_view_right_cell">
+      {$info['posts']}
+    </td>
+  </tr>
+  <tr>
+    <td class="normalcell profile_view_left_cell">
+      {$lang['user_groups']}
+    </td>
+    <td class="normalcell profile_view_right_cell">
+      {$info['user_group']}
+      <IF "$info['secondary_user_group']">
+        <span class="small_text">( {$info['secondary_user_group']} )</span>
+      <ENDIF>
+    </td>
+  </tr>
+</table>
+
+<br />
+
+<table class="global_table profile_view_table">
+  <tr>
+    <td class="profile_view_info_col_wrap">
+
+      <table class="global_table profile_view_table_info">
+        <tr>
+         <td class="table_header_middle" colspan=2>
+           {$lang['personal_information']}
+         </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            {$lang['real_name']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['real_name']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            {$lang['email_address']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['email']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            {$lang['homepage']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['homepage']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            {$lang['birthday']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['birthday']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            {$lang['age']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['age']}
+          </td>
+        </tr>
+      </table>
+
+    </td>
+    <td class="profile_view_info_col_wrap">
+
+      <table class="global_table profile_view_table_info">
+        <tr>
+          <td class="table_header_middle" colspan=2>
+            {$lang['communication']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            <img src="{$GLOBAL_OTHER['imgdir']}/icon-yahoo.png" class="profile_view_messenger_icon" /> {$lang['yahoo_messenger']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['yahoo_messenger']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            <img src="{$GLOBAL_OTHER['imgdir']}/icon-aim.png" class="profile_view_messenger_icon" /> {$lang['aol_messenger']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['aol_messenger']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            <img src="{$GLOBAL_OTHER['imgdir']}/icon-msn.png" class="profile_view_messenger_icon" /> {$lang['msn_messenger']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['msn_messenger']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            <img src="{$GLOBAL_OTHER['imgdir']}/icon-icq.png" class="profile_view_messenger_icon" /> {$lang['icq_messenger']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['icq_messenger']}
+          </td>
+        </tr>
+        <tr>
+          <td class="normalcell profile_view_left_cell">
+            <img src="{$GLOBAL_OTHER['imgdir']}/icon-gtalk.png" class="profile_view_messenger_icon" /> {$lang['google_talk']}
+          </td>
+          <td class="normalcell profile_view_right_cell">
+            {$info['gtalk_messenger']}
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+<br />
+
+{$custom_profile_fields}
+
+<table class="global_table profile_view_table">
+  <tr>
+   <td class="table_header_middle" colspan=2>
+     {$lang['signature']}
+   </td>
+  </tr>
+  <tr>
+    <td class="normalcell">
+      <table class="global_table profile_view_sig_table">
+        <tr>
+          <td class="profile_view_sig_table_cell">
+            {$info['signature']}
+          </td>
+        </tr>
+       </table>
+    </td>
+  </tr>
+</table>
+
+<br />
+
+<table class="global_table profile_view_table">
+  <tr>
+    <td class="table_footer_cell">
+      [ <a href="#">{$lang['send_pm']}</a> - <a href="#">{$lang['edit_profile']}</a> ]
+    </td>
+  </tr>
+</table>]]></template>
+		<template_parameters><![CDATA[$info, $custom_profile_fields]]></template_parameters>
+	</template_set>
+</template_set_file>

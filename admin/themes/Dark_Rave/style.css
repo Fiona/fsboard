@@ -1,0 +1,357 @@
+BODY{
+        font-size : 13px;
+        font-family : Verdana, Arial;
+        background-color : #000000;
+        margin : 0px;
+        color : #FFFFFF;
+}
+P{
+        font-size : 13px;
+        font-family : Verdana, Arial;
+        margin : 0px;
+        color : #FFFFFF;
+}
+
+form{
+        display:inline;
+}
+
+.normal_text{
+        font-size : 13px;
+        font-family : Verdana, Arial;
+        color : #FFFFFF;
+}
+.small_text{
+        font-size : 9px;
+        font-family : Verdana, Arial;
+        color : #CCCCCC;
+}
+
+.footer{
+        text-align : center;
+        font-size : 10px;
+}
+hr{
+        height : 1px;
+        background-color: #CCCCCC;
+        color : #000000;
+        border : 0;
+        width : 60%;
+}
+a:link, a:visited, a:active{
+        color : #ff9915;
+        text-decoration : underline;
+}
+a:hover{
+        color : #ffb85d;
+        text-decoration : none;
+}
+
+a.small_link:link, a.small_link:visited, a.small_link:active{
+        color : #ff9915;
+        text-decoration : none;
+}
+
+
+.logobox{
+        background-color : #FFFFFF;
+        border : 0px;
+        border-color : #000000;
+        border-style : solid;
+        width : 500px;
+        text-align : center;
+        padding : 4px;
+}
+.normalcell{
+        border : 1px;
+        border-color : #8d8d8d;
+        border-style : solid;
+        background-color : #494949;
+}
+.darkernormalcell{
+        border : 1px;
+        border-color : #8d8d8d;
+        border-style : solid;
+        background-color : #494949;
+}
+
+.strip1{
+        background-image : url('tablebar1.gif');
+        background-repeat: repeat-x;
+        background-position: top left;
+        border : 1px;
+        border-color : #8d8d8d;
+        background-color : #494949;
+        border-style : solid;
+        height : 42px;
+        padding-left : 20px;
+}
+.strip2{
+        background-image : url('tablebar2.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px;
+        border-color : #8d8d8d;
+        background-color : #ABA7A7;
+        border-style : solid;
+        height : 25px;
+        padding-left : 20px;
+}
+.strip3{
+        background-image : url('tablebar3.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px;
+        border-color : #8d8d8d;
+        background-color : #494949;
+        border-style : solid;
+        height : 25px;
+        padding-left : 20px;
+}
+
+.errorbox{
+        text-align : center;
+        border-width : 1px;
+        border-style : solid;
+        border-color : #000000;
+        background : #FF9F9F;
+        padding : 12px;
+        width : 50%;
+        margin-left : auto;
+        margin-right : auto;
+}
+.errorcell{
+        border : 1px;
+        border-color : #000000;
+        border-style : solid;
+        background-color : #b94747;
+        padding : 10px;
+}
+.errorcell2{
+        border : 1px;
+        border-color : #8d8d8d;
+        border-style : solid;
+        background-color : #494949;
+        padding : 10px;
+}
+
+.inputtext{
+        background-color : #404040;
+        color : #CCCCCC;
+        font-family : Verdana, Arial;
+        font-size : 11px;
+}
+.submitbutton{
+        background-color : #404040;
+        color : #CCCCCC;
+        font-family : Verdana, Arial;
+        font-size : 11px;
+}
+.inputnotes{
+        background-color : #FFFFC0;
+        color : #000000;
+        font-size : 12px;
+}
+.submitnotes{
+        background-color : #FFFFC0;
+        color : #000000;
+        font-family : Verdana, Arial;
+        font-size : 11px;
+}
+
+.errorheader{
+        background-image : url('errorbar.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px;
+        border-color : #000000;
+        background-color : #b94747;
+        border-style : solid;
+        height : 25px;
+        padding-left : 20px;
+}
+
+/* -------------------- */
+/* Admin area menu bits-*/
+/* -------------------- */
+
+.adminmenugroupwrapper
+{
+        padding: 3px;
+        background-color: #404040;
+        margin : 3px;
+        margin-top : 10px;
+}
+
+
+.adminmenutable
+{
+        margin-top : 1px;
+        padding : 0px;
+        border-collapse: collapse;
+        border : none;
+        border-spacing: 0px;
+}
+
+.adminmenutable_moveabit
+{
+        margin-top : 4px;
+}
+
+.adminmenulink
+{
+        background-color : #494949;
+        margin : 0px;
+        padding : 1px;
+}
+.adminmenulinkhover
+{
+        background-color : #8d8d8d;
+        margin : 0px;
+        padding : 1px;
+}
+
+.admingroupheader
+{
+        background-image : url('tablebar2.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px;
+        border-color : #8d8d8d;
+        background-color : #ABA7A7;
+        border-style : solid;
+        height : 20px;
+        padding-left : 3px;
+        width : auto;
+}
+
+.admingroupheaderrow
+{
+        cursor : pointer;
+        padding : 0px;
+        margin : 0px;
+}
+
+.adminmenuheadertext
+{
+        vertical-align: middle;
+        color : #CCCCCC;
+        font-size : 9px;
+        font-weight : bold;
+}
+
+.adminmenuheaderbutton
+{
+        vertical-align: middle;
+}
+
+.adminmenuheadericon
+{
+        float : right;
+        margin-top : 2px;
+        margin-right : 2px;
+}
+
+.adminlinkgroup
+{
+        width : auto;
+        font-size : 9px;
+        font-family : Verdana, Arial;
+        border-collapse : collapse;
+        border:1px;
+        border-style : solid;
+        padding : 1px;
+        background-color : #404040;
+        border-color : #8d8d8d;
+        font-size : 9px;
+        font-family : Verdana, Arial;
+        border-top :0px;
+}
+
+.adminlinkgrouprow
+{
+        padding:0px; margin:0px;
+}
+
+
+/* --------------------- */
+/* Header help icons crap*/
+/* --------------------- */
+a.adminhelplink
+{
+        font-size : 9px;
+        text-decoration : none;
+}
+
+.adminhelpbutton
+{
+        float : right;
+        line-height : 10px;
+}
+
+
+/* -------------------- */
+/* Debugging info       */
+/* -------------------- */
+.debug_level_2_wrapper
+{
+        padding : 10px;
+        border : 1px dotted #404040;
+}
+
+.debug_level_2_entry
+{
+        font-size : 11px;
+        padding : 5px;
+}
+.debug_level_2_extra
+{
+        font-size : 9px;
+        margin-left : 25px;
+        color : #404040;
+}
+.debug_level_2_error
+{
+        font-size : 11px;
+        color : #ffa7a7;
+        border : 1px dotted #6d6d6d;        
+        background-color : #4b4b4b;
+        margin : 5px auto 5px auto;
+        width : 95%;
+        padding : 5px;
+}
+
+/* -------------------- */
+/* Breadcrumb stuff     */
+/* -------------------- */
+.breadcrumb_wrapper
+{
+        margin : 20px auto 10px auto;
+        width : 95%;
+          text-align : right;
+        border : 1px dotted #535353;        
+        background-color : #2f2f2f;
+}
+
+.breadcrumb_entry
+{
+        font-size : 11px;
+        padding : 4px;        
+}
+
+.breadcrumb_seperator
+{
+        font-size : 10px;
+        color : #5d5d5d;        
+}
+
+a.breadcrumb_link:link, a.breadcrumb_link:visited, a.breadcrumb_link:active
+{
+        color : #ffb93f;
+        text-decoration : none;
+}
+a.breadcrumb_link:hover
+{
+        color : #ffca77;
+        text-decoration : none;
+}

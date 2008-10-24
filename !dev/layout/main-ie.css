@@ -1,0 +1,5 @@
+#iebug-mold
+{
+	width : expression(document.body.clientWidth > 1300 ? "300px" : "50%");
+}
+

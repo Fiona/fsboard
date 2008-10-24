@@ -1,0 +1,81 @@
+
+
+html, body
+{
+	padding : 0;
+	margin : 0;
+	height : 100%;	
+}
+
+/*
+ * Jelly mold layout divs
+ */
+#outer-mold
+{
+	padding : 0 357px 0 357px;
+	height : 100%;
+}
+
+#iebug-mold
+{
+	width : 11%;
+	margin : 0 auto 0 auto;
+	text-align : left;
+	position : relative;
+	background : #e9ffee;
+	height : 100%;
+}
+
+#expanding-mold
+{
+	margin : 0 -357px 0 -357px;
+	position : relative;
+	text-align : left;
+	padding : 20px 40px 20px 40px;
+}
+
+
+#left-background
+{
+	background : #e9ffee url("images/left-background-border.png") left top repeat-y;
+	width : 457px;
+	position : absolute;
+	height : 100%;
+	top : 0px;
+	left : -457px;
+}
+
+
+#right-background
+{
+	background : #e9ffee url("images/right-background-border.png") right top repeat-y;
+	width : 457px;
+	position : absolute;
+	height : 100%;
+	top : 0px;
+	right : -457px;
+}
+
+
+/* Holly hacking \*/
+* html #expanding-mold { height : 0%;}
+/* */
+
+
+
+
+#header
+{
+	width : 100%;
+}
+
+#header-banner
+{
+	float : left;
+}
+
+#header-right
+{
+	background : #fff;
+	float : right;		
+}

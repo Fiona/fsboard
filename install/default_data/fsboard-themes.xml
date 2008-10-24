@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<theme_file fsboard_version="0.1" time="25-06-08 7:12 pm">
+
+	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
+
+		<theme_css><![CDATA[BODY{
+        font-size : 13px;
+        font-family : Verdana, Arial;
+        background-color : #FFFFFF;
+        margin : 0px;
+}
+
+P{
+        font-size : 13px;
+        font-family : Verdana, Arial;
+        margin : 0px;
+}
+
+form{
+        display:inline;
+}
+
+hr{
+        height : 1px;
+        background-color: #000000;
+        color : #000000;
+        border : 0;
+        width : 60%;
+}
+
+/*
+----------------------
+Regular fonts
+----------------------
+*/
+.normal_text{
+        font-size : 13px;
+        font-family : Verdana, Arial;
+}
+.small_text{
+        font-size : 9px;
+        font-family : Verdana, Arial;
+}
+
+/*
+----------------------
+Main page header
+----------------------
+*/
+.logo_header{
+        background-color : #FFFFFF;
+        border : 0px;
+        border-color : #000000;
+        border-style : solid;
+        width : auto;
+        text-align : center;
+        padding : 4px;
+        text-align : left;
+}
+.user_links_header{
+        background-color : #FFFFFF;
+        border : 0px;
+        border-color : #abe8ab;
+        border-style : solid;
+}
+.user_tools_links{
+        font-size : 9px;
+        font-family : Verdana, Arial;
+        padding : 4px;
+}
+.admin_links{
+        font-size : 12px;
+        font-family : Verdana, Arial;
+        text-stren
+}
+.quicklogin_inputtext{
+        background-color : #EEEEEE;
+        color : #000000;
+        font-family : Verdana, Arial;
+        font-size : 10px;
+}
+.quicklogin_submitbutton{
+        background-color : #EEEEEE;
+        color : #000000;
+        font-family : Verdana, Arial;
+        font-size : 10px;
+        height: 18px;
+}
+.quicklogin_message{
+        font-size : 9px;
+}
+
+/*
+----------------------
+Links
+----------------------
+*/
+a:link, a:visited, a:active{
+        color : #000000;
+        text-decoration : underline;
+}
+a:hover{
+        color : #000000;
+        text-decoration : none;
+}
+
+
+
+.footer{
+        text-align : center;
+        font-size : 10px;
+}
+
+.quicklinks{
+        background-image : url('$imgdir/quicklinksbars.gif');
+        border : 0px;
+        background-color : #CDF3CD;
+        height : 44px;
+        padding-left : 20px;
+}
+.quicklinks-ends{
+        border : 0px;
+        background-color : #CDF3CD;
+        height : 44px;
+        width: 7px;
+}
+.quicklinks-l{
+        background-image : url('$imgdir/quicklinksbars-l.gif');
+}
+.quicklinks-r{
+        background-image : url('$imgdir/quicklinksbars-r.gif');
+}
+
+
+/*
+----------------------
+Global table stuff
+----------------------
+*/
+.global_table
+{
+       border-collapse: collapse;
+       text-align: center;
+       display: table;
+       margin-left: auto;
+       margin-right: auto;
+}
+
+.normalcell{
+        border : 1px solid #aae6aa;
+        background-color : #CDF3CD;
+        text-align: left;
+}
+.darkernormalcell{
+        border : 1px solid #aae6aa;
+        background-color : #a4e8a4;
+        text-align: left;
+}
+
+.table_header_top{
+        background-image: url('$imgdir/top_header_bar.gif');
+        background-repeat: repeat-x;
+        background-position: top;
+        border: 1px solid #aae6aa;
+        background-color: #ecffec;
+        height: 30px;
+        padding-left: 5px;
+        font-weight: bold;
+        text-align: left;
+}
+.table_footer_cell{
+        background-image : url('$imgdir/table_footer_bar.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px solid #aae6aa;
+        background-color : #CDF3CD;
+        height : 25px;
+        text-align: center;
+}
+.table_header_middle{
+        background-image : url('$imgdir/middle_header_bar.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px solid #aae6aa;
+        background-color : #C9F3C9;
+        height : 25px;
+        padding-left : 15px;
+        text-align: left;
+}
+
+
+/*
+----------------------
+Error messages
+----------------------
+*/
+.errorbox{
+        text-align : center;
+        border-width : 1px;
+        border-style : solid;
+        border-color : #000000;
+        background : #FF9F9F;
+        padding : 12px;
+        width : 50%;
+        margin-left : auto;
+        margin-right : auto;
+}
+.errorcell{
+        border : 1px;
+        border-color : #000000;
+        border-style : solid;
+        background-color : #FFC1C1;
+        padding : 10px;
+}
+.errorcell2{
+        border : 1px;
+        border-color : #000000;
+        border-style : solid;
+        background-color : #CDF3CD;
+        padding : 10px;
+}
+
+.errorheader{
+        background-image : url('$imgdir/errorbar.gif');
+        background-repeat: repeat-x;
+        background-position: bottom left;
+        border : 1px;
+        border-color : #000000;
+        background-color : #FF8F8F;
+        border-style : solid;
+        height : 25px;
+        padding-left : 20px;
+}
+
+
+/*
+----------------------
+Form stuff
+----------------------
+*/
+.inputtext{
+        background-color : #EEEEEE;
+        color : #000000;
+        font-family : Verdana, Arial;
+        font-size : 11px;
+}
+.submitbutton{
+        background-color : #EEEEEE;
+        color : #000000;
+        font-family : Verdana, Arial;
+        font-size : 11px;
+}
+.inputnotes{
+        background-color : #FFFFC0;
+        color : #000000;
+        font-size : 12px;
+}
+.submitnotes{
+        background-color : #FFFFC0;
+        color : #000000;
+        font-family : Verdana, Arial;
+        font-size : 11px;
+}
+
+
+/* -------------------- */
+/* Debugging info       */
+/* -------------------- */
+.debug_level_2_wrapper
+{
+        padding : 10px;
+        border : 1px dotted #99ff99;
+        width : auto;
+}
+
+.debug_level_2_entry
+{
+        font-size : 11px;
+        padding : 5px;
+}
+.debug_level_2_extra
+{
+        font-size : 9px;
+        margin-left : 25px;
+        color : #919191;
+}
+.debug_level_2_error
+{
+        font-size : 11px;
+        color : #6e0000;
+        border : 1px dotted #aae6aa;
+        background-color : #CDF3CD;
+        margin : 5px auto 5px auto;
+        width : 95%;
+        padding : 5px;
+}
+
+
+/*
+----------------------
+View profile
+----------------------
+*/
+table.profile_view_table
+{
+      width : 95%;
+}
+table.profile_view_table td.profile_view_inner_table_cell
+{
+      border : 1px dotted #000000;
+      padding : 3px;
+      text-align : left;
+}
+
+table.profile_view_table tr td.profile_view_left_cell
+{
+      width : 150px;
+      padding : 3px;
+}
+table.profile_view_table tr td.profile_view_right_cell
+{
+      width : auto;
+      padding : 3px;
+}
+
+table.profile_view_table td.profile_view_avatar_cell
+{
+      padding : 20px;
+      text-align : center;
+      width : 15%;
+}
+
+
+table.profile_view_table td.profile_view_info_col_wrap
+{
+      width : 50%;
+      padding-right: 3px;
+}
+
+table.profile_view_table_info
+{
+      width : 100%;
+}
+
+table.profile_view_table_info td.profile_view_left_cell img.profile_view_messenger_icon
+{
+      float : left;
+      margin-right : 4px;
+}
+
+table.profile_view_sig_table
+{
+      width : 100%;
+      width : 95%;
+      margin: 10px auto;
+}
+table.profile_view_sig_table td.profile_view_sig_table_cell
+{
+      border : 1px solid #000000;
+      padding : 10px;
+      background : #E8FFE8;
+      text-align : left;
+}
+
+
+/*
+----------------------
+BBCode specific styles
+----------------------
+*/
+div.bbcode_quote_box
+{
+  border : 2px dotted #ffd57a;
+  margin : 0 5px 10px 5px;
+  padding : 5px;
+  font-size : 13px;
+  display : block;
+  background : #faffd4 url('$imgdir/quote_background.png') top right no-repeat;
+}
+div.bbcode_quote_box div.bbcode_quote_quoter_text div
+{
+  height : 1px;
+  background : #faffd4 url('$imgdir/quote_quoter_line_background.png') top left repeat-y;
+  width : 200px;
+}
+div.bbcode_quote_box div.bbcode_quote_quoter_text div hr
+{
+   display: none;
+}
+div.bbcode_quote_box div.bbcode_quote_quoter_text
+{
+  margin : 1px 0 3px 2px;
+  font-size : 10px;
+}
+
+
+div.bbcode_code_box
+{
+  border : 2px dotted #92a19e;
+  margin : 0 5px 10px 5px;
+  padding : 5px;
+  font-size : 13px;
+  display : block;
+  background : #c5d5d2 url('$imgdir/code_background.png') top right no-repeat;
+}
+
+div.bbcode_code_box span.bbcode_code_box_inner
+{
+  font-family: monospace;
+  font-size : 11px;
+}
+
+div.bbcode_code_box div.bbcode_code_name_text
+{
+  margin : 1px 0 3px 2px;
+  font-size : 10px;
+}
+
+div.bbcode_code_box div.bbcode_code_name_text div
+{
+  height : 1px;
+  background : #c5d5d2 url('$imgdir/code_name_line_background.png') top left repeat-y;
+  width : 200px;
+}
+
+div.bbcode_code_box div.bbcode_code_name_text div hr
+{
+   display: none;
+}
+
+
+/*
+----------------------
+Control Panel
+----------------------
+*/
+div.cp_menu_wrap
+{
+  float : left;
+  width : 200px;
+  border : 1px solid #000;
+}
+	
+
+	
+
+	
+
+	
+]]></theme_css>
+	</theme>
+</theme_file>
