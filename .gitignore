@@ -2,3 +2,10 @@
 .buildpath
 .cache
 .project
+cache/cache_*
+install/install.no
+languages/lang_*
+templates/template_*
+upload/avatar/*
+upload/emoticon/*
+upload/post_icon/*
