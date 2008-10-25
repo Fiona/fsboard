@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="25-06-08 7:12 pm">
+<theme_file fsboard_version="0.1" time="25-10-08 11:48 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -442,12 +442,128 @@ div.cp_menu_wrap
   border : 1px solid #000;
 }
 	
+/*
+----------------------
+New forms
+----------------------
+*/
+div.form_wrapper
+{
+  width : 95%;
+  margin : 0 auto;
+}
+  div.form_wrapper p.form_title
+  {
+    background-image: url('$imgdir/top_header_bar.gif');
+    background-repeat: repeat-x;
+    background-position: top;
+    border-bottom: 1px solid #aae6aa;
+    background-color: #ecffec;
+    height: 25px;
+    padding-left : 15px;
+    padding-top : 5px;
+    font-weight: bold;
+  }
+  div.form_wrapper p.form_description
+  {
+    background-color : #ddf3dd;
+    padding : 3px;
+    border-bottom: 1px solid #bff8bf;
+  }
 
-	
+  div.form_wrapper dl
+  {
+     margin : 0;
+  }
+  div.form_wrapper dl div.form_field_wrapper
+  {
+    background-color : #ddf3dd;
+    float:left;
+    clear : left;
+    width : 100%;
+    padding : 10px 0 10px 0;
+  }
+  div.form_wrapper dl div.form_field_wrapper.alt
+  {
+    background-color : #ebf3eb;
+  }
+    div.form_wrapper dl div.form_field_wrapper dt
+    {
+      float:left;
+      width:300px;
+      padding : 0 5px 0 5px;
+      border-right : solid 1px #bff8bf;
+      margin-right : 15px;
+    }
+      div.form_wrapper dl div.form_field_wrapper dt p.form_field_description
+      {
+        font-size : 9px;
+      }
+    div.form_wrapper dl div.form_field_wrapper dd
+    {
+      vertical-align:middle;
+    }
+      div.form_wrapper dl div.form_field_wrapper dd p.field_error
+      {
+        background-color: #e8a8a8;
+        border: 1px solid #e88181;
+        margin:5px 30px 5px 275px;
+        padding : 10px;
+      }
+        div.form_wrapper dl div.form_field_wrapper dd p.field_error span
+        {
+          padding : 5px;
+          font-size : 9px;
+          color: #ff3333;
+        }
 
-	
 
-	
-]]></theme_css>
+
+/*
+----------------------
+New message boxes
+----------------------
+*/
+div.message_box_title
+{
+  background-image: url('$imgdir/top_header_bar.gif');
+  background-repeat: repeat-x;
+  background-position: top;
+  border: 1px solid #aae6aa;
+  background-color: #ecffec;
+  height : 25px;
+  padding : 5px 0 0 16px;
+  width : 60%;
+  margin : 0 auto;
+  font-weight : bold;
+  border-bottom : 0;
+}
+  div.message_box_content
+  {
+    border : 1px solid #aae6aa;
+    background-color : #CDF3CD;
+    padding : 8px;
+    width : 60%;
+    margin : 0 auto 15px auto;
+  }
+
+div.error_title
+{
+  background-image : url('$imgdir/errorbar.gif');
+  background-position: bottom left;
+  border : 1px solid #ff857c;
+  background-color : #FF8F8F;
+  border-bottom : 0;
+}
+  div.error_content
+  {
+    border : 1px solid #ff857c;
+    background-color : #FFC1C1;
+  }
+    div.error_content ul
+    {
+      margin : 0;
+      padding : 0 0 0 10px;
+    }]]></theme_css>
 	</theme>
 </theme_file>

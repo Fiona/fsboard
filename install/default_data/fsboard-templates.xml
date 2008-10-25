@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="14-08-08 8:15 pm">
+<template_set_file fsboard_version="0.1" time="25-10-08 11:48 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -199,35 +199,29 @@
 		<template_parameters><![CDATA[]]></template_parameters>
 		<template name="BBCode : Quote box open" class_name="template_global" function_name="bbcode_quote_box_open"><![CDATA[<div class="bbcode_quote_box"><div class="bbcode_quote_quoter_text">{$quoter}<div><hr /></div></div>]]></template>
 		<template_parameters><![CDATA[$quoter]]></template_parameters>
-		<template name="Error Box (Normal)" class_name="template_global" function_name="normal_error"><![CDATA[<br />
-        <table width=60% align="center" style="border-collapse: collapse;">
-                <tr>
-                        <td class="strip3" colspan=2>
-                                <p><b>{$lang['error_found']}:</b></p>
-                        </td>
-                </tr>
-                <tr>
-                        <td class="errorcell2" colspan=2>
-                                <p>$msg</p>
-                        </td>
-                </tr>
-        </table>]]></template>
+		<template name="Error Box (Normal)" class_name="template_global" function_name="normal_error"><![CDATA[<div class="message_box_title error_title">
+  {$lang['error_found']}
+</div>
+<div class="message_box_content error_content">
+  {$msg}
+</div>]]></template>
 		<template_parameters><![CDATA[$msg]]></template_parameters>
-		<template name="Generic Message Box" class_name="template_global" function_name="message"><![CDATA[<br />
-        <table width=60% align="center" style="border-collapse: collapse;">
-                <tr>
-                        <td class="strip3">
-                                <p><b>{$msg_title}</b></p>
-                        </td>
-                </tr>
-                <tr>
-                        <td  class="normalcell" style="padding:10px">
-                                <p>{$msg}</p>
-                        </td>
-                </tr>
-        </table>
-        <br />]]></template>
+		<template name="Generic Message Box" class_name="template_global" function_name="message"><![CDATA[<div class="message_box_title">
+  {$msg_title}
+</div>
+<div class="message_box_content">
+  {$msg}
+</div>]]></template>
 		<template_parameters><![CDATA[$msg_title="", $msg=""]]></template_parameters>
+		<template name="Global error message" class_name="template_global" function_name="page_error_box"><![CDATA[<div class="message_box_title error_title">
+  {$lang['error_found']}
+</div>
+<div class="message_box_content error_content">
+  <ul>
+    <FOREACH "$error_list as $err"><li>{$err}</li><ENDFOREACH>
+  </ul>
+</div>]]></template>
+		<template_parameters><![CDATA[$error_list]]></template_parameters>
 		<template name="Main Page Footer" class_name="template_global" function_name="main_page_footer"><![CDATA[<table width=95% align="center" style="margin-top : 10px; border-collapse : collapse;">
                 <tr>
                         <td class="quicklinks-ends quicklinks-l">
@@ -318,9 +312,9 @@
 <html>
 <head>
     <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset={$charset}">
-    <title>$title ({$lang['powered_by']}  FSBoard)</title>
+    <title>{$title} ({$lang['powered_by']}  FSBoard)</title>
     <style type="text/css">
-$theme_css
+{$theme_css}
     </style>
     
     <script type="text/javascript" src="jscript/jquery.js"></script>
@@ -328,28 +322,30 @@ $theme_css
 </head>
 
 <body>
+  {$page_blocks['header']}
+  {$page_blocks['error_box']}
+  {$page_blocks['content']}
+  {$page_blocks['footer']}
 
-$page
+  <br /><br />
+    <p class="footer">
+      {$debug_level_1}<br />
 
-        <br /><br /><p class="footer">
-                $debug_level_1<br />
+      <!-- I'ld like it if you didn't delete this -->
+      <a href="http://www.fsboard.com/">FSBoard</a> Development Version {$cache -> cache['config']['current_version']} &copy; 2006 <a href="mailto:fiona@fsboard.com">Fiona Burrows</a><br />
+      <!-- I'ld like it if you didn't delete this -->
+      {$cache -> cache['config']['copyright_text']}
+      <br />
+    </p>
 
-                <!-- I'ld like it if you didn't delete this -->
-                <a href="http://www.fsboard.com/">FSBoard</a> Development Version {$cache -> cache['config']['current_version']} &copy; 2006 <a href="mailto:fiona@fsboard.com">Fiona Burrows</a><br />
-                <!-- I'ld like it if you didn't delete this -->
-
-                {$cache -> cache['config']['copyright_text']}
-                <br />
-        </p>
-
-        <div style="margin:5px">
-                $debug_level_2
-        </div>
+  <div style="margin:5px">
+    {$debug_level_2}
+  </div>
 
 </body>
 
 </html>]]></template>
-		<template_parameters><![CDATA[$title, $theme_css, $charset, $page, $debug_level_1, $debug_level_2]]></template_parameters>
+		<template_parameters><![CDATA[$title, $theme_css, $charset, $page_blocks, $debug_level_1, $debug_level_2]]></template_parameters>
 		<template name="Maintenance Mode Page" class_name="template_global" function_name="maintenance"><![CDATA[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -447,6 +443,62 @@ $page
 
 </html>]]></template>
 		<template_parameters><![CDATA[$msg, $redirect_to, $header, $stylesheet]]></template_parameters>
+		<template name="Form field wrapper" class_name="template_global_forms" function_name="form_field_wrapper"><![CDATA[<div class="form_field_wrapper<IF "($field_count_num % 2) == 0"> alt<ENDIF>">
+  <dt>
+    <label for="{$form_state['meta']['name']}_{$id}">{$info['name']}</label>
+<IF "isset($info['description'])">
+    <p class="form_field_description">{$info['description']}</p>
+<ENDIF>
+  </dt>
+  <dd>   
+    <IF "isset($info['error'])"><p class="field_error"><ENDIF>
+    {$field_html}
+    <IF "isset($info['error'])">
+      <span>{$info['error']}</span>
+      </p>
+    <ENDIF>
+  </dd>
+</div>]]></template>
+		<template_parameters><![CDATA[$field_html, $field_count_num,$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Dropdown input" class_name="template_global_forms" function_name="form_field_dropdown"><![CDATA[<select name="{$id}" id="{$form_state['meta']['name']}_{$id}" <IF "$info['size']">size="{$info['size']}"<ENDIF>>
+  <FOREACH "$info['options'] as $value => $text">
+     <option value="{$value}" <IF "$value == $info['value']">selected="selected"<ENDIF>>{$text}</option>
+  <ENDFOREACH>
+</select>]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Password input" class_name="template_global_forms" function_name="form_field_password"><![CDATA[<input type="password" name="{$id}" id="{$form_state['meta']['name']}_{$id}" size="{$info['size']}" />]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Submit button" class_name="template_global_forms" function_name="form_field_submit"><![CDATA[<input type="submit" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="{$info['value']}" />]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Text input" class_name="template_global_forms" function_name="form_field_text"><![CDATA[<input type="text" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="{$info['value']}" size="{$info['size']}" />]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Textarea input" class_name="template_global_forms" function_name="form_field_textarea"><![CDATA[<textarea  name="{$id}" id="{$form_state['meta']['name']}_{$id}" cols="40" rows="{$info['size']}">{$info['value']}</textarea>]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Yes and no radios" class_name="template_global_forms" function_name="form_field_yesno"><![CDATA[<label for="{$form_state['meta']['name']}_{$id}_yes">{$lang['yes']}</label>
+  <input type="radio" name="{$id}" id="{$form_state['meta']['name']}_{$id}_yes" value="1" <IF "$info['value'] === '1'">checked="checked"<ENDIF> />
+<label for="{$form_state['meta']['name']}_{$id}_no">{$lang['no']}</label>
+  <input type="radio" name="{$id}" id="{$form_state['meta']['name']}_{$id}_no" value="0" <IF "$info['value'] === '0'">checked="checked"<ENDIF> />]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form main error" class_name="template_global_forms" function_name="form_main_error"><![CDATA[<p>{$error_text}</p>]]></template>
+		<template_parameters><![CDATA[$error_text]]></template_parameters>
+		<template name="Form wrapper" class_name="template_global_forms" function_name="form_wrapper"><![CDATA[<div class="form_wrapper">
+
+<IF "isset($form_state['meta']['title'])">
+  <p class="form_title">{$form_state['meta']['title']}</p>
+<ENDIF>
+<IF "isset($form_state['meta']['description'])">
+  <p class="form_description">{$form_state['meta']['description']}</p>
+<ENDIF>
+
+  <form action="{$form_state['meta']['path']}" method="{$form_state['meta']['method']}">
+    <dl>
+    {$form_contents}
+    </dl>
+    <input type="hidden" name="form_{$form_state['meta']['name']}" value="{$form_state['meta']['key']}" />
+  </form>
+
+</div>]]></template>
+		<template_parameters><![CDATA[$form_state, $form_contents]]></template_parameters>
 		<template name="Account Login Form" class_name="template_login" function_name="login_form"><![CDATA[<br />
         <script language="JavaScript" type="text/javascript">
         <!--
@@ -684,180 +736,6 @@ $page
                 </table>
         </form>]]></template>
 		<template_parameters><![CDATA[$entered_data]]></template_parameters>
-		<template name="Account Activaiton Form" class_name="template_register" function_name="activate_form"><![CDATA[<br />
-        <script language='JavaScript' type="text/javascript">
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.activateform.userid.value == '') { Check = 1; }
-                if (document.activateform.code.value == '') { Check = 1; }
-
-                if (Check == 1) {
-                        alert('{$lang['error_activate_form']}');
-                        return false;
-                } else {
-                        document.activateform.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-
-        <form action="index.php?m=reg&m2=activate" method="post" name="activateform" onsubmit="return ValidateForm()">
-                        <table width=60% align="center" style="border-collapse: collapse;">
-                                <tr>
-                                        <td class="strip2" colspan=2>
-                                                <p><b>{$lang['user_activation']}</b></p>
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="strip3" width=100% colspan=2>
-                                                <p>{$lang['activate_notice']}</p>
-                                        </td>
-                                </tr>                                
-                                <tr>
-                                        <td class="normalcell" width=50%>
-                                                <p><b>{$lang['user_id']}:</b></p>
-                                        </td>
-                                        <td class="normalcell" width=50%>
-                                                <input type="text" class="inputtext" name="userid" value="{$user_id}" style="width : 98%">
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="normalcell" width=50%>
-                                                <p><b>{$lang['activation_code']}:</b></p>
-                                        </td>
-                                        <td class="normalcell" width=50%>
-                                                <input type="text" class="inputtext" name="code" style="width : 98%">
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="strip2" align="center" colspan=2>
-                                                <input type="hidden" name="activateform" value="true">
-                                                <input class="submitbutton" type="submit" name="submit" value="{$lang['activate_submit']}">
-                                        </td>
-                                </tr>
-                        </table>
-        </form>]]></template>
-		<template_parameters><![CDATA[$user_id]]></template_parameters>
-		<template name="Account Registration Form" class_name="template_register" function_name="registration_form"><![CDATA[<br />
-        <script language='JavaScript' type="text/javascript">
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.regform.username.value == '') { Check = 1; }
-                if (document.regform.password.value == '') { Check = 1; }
-                if (document.regform.password2.value == '') { Check = 1; }
-                if (document.regform.email.value == '') { Check = 1; }
-$javascript_custom
-
-                if (Check == 1) {
-                        alert('{$lang['error_reg_form']}');
-                        return false;
-                } else {
-                        document.regform.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-
-        <form action="index.php?m=reg&m2=create" method="post" name="regform" onsubmit="return ValidateForm()">
-                        <table width=60% align="center" style="border-collapse: collapse;">
-                                <tr>
-                                        <td class="strip2" colspan=2>
-                                                <p><b>{$lang['new_user_registration']}</b></p>
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="strip3" width=100% colspan=2>
-                                                <p>{$lang['register_notice']}</p>
-                                        </td>
-                                </tr>                                
-                                <tr>
-                                        <td class="normalcell" width=50%>
-                                                <p><b>{$lang['desired_username']}:</b><br />
-                                                {$lang['reg_username_notice']}</p>
-                                        </td>
-                                        <td class="normalcell" width=50%>
-                                                <input type="text" class="inputtext" name="username" value="{$entered_data['username']}" style="width : 98%">
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="normalcell" width=50%>
-                                                <p><b>{$lang['email_address']}:</b></p>
-                                        </td>
-                                        <td class="normalcell" width=50%>
-                                                <input type="text" class="inputtext" name="email" value="{$entered_data['email']}" style="width : 98%">
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="normalcell" width=50%>
-                                                <p><b>{$lang['desired_password']}:</b><br />
-                                                {$lang['reg_password_notice']}</p>
-                                        </td>
-                                        <td class="normalcell" width=50%>
-                                                <input type="password" class="inputtext" name="password" style="width : 98%">
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="normalcell" width=50%>
-                                                <p><b>{$lang['desired_password2']}:</b><br />
-                                                {$lang['reg_password_notice2']}</p>
-                                        </td>
-                                        <td class="normalcell" width=50%>
-                                                <input type="password" class="inputtext" name="password2" style="width : 98%">
-                                        </td>
-                                </tr>
-$custom_profile_fields
-                                <tr>
-                                        <td class="strip2" align="center" colspan=2>
-                                                <input class="submitbutton" type="submit" name="submit" value="{$lang['register_submit']}">
-                                        </td>
-                                </tr>
-                        </table>
-        </form>]]></template>
-		<template_parameters><![CDATA[$entered_data, $custom_profile_fields, $javascript_custom]]></template_parameters>
-		<template name="Forum Rules Box" class_name="template_register" function_name="forum_rules"><![CDATA[<br />
-
-                        <table width=60% align="center" style="border-collapse: collapse;">
-                                <tr>
-                                        <td class="strip2" colspan=2>
-                                                <p><b>{$cache -> cache['config']['rules_title']}</b></p>
-                                        </td>
-                                </tr>
-                                <tr>
-                                        <td class="normalcell" width=100% colspan=2>
-                                                <p>{$cache -> cache['config']['rules_text']}</p>
-                                        </td>
-                                </tr>
-                        </table>]]></template>
-		<template_parameters><![CDATA[]]></template_parameters>
-		<template name="Registration: Custom field - Dropdown input" class_name="template_register" function_name="reg_custom_dropdown"><![CDATA[<select name="$name" class="inputtext" style="width : <IF "$width">$width<ELSE>98%<ENDIF>">
-<FOREACH "$options as $value => $text">
-     <option value="$value">$text</option>
-<ENDFOREACH>
-</select>]]></template>
-		<template_parameters><![CDATA[$name, $width, $options]]></template_parameters>
-		<template name="Registration: Custom field - Row" class_name="template_register" function_name="reg_custom_row"><![CDATA[<tr>
-  <td class="normalcell" width=50%>
-    <p>
-      <b>$name:</b><br />
-<IF "$desc">$desc<ENDIF>
-    </p>
-  </td>
-  <td class="normalcell" width=50%>
-        $input
-  </td>
-</tr>]]></template>
-		<template_parameters><![CDATA[$name, $desc, $input]]></template_parameters>
-		<template name="Registration: Custom field - Text input" class_name="template_register" function_name="reg_custom_text"><![CDATA[<input type="text" name="$name" <IF "$value">value = "$value"<ENDIF> class="inputtext" style="width : <IF "$width">$width<ELSE>98%<ENDIF>" <IF "$maxlength">maxlength="$maxlength"<ENDIF>>]]></template>
-		<template_parameters><![CDATA[$name, $value, $width, $maxlength]]></template_parameters>
-		<template name="Registration: Custom field - Textbox input" class_name="template_register" function_name="reg_custom_textbox"><![CDATA[<textarea name="$name" class="inputtext" style="width : <IF "$width">$width<ELSE>98%<ENDIF>"><IF "$value">$value<ENDIF></textarea>]]></template>
-		<template_parameters><![CDATA[$name, $value, $width]]></template_parameters>
-		<template name="Registration: Custom field - Yes or no input" class_name="template_register" function_name="reg_custom_yesno"><![CDATA[{$lang['yes']} <input type="radio" class="inputtext" name="$name" value="1" <IF "$value">checked="checked"<ENDIF>>
-{$lang['no']} <input type="radio" class="inputtext" name="$name" value="0" <IF "!$value">checked="checked"<ENDIF>>]]></template>
-		<template_parameters><![CDATA[$name, $value]]></template_parameters>
 		<template name="Custom profile field" class_name="template_view_profile" function_name="profile_view_custom"><![CDATA[<table class="global_table profile_view_table">
   <tr>
     <td>

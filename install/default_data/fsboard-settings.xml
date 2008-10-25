@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<configuration_file fsboard_version="0.1" time="25-06-08 7:11 pm">
+<configuration_file fsboard_version="0.1" time="25-10-08 11:48 pm">
 
 	<config_group name="ignore" order="-10">
 
-		<config name="admin_area_theme" config_type="text" dropdown_values="" order="0"><![CDATA[Dark_Rave]]></config>
+		<config name="admin_area_theme" config_type="text" dropdown_values="" order="0"><![CDATA[FSBoard_Green]]></config>
 		<config_default name="admin_area_theme"><![CDATA[FSBoard_Green]]></config_default>
 		<config name="admin_notes" config_type="" dropdown_values="" order="0"><![CDATA[Save admin notes here.]]></config>
 		<config_default name="admin_notes"><![CDATA[]]></config_default>
@@ -119,6 +119,8 @@
 		<config_default name="mail_smtp_port"><![CDATA[25]]></config_default>
 		<config name="mail_smtp_user" config_type="text" dropdown_values="" order="4"><![CDATA[]]></config>
 		<config_default name="mail_smtp_user"><![CDATA[]]></config_default>
+		<config name="mail_html" config_type="yesno" dropdown_values="" order="6"><![CDATA[0]]></config>
+		<config_default name="mail_html"><![CDATA[]]></config_default>
 	</config_group>
 	<config_group name="paths" order="25">
 

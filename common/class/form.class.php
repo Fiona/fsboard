@@ -54,6 +54,18 @@ class form
 	var $final_html = "";
 	
 	
+	/*
+	 * If this is set to true, the form was found to have been submitted..
+	 */
+	var $form_submitted = False;
+	
+	
+	/*
+	 * If this is set to true, the form will not submit.
+	 */
+	var $show_error = False;
+	
+	
 	/**
 	 * Saves all the data for the form
 	 *
@@ -85,6 +97,7 @@ class form
 
 	}
 	
+	
 	/**
 	 * Renders out the form as HTML and returns it.
 	 * This will also call the various callback functions.
@@ -99,9 +112,7 @@ class form
 		
 		# ---------------------------
 		# Checking form input
-		# ---------------------------
-		$this -> form_state['error'] = "";
-		
+		# ---------------------------		
 		$request = ($this -> form_state['meta']['method'] == "post") ? $_POST : $_GET;
 		
 		if(isset($request['form_'.$this -> form_state['meta']['name']]))
@@ -111,6 +122,8 @@ class form
 			if($request['form_'.$this -> form_state['meta']['name']] ==  md5($user -> session))
 			{
 				
+				$this -> form_submitted = True;
+				
 				// Get the values of each form field
 				foreach($this -> form_state as $id => $info)
 				{
@@ -119,19 +132,26 @@ class form
 					
 					if(isset($request[$id]))
 						$this -> form_state["#".$id]['value'] = trim($request[$id]);
-					
+										
 					// Preliminary tests
 					if(isset($info['required']))
-					{
 						if($this -> form_state["#".$id]['value'] == "")
-						{
-							$this -> form_state["#".$id]['error'] = "fill in the field";
-							$this -> form_state['error'] .= $template_global_forms -> form_main_error("field is required: ".$info['name']);
-						}
-					}	
+							$this -> set_error($id, "fill in the field");					
 					
-				}				
-				
+					if(isset($info['identical_to']))
+						if($this -> form_state["#".$id]['value'] != $this -> form_state[$info['identical_to']]['value'])
+							$this -> set_error($id, "value must be same as ".$this -> form_state[$info['identical_to']]['name']);					
+							
+					
+				}	
+
+				// call custom validation
+				if(isset($this -> form_state['meta']['validation_func']))
+					call_user_func($this -> form_state['meta']['validation_func'], $this);
+					
+				if(!isset($this -> form_state['meta']['show_error']))
+					return call_user_func($this -> form_state['meta']['complete_func'], $this);
+					
 			}
 			
 		}
@@ -139,50 +159,95 @@ class form
 		# ---------------------------
 		# Creating the form HTML
 		# ---------------------------
-		
-		// If we have something to put before the form
-		$this -> final_html .= (isset($this -> form_state['meta']['before'])) ? $this -> form_state['meta']['before'] : "";
-		
-		// Go through each field
-		$num = 0;
-		$inner_form_html = "";
-		
-		foreach($this -> form_state as $id => $info)
+		if((!$this -> form_submitted) || ($this -> form_submitted && isset($this -> form_state['meta']['show_error'])))
 		{
+		
+			// If we have something to put before the form
+			$this -> final_html .= (isset($this -> form_state['meta']['before'])) ? $this -> form_state['meta']['before'] : "";
 			
-			// all fields start with a hash
-			if($id[0] != "#")
-				continue;
-				
-			$id = substr($id, 1);
-
-			// Different fields for each field type
-			$info['type'] = (!isset($info['type'])) ? "text" : $info['type'];
-			$info['value'] = (!isset($info['value'])) ? "" : $info['value'];
-			$info['name'] = (!isset($info['name'])) ? "&nbsp;" : $info['name'];
+			// Go through each field
+			$num = 0;
+			$inner_form_html = "";
 			
-			switch($info['type'])
+			foreach($this -> form_state as $id => $info)
 			{
-				case "submit":
-					$field_html = $template_global_forms -> form_field_submit($id, $info, $this -> form_state);
-					break;
-					
-				case "text":
-				default:
-					$info['size'] = (!isset($info['size'])) ? 60 : $info['size'];					
-					$field_html = $template_global_forms -> form_field_text($id, $info, $this -> form_state);
-			}
 				
-			$inner_form_html .= $template_global_forms -> form_field_wrapper($field_html, $num, $id, $info, $this -> form_state);
+				// all fields start with a hash
+				if($id[0] != "#")
+					continue;
+					
+				$id = _substr($id, 1);
+	
+				// Different fields for each field type
+				$info['type'] = (!isset($info['type'])) ? "text" : $info['type'];
+				$info['value'] = (!isset($info['value'])) ? "" : $info['value'];
+				$info['name'] = (!isset($info['name'])) ? "&nbsp;" : $info['name'];
+				
+				switch($info['type'])
+				{
+					case "submit":
+						$field_html = $template_global_forms -> form_field_submit($id, $info, $this -> form_state);
+						break;
 
-			$num++;
+					case "password":
+						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
+						$field_html = $template_global_forms -> form_field_password($id, $info, $this -> form_state);
+						break;
+
+					case "int":
+						$info['size'] = (!isset($info['size'])) ? 7 : $info['size'];					
+						$field_html = $template_global_forms -> form_field_text($id, $info, $this -> form_state);
+						break;
+
+					case "yesno":
+						$field_html = $template_global_forms -> form_field_yesno($id, $info, $this -> form_state);
+						break;
+
+					case "textarea":
+						$info['size'] = (!isset($info['size'])) ? 4 : $info['size'];					
+						$field_html = $template_global_forms -> form_field_textarea($id, $info, $this -> form_state);
+						break;
+
+					case "dropdown":
+						$info['size'] = (!isset($info['size'])) ? 0 : $info['size'];					
+						$field_html = $template_global_forms -> form_field_dropdown($id, $info, $this -> form_state);
+						break;
+						
+					case "text":
+					default:
+						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
+						$field_html = $template_global_forms -> form_field_text($id, $info, $this -> form_state);
+				}
+					
+				$inner_form_html .= $template_global_forms -> form_field_wrapper($field_html, $num, $id, $info, $this -> form_state);
+	
+				$num++;
+				
+			}
+			
+			$this -> final_html .= $template_global_forms -> form_wrapper($this -> form_state, $inner_form_html);
+
+			// If we have something to put after the form
+			$this -> final_html .= (isset($this -> form_state['meta']['after'])) ? $this -> form_state['meta']['after'] : "";
 			
 		}
 		
-		$this -> final_html .= $template_global_forms -> form_wrapper($this -> form_state, $inner_form_html);
-		
 		return $this -> final_html;
 		
+	}
+	
+	
+	
+	/*
+	 * Sets an error on a field on the form
+	 */
+	function set_error($field_id, $error_message)
+	{
+		global $output;
+		
+		$output -> set_error_message($this -> form_state["#".$field_id]['name'].": ".$error_message);
+		$this -> form_state["#".$field_id]['error'] = $error_message;
+		$this -> form_state['meta']['show_error'] = True;					
 	}
 	
 }
