@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="24-10-08 12:44 am">
+<languages_file fsboard_version="0.1" time="25-10-08 11:48 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -847,6 +847,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_desc_login_check_browser" group="admin_config"><![CDATA[Check user browsers accross sessions? (Recommended if you want high security)]]></phrases>
 		<phrases variable_name="admin_config_desc_login_check_ip" group="admin_config"><![CDATA[Check IP addresses accross sessions? (Recommended for security)]]></phrases>
 		<phrases variable_name="admin_config_desc_mail_from_address" group="admin_config"><![CDATA[All e-mail sent appeas to come from here.]]></phrases>
+		<phrases variable_name="admin_config_desc_mail_html" group="admin_config"><![CDATA[E-mails will be sent as HTML rather than plain text if enabled]]></phrases>
 		<phrases variable_name="admin_config_desc_mail_send_method" group="admin_config"><![CDATA[PHP mail() is recommended. Use an SMTP server if this is unavailable.]]></phrases>
 		<phrases variable_name="admin_config_desc_mail_smtp_host" group="admin_config"><![CDATA[SMTP host address. Usually 'localhost'.]]></phrases>
 		<phrases variable_name="admin_config_desc_mail_smtp_password" group="admin_config"><![CDATA[SMTP login password. Usually not needed with 'localhost'.]]></phrases>
@@ -891,6 +892,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_name_login_check_browser" group="admin_config"><![CDATA[Check session browser]]></phrases>
 		<phrases variable_name="admin_config_name_login_check_ip" group="admin_config"><![CDATA[Check session IP]]></phrases>
 		<phrases variable_name="admin_config_name_mail_from_address" group="admin_config"><![CDATA[Outgoing return e-mail address]]></phrases>
+		<phrases variable_name="admin_config_name_mail_html" group="admin_config"><![CDATA[Send HTML e-mails]]></phrases>
 		<phrases variable_name="admin_config_name_mail_send_method" group="admin_config"><![CDATA[Mail sending method]]></phrases>
 		<phrases variable_name="admin_config_name_mail_smtp_host" group="admin_config"><![CDATA[SMTP Host]]></phrases>
 		<phrases variable_name="admin_config_name_mail_smtp_password" group="admin_config"><![CDATA[SMTP Password]]></phrases>
@@ -2284,8 +2286,8 @@ Hitting the help button <img src="<1>admin/themes/FSBoard_Green/help.png" /> whe
 		<phrases variable_name="template_add_text" group="admin_templates"><![CDATA[Template HTML text]]></phrases>
 		<phrases variable_name="template_group_name_template_control_panel" group="admin_templates"><![CDATA[User Control Panel]]></phrases>
 		<phrases variable_name="template_group_name_template_global" group="admin_templates"><![CDATA[Global site-wide templates]]></phrases>
+		<phrases variable_name="template_group_name_template_global_forms" group="admin_templates"><![CDATA[Global forms]]></phrases>
 		<phrases variable_name="template_group_name_template_login" group="admin_templates"><![CDATA[Login/password resetting]]></phrases>
-		<phrases variable_name="template_group_name_template_register" group="admin_templates"><![CDATA[Account registration and activation]]></phrases>
 		<phrases variable_name="template_group_name_template_view_profile" group="admin_templates"><![CDATA[User Profile View]]></phrases>
 		<phrases variable_name="template_list_message" group="admin_templates"><![CDATA[Edit individual templates here by expanding the groups and hitting the edit button. It is recommended you backup your templates before making drastic changes to them.]]></phrases>
 		<phrases variable_name="template_list_title" group="admin_templates"><![CDATA[Template list for:]]></phrases>
@@ -2959,9 +2961,10 @@ To not recieve these e-mails turn off the "Alert Admin of new Registrations" set
 		<phrases variable_name="email_admin_registration_subject" group="register"><![CDATA[New Registration Alert]]></phrases>
 		<phrases variable_name="error_activate_form" group="register"><![CDATA[You must fill in all values!]]></phrases>
 		<phrases variable_name="error_activation_failed" group="register"><![CDATA[There was an error activating your account. Try again or attempt to manually activate your account using the form below.<br />If this problem persists contact an administrator.]]></phrases>
-		<phrases variable_name="error_already_activated" group="register"><![CDATA[This account has already been activated. If this is your account try to <a href="<1>index.php?m=login">login</a>.]]></phrases>
+		<phrases variable_name="error_already_activated" group="register"><![CDATA[This account has already been activated. If this is your account try to login.]]></phrases>
 		<phrases variable_name="error_already_logged_in" group="register"><![CDATA[You are already logged in.]]></phrases>
 		<phrases variable_name="error_bad_activation_code" group="register"><![CDATA[The activation code given is invalid. Make sure the url you have used is identical to the one you recieved in your activation e-mail.<br />Alternativly, you can attempt to manually activate using the form below.]]></phrases>
+		<phrases variable_name="error_bad_activation_code_form" group="register"><![CDATA[The activation code given is invalid, double check your e-mail.]]></phrases>
 		<phrases variable_name="error_email_exists" group="register"><![CDATA[This e-mail is already in use by another user.]]></phrases>
 		<phrases variable_name="error_invalid_email" group="register"><![CDATA[An invalid e-mail has been entered!]]></phrases>
 		<phrases variable_name="error_no_register" group="register"><![CDATA[The message board administrator has disabled new registrations.]]></phrases>
@@ -2977,10 +2980,10 @@ To not recieve these e-mails turn off the "Alert Admin of new Registrations" set
 		<phrases variable_name="register_notice" group="register"><![CDATA[This form is for registering a new user account on this message board.<br /> <b>All fields</b> must be filled in carefully.]]></phrases>
 		<phrases variable_name="register_page_title" group="register"><![CDATA[New Account Registration]]></phrases>
 		<phrases variable_name="register_submit" group="register"><![CDATA[Register]]></phrases>
-		<phrases variable_name="reg_completed" group="register"><![CDATA[Account registration was completed.<p>You may now <a href="<1>index.php?m=login">login</a>.]]></phrases>
+		<phrases variable_name="reg_completed" group="register"><![CDATA[Account registration was completed.<br />You may now login.]]></phrases>
 		<phrases variable_name="reg_password_notice" group="register"><![CDATA[Must be between 4 and 14 characters long.<br />Case sensitive.]]></phrases>
 		<phrases variable_name="reg_password_notice2" group="register"><![CDATA[For validation purposes.]]></phrases>
-		<phrases variable_name="reg_sent_mail" group="register"><![CDATA[An e-mail was sent to the address you supplied, this will contain a link to activate your account and complete your registration.<br /><br />Afterwards you will be able to <a href="<1>index.php?m=login">login</a>.]]></phrases>
+		<phrases variable_name="reg_sent_mail" group="register"><![CDATA[An e-mail was sent to the address you supplied, this will contain a link to activate your account and complete your registration.<br /><br />Afterwards you will be able to <a href="<1>">login</a>.]]></phrases>
 		<phrases variable_name="reg_username_notice" group="register"><![CDATA[Must be between 2 and 25 characters long.]]></phrases>
 		<phrases variable_name="user_activation" group="register"><![CDATA[Activate User Account]]></phrases>
 		<phrases variable_name="user_id" group="register"><![CDATA[User ID]]></phrases>

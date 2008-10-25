@@ -58,7 +58,7 @@ switch ($secondary_mode)
         break;
 
 	case "activate":
-		activate_account();
+		activate_account_url();
         break;
 
 	default:
@@ -67,10 +67,10 @@ switch ($secondary_mode)
 }
 
 
-//***********************************************
-// Show the registration form. Exciting.
-//***********************************************
-function show_registration_form($entered_data = "")
+/**
+ * Display the account registration form
+ */
+function show_registration_form()
 {
 
 	global $cache, $template_register, $template_global, $output, $lang, $user;
@@ -90,82 +90,18 @@ function show_registration_form($entered_data = "")
 	}
         
 	// If admin has rules turned on, we need to show them
-	$before = ($cache -> cache['config']['rules_on']) ? $template_register -> forum_rules() : "";
-
-        /*
-        // **************************
-        // Custom profile fields!
-        // **************************
-        $custom_profile_fields = "";
-        $javascript_custom = "";
-
-        if(count($cache -> cache['profile_fields']) > 0)
-        {
+	if($cache -> cache['config']['rules_on'])
+		$before = $template_global -> message($cache -> cache['config']['rules_title'], $cache -> cache['config']['rules_text']);
+	else
+		$before = "";
         
-                // We have some fields, go through them...
-                foreach($cache -> cache['profile_fields'] as $key => $f_array)
-                {
-
-                        // show on form?
-                        if(!$f_array['show_on_reg'] || $f_array['admin_only_field'])
-                                continue;
-
-                        // What input?
-                        switch($f_array['field_type'])
-                        {
-                        
-                                case "text":
-                                        $input =  $template_register -> reg_custom_text("field_".$key, $entered_data["field_".$key], $f_array['size'], $f_array['max_length']);
-                                        break;
-                        
-                                case "textbox":
-                                        $input =  $template_register -> reg_custom_textbox("field_".$key, $entered_data["field_".$key], $f_array['size']);
-                                        break;
-                        
-                                case "yesno":
-                                        $input =  $template_register -> reg_custom_yesno("field_".$key, $entered_data["field_".$key]);
-                                        break;
-                        
-                                case "dropdown":
-                                        $dropdown_values = explode('|', $f_array['dropdown_values']);
-                                        $dropdown_text = explode('|', $f_array['dropdown_text']);
-
-                                        $options = array();
-                                        
-                                        foreach($dropdown_values as $key2 => $val)
-                                                $options[trim($val)] = trim($dropdown_text[$key2]);
-
-                                        $input =  $template_register -> reg_custom_dropdown("field_".$key, $f_array['size'], $options);
-                                        break;
-                        
-                        }
-                                        
-                        // Stick it in
-                        $custom_profile_fields .= $template_register -> reg_custom_row($f_array['name'], $f_array['description'], $input);
-
-                        // Javavscript validation...
-                        if($f_array['must_be_filled'])
-                                $javascript_custom .= "if (document.regform.field_".$key.".value == '') { Check = 1; };\n ";
-                        
-                }
-        
-        }    
-
-        if($entered_data === "")
-			$entered_data = array(
-				"username" 	=> "",
-				"email" 	=> ""
-			);
-
-		*/
-        
-		// Plugin
-		//hook_register_before_reg_form($entered_data);
+	// Plugin
+	//hook_register_before_reg_form($entered_data);
 
 		
-	// **************************
+	// ------------------
 	// Our form
-	// **************************
+	// ------------------
 	$form = new form(array(
         "meta" => array(
 			"name" => "register",
@@ -198,16 +134,78 @@ function show_registration_form($entered_data = "")
         	"name" => $lang['desired_password2'],
         	"description" => $lang['reg_password_notice2'],
         	"identical_to" => "#password"
-        ),
-        "#submit" => array(
-        	"type" => "submit",
-        	"value" => $lang['register_submit']
-        ),
-        
+        )
 	));
 	
+	
+	// ------------------
+	// Custom profile fields
+	// ------------------
+	if(count($cache -> cache['profile_fields']) > 0)
+	{
+        
+		// We have some fields, go through them...
+		foreach($cache -> cache['profile_fields'] as $key => $f_array)
+		{
+			
+			// show on form?
+			if(!$f_array['show_on_reg'] || $f_array['admin_only_field'])
+				continue;
+
+			$form -> form_state["#field_".$key] = array(
+				"name" => $f_array['name'],
+				"description" => $f_array['description'],
+			);
+
+			if($f_array['field_type'] != "yesno" && $f_array['size'])
+				$form -> form_state["#field_".$key]['size'] = $f_array['size'];
+			
+			// What input?
+			switch($f_array['field_type'])
+			{
+					
+				case "yesno":
+					$form -> form_state["#field_".$key]['type'] = "yesno";
+					break;
+
+				case "textbox":
+					$form -> form_state["#field_".$key]['type'] = "textarea";
+					break;
+
+				case "dropdown":
+					$dropdown_values = explode('|', $f_array['dropdown_values']);
+					$dropdown_text = explode('|', $f_array['dropdown_text']);
+
+					$options = array();
+                                        
+					foreach($dropdown_values as $key2 => $val)
+						$options[trim($val)] = trim($dropdown_text[$key2]);
+
+					$form -> form_state["#field_".$key]['type'] = "dropdown";
+					$form -> form_state["#field_".$key]['options'] = $options;
+					break;
+					
+				case "text":
+				default:
+					$form -> form_state["#field_".$key]['type'] = "text";
+					
+			}
+
+			if($f_array['must_be_filled'])
+				$form -> form_state["#field_".$key]['required'] = True;
+			
+		}
+		
+	}
+	
+	
+	// Chuck submit on the end
+	$form -> form_state["#submit"] = array(
+		"type" => "submit",
+		"value" => $lang['register_submit']
+	);
+	
 	$output -> add($form -> render());
-	// $output -> add($template_register -> registration_form($entered_data, $custom_profile_fields, $javascript_custom));
 
 	// Plugin
 	//hook_register_after_reg_form($entered_data);
@@ -215,426 +213,488 @@ function show_registration_form($entered_data = "")
 }
 
 
-function form_register_validate($form_state)
+/**
+ * Validation function for the registration form
+ *
+ * @param object $form
+ */
+function form_register_validate($form)
 {
+	
+	global $lang, $db, $cache;
+
+			
+	// ----------------
+	// Check username
+	// ----------------
+	if(!isset($form -> form_state['#username']['error']))
+	{
 		
-}
+		// length
+		if(_strlen($form -> form_state['#username']['value']) < 2 || _strlen($form -> form_state['#username']['value']) > 25)
+			$form -> set_error("username", $lang['error_username_too_long']);        
+			
+		// Check for reserved characters in username
+		foreach(array("'", "\"", "<!--", "\\") as $char)
+			if(strstr($form -> form_state['#username']['value'], $char))
+				$form -> set_error("username", $lang['error_username_reserved_chars']);        
 
-function form_register_complete($form_state)
-{
+        // Check username has been taken
+        $db -> basic_select(array(
+        	"table" => "users",
+        	"what" => "username",
+        	"where" => "lower(username)='".$db -> escape_string(_strtolower($form -> form_state['#username']['value']))."'",
+        	"limit" => 1
+       	)); 
+        
+        if($db -> num_rows())
+			$form -> set_error("username", $lang['error_username_exists']);        
+
+	}
+	
+	
+	// ----------------
+	// Check email
+	// ----------------
+	if(!isset($form -> form_state['#email']['error']))
+	{
+	
+		// Sort out invalid e-mail characters
+		$form -> form_state['#email']['value'] = str_replace(" ", "", $form -> form_state['#email']['value']);
+		$form -> form_state['#email']['value'] = preg_replace("#[\;\#\n\r\*\'\"<>&\%\!\(\)\{\}\[\]\?\\/\s]#", "", $form -> form_state['#email']['value']);
+
+			
+		// Check e-mail is valid
+		if(!isset($form -> form_state['#email']['error']))
+			if(!preg_match( "/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,4}|[0-9]{1,4})(\]?)$/", $form -> form_state['#email']['value']))
+			$form -> set_error("email", $lang['error_invalid_email']);        
 		
-}
-
-
-//***********************************************
-// Take the $_post data and make sure it's Okie Doke.
-// Then create the account itself and send e-mails blah blah...
-//***********************************************
-function create_account()
-{
-
-        global $template_global, $output, $_POST, $cache, $db, $lang, $user;
-
-        // If we are logged in, we need a error
-        if (!$user -> is_guest)
+		
+		// Check if e-mail is taken
+		if(!$cache -> cache['config']['reg_duplicate_emails'])
         {
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return;
-        
-        }
-
-        // Check if the admin has disabled registration
-        if ($cache -> cache['config']['reg_disable_new'])
-        {
-        
-                $output -> add($template_global -> normal_error($lang['error_no_register']));
-                return;
-
-        }
-
-        // Turn POST stuff into our own array
-        $entered_data = array();
-
-        $entered_data['username'] = trim(stripslashes($_POST['username']));
-        $entered_data['email'] = trim($_POST['email']);
-        $entered_data['password'] = $_POST['password'];
-        $entered_data['password2'] = $_POST['password2'];
-
-        if(count($cache -> cache['profile_fields']) > 0)
-        {
-        
-                // We have some fields, go through them...
-                foreach($cache -> cache['profile_fields'] as $key => $f_array)
-                {
+	        $db -> basic_select(array(
+	        	"table" => "users",
+	        	"what" => "email",
+	        	"where" => "lower(email)='".$db -> escape_string(_strtolower($form -> form_state['#email']['value']))."'",
+	        	"limit" => 1
+	       	)); 
                 
-                        if(!$f_array['show_on_reg'])
-                                continue;
-                 
-                        $entered_data['field_'.$key] = $_POST['field_'.$key];
-
-                }
-                
-        }
-        
-        // Make sure everything is okay for including...
-        if(check_account_info($entered_data))
-        {
-                
-                // ********************************
-                // Generate a unique activation code        
-                // ********************************
-                $validate_code = _substr(md5(uniqid(rand(), true)), 0, 13); 
-
-                if($cache -> cache['config']['reg_validation'])
-                        $user_group = "5";
-                else
-                        $user_group = "3";
-                
-                // ********************************
-                // Registraion was okay, so let's attempt to add this account
-                // ********************************
-                $query_string = "INSERT INTO ".$db -> table_prefix."users
-                (username, user_group, ip_address, password, email, registered, 
-                last_active, validate_id, need_validate)
-                VALUES('".$entered_data['username']."', '".$user_group."', '".user_ip()."', '".md5($entered_data['password'])."', '".$entered_data['email']."', '".TIME."',
-                '".TIME."', '".$validate_code."', '".$cache -> cache['config']['reg_validation']."')";
-
-                // Execute the query and check if it died.
-                if (!$db -> query($query_string))
-                {
-
-                        $output -> add($template_global -> critical_error($lang['error_registration_add']));        
-                        return(false);
-                
-                }
-
-                // Get the ID number of the account just inserted
-                $account_id = $db -> insert_id();
-
-                // ********************************
-                // Sort out custom profile fields!!
-                // ********************************
-                if(count($cache -> cache['profile_fields']) > 0)
-                {
-                
-                        $custom_stuff = array();
-                        
-                        // We have some fields, go through them...
-                        foreach($cache -> cache['profile_fields'] as $key => $f_array)
-                        {
-        
-                                // show on form?
-                                if(!$f_array['show_on_reg'] || $f_array['admin_only_field'])
-                                        continue;
-
-                                $custom_stuff["field_".$key] = trim($entered_data["field_".$key]);
-
-                        }
-                        
-                        // Got some?
-                        if($custom_stuff)
-                        {
-                               
-                                // Check the entry exists for SOME REASON (never know)
-                                $fields = $db -> query("select member_id from ".$db -> table_prefix."profile_fields_data where member_id='".$account_id."'");
-                                
-                                // Insert or update
-                                if($db -> num_rows($fields) == 0)
-                                {
-                                        $custom_stuff['member_id'] = $account_id;
-                                        $db -> basic_insert("profile_fields_data", $custom_stuff);
-                                }
-                                else
-					$db -> basic_update("profile_fields_data", $custom_stuff, "member_id='".$account_id."'");
-                                                        
-                        }
-                        
-                }
-                                
-                // ********************************
-                // If we need to send validation e-mail, do it.
-                // ********************************
-                if($cache -> cache['config']['reg_validation'])
-                {        
-                
-                        // Get the message from the language file
-                        $email_message = $lang['email_activate'];
-                        
-                        // We need to replace certain things so the email sends the right info. Kay?
-                        $email_message = str_replace('<forum_name>', $cache -> cache['config']['board_name'], $email_message);
-                        $email_message = str_replace('<activate_url>', $cache -> cache['config']['board_url']."/index.php?m=reg&m2=activate&user=".$account_id."&code=".$validate_code, $email_message);
-                        $email_message = str_replace('<activate_form_url>', $cache -> cache['config']['board_url']."/index.php?m=reg&m2=activateform&user=".$account_id, $email_message);
-                        $email_message = str_replace('<activate_code>', $validate_code, $email_message);
-                        $email_message = str_replace('<user_id>', $account_id, $email_message);
-
-                        // Send the e-mail
-                        $mail = new email;
-                        $mail -> send_mail($entered_data['email'], $lang['email_activate_subject'], $email_message);
-
-                        // Fix message
-                        $output -> replace_number_tags($lang['reg_sent_mail'], array(ROOT));
-
-                        // Print message telling user what to do
-                        $output -> add($template_global -> message($lang['account_registration'], $lang['reg_sent_mail']));        
-
-                }
-                else
-                {
-
-                        // Fix message
-                        $output -> replace_number_tags($lang['reg_completed'], array(ROOT));
-                        
-                        // Print message telling user they can login now
-                        $output -> add($template_global -> message($lang['account_registration'], $lang['reg_completed']));        
-
-                }
-
-                // ********************************
-                // If we need to tell the admin
-                // ********************************
-                if ($cache -> cache['config']['reg_notify_admin'])
-                {
-
-                        // Get the message from the language file
-                        $email_message = $lang['email_admin_registration'];
-                        
-                        // We need to replace certain things so the email sends the right info. Kay?
-                        $email_message = str_replace('<forum_name>', $cache -> cache['config']['board_name'], $email_message);
-                        $email_message = str_replace('<new_username>', $entered_data['username'], $email_message);
-
-                        // Send the e-mail
-                        $mail = new email;
-                        $mail -> send_mail($cache -> cache['config']['admin_email'], $lang['email_admin_registration_subject'], $email_message);
-                        
-                }
-                
-        }
-        else
-                show_registration_form($entered_data);
-                
-}
-
-
-//***********************************************
-// Works out if the stuff entered is okays
-//***********************************************
-function check_account_info($entered_data)
-{
-        
-        global $template_global, $output, $lang, $db, $cache;
-
-        // Sort out invalid e-mail characters
-        $entered_data['email'] = str_replace( " ", "", $entered_data['email']);
-        $entered_data['email'] = preg_replace( "#[\;\#\n\r\*\'\"<>&\%\!\(\)\{\}\[\]\?\\/\s]#", "", $entered_data['email']);
-
-        // Check username length
-        if (_strlen($entered_data['username']) < 2 || _strlen($entered_data['username']) > 25)
-        {
-               $output -> add($template_global -> normal_error($lang['error_username_too_long']));        
-               return(false);
-        }
-        
-        // Check password length
-        if (_strlen($entered_data['password']) < 4 || _strlen($entered_data['password']) > 14)
-        {
-               $output -> add($template_global -> normal_error($lang['error_password_too_long']));        
-               return(false);
-        }
-
-        // Check passwords match
-        if ($entered_data['password'] != $entered_data['password2'])
-        {
-               $output -> add($template_global -> normal_error($lang['error_password_match']));        
-               return(false);
-        }
-
-        // Check e-mail is valid
-        if (!preg_match( "/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,4}|[0-9]{1,4})(\]?)$/", $entered_data['email']))
-        {
-               $output -> add($template_global -> normal_error($lang['error_invalid_email']));        
-               return(false);
-        }
-
-        // Check for reserved characters in username
-        $invalid_chars = array("'", "\"", "<!--", "\\");
-        foreach ($invalid_chars as $char)
-        {
-
-                if (strstr($entered_data['username'], $char))
-                {
-                       $output -> add($template_global -> normal_error($lang['error_username_reserved_chars']));        
-                       return(false);
-                }
-
-        }
-
-        // Check username is valid
-        $check_username = $db -> query("select username from ".$db -> table_prefix."users where lower(username)='"._strtolower($entered_data['username'])."'");
-        
-        if ($db -> num_rows($check_username) > 0)
-        {
-               $output -> add($template_global -> normal_error($lang['error_username_exists']));        
-               return(false);
-        }
-
-        // Check if e-mail is taken
-        if ($cache -> cache['config']['reg_duplicate_emails'] == 0)
-        {
-
-                $check_email = $db -> query("select email from ".$db -> table_prefix."users where lower(email)='"._strtolower($entered_data['email'])."'");
-                
-                if ($db -> num_rows($check_email) > 0)
-                {
-                       $output -> add($template_global -> normal_error($lang['error_email_exists']));        
-                       return(false);
-                }
+			if($db -> num_rows())
+				$form -> set_error("email", $lang['error_email_exists']);        
        
         }
         
-        return(true);
-        
+	}
+  	
+	
+	// ----------------
+	// Check password length
+	// ----------------
+	if(!isset($form -> form_state['#password']['error']))
+		if(_strlen($form -> form_state['#password']['value']) < 4 || _strlen($form -> form_state['#password']['value']) > 14)
+			$form -> set_error("password", $lang['error_password_too_long']);        
+	
 }
 
 
-//***********************************************
-// Doing account validation, both from a single url or from the form
-//***********************************************
-function activate_account()
+
+/**
+ * The completion function for the registration form
+ *
+ * @param object $form
+ */
+function form_register_complete($form)
+{
+	
+	global $cache, $db, $lang, $output, $template_global;
+	
+	// --------------
+	// Generate a unique activation code        
+	// --------------
+	$validate_code = _substr(md5(uniqid(rand(), true)), 0, 13); 
+
+	if($cache -> cache['config']['reg_validation'])
+		$user_group = USERGROUP_VALIDATING;
+	else
+		$user_group = USERGROUP_MEMBERS;
+
+		
+	// --------------
+	// Attempt to add this account
+	// --------------
+	$res = $db -> basic_insert(array(
+		"table" => "users",
+		"data" => array(
+			"username" => $form -> form_state['#username']['value'],
+			"user_group" => $user_group,
+			"ip_address" => user_ip(),
+			"password" => md5($form -> form_state['#password']['value']),
+			"email" => $form -> form_state['#email']['value'],
+			"registered" => TIME,
+			"last_active" => TIME,
+			"validate_id" => $validate_code,
+			"need_validate" => $cache -> cache['config']['reg_validation']
+		)	
+	));
+
+	if(!$res)
+	{
+		$output -> add($template_global -> normal_error($lang['error_registration_add']));
+		return;
+	}
+
+	$user_id = $db -> insert_id();
+
+	
+	// --------------
+	// Custom profile fields
+	// --------------
+	if(count($cache -> cache['profile_fields']) > 0)
+	{
+                
+		$custom_stuff = array();
+                        
+		// We have some fields, go through them...
+		foreach($cache -> cache['profile_fields'] as $key => $f_array)
+		{
+        
+			// show on form?
+			if(!$f_array['show_on_reg'] || $f_array['admin_only_field'])
+				continue;
+
+			$custom_stuff["field_".$key] = $form -> form_state["#field_".$key]['value'];
+
+		}
+                        
+		// Got some?
+		if(count($custom_stuff))
+		{
+                               
+			// Check if the entry exists yet (it shouldn't, but whatever)
+			$db -> basic_select(array(
+				"table" => "profile_fields_data",
+				"what" => "member_id",
+				"where" => "member_id = ".(int)$user_id,
+				"limit" => 1
+			));			
+			
+			if($db -> num_rows())
+				$db -> basic_update(array(
+					"table" => "profile_fields_data",
+					"where" => "member_id = ".(int)$user_id,
+					"data" => $custom_stuff,
+					"limit" => 1
+				));
+			else
+			{
+				$custom_stuff['member_id'] = $user_id;
+				$db -> basic_insert(array("table" => "profile_fields_data", "data" => $custom_stuff));
+			}
+			                                
+		}
+		
+	}
+
+
+	// --------------
+	// Send validation e-mail if necessary
+	// --------------
+	if($cache -> cache['config']['reg_validation'])
+	{        
+                
+		// Get the message from the language file
+		$email_message = $lang['email_activate'];
+                        
+		// We need to replace certain things so the email sends the right info. Kay?
+		$email_message = str_replace(
+			array(
+				'<forum_name>',
+				'<activate_url>',
+				'<activate_form_url>',
+				'<activate_code>',
+				'<user_id>'
+			),
+			array(
+				$cache -> cache['config']['board_name'],
+				$cache -> cache['config']['board_url']."/index.php?m=reg&m2=activate&user=".$user_id."&code=".$validate_code,
+				$cache -> cache['config']['board_url']."/index.php?m=reg&m2=activateform&user=".$user_id,
+				$validate_code,
+				$user_id
+			),
+			$email_message
+		);
+
+		// Send the e-mail
+		$mail = new email;
+		$mail -> send_mail($form -> form_state['#email']['value'], $lang['email_activate_subject'], $email_message);
+
+		// Fix message
+		$lang['reg_sent_mail'] = $output -> replace_number_tags($lang['reg_sent_mail'], ROOT."index.php?m=login");
+
+		// Print message telling user what to do
+		$output -> add($template_global -> message($lang['account_registration'], $lang['reg_sent_mail']));        
+
+	}
+	else
+	{
+		$output -> add($template_global -> message($lang['account_registration'], $lang['reg_completed']));        
+		include ROOT."pages/login.php";
+	}
+
+	
+	// --------------
+	// Inform administrator if necessary
+	// --------------
+	if($cache -> cache['config']['reg_notify_admin'])
+	{
+
+		// Get the message from the language file
+		$email_message = $lang['email_admin_registration'];
+                        
+		// We need to replace certain things so the email sends the right info. Kay?
+		$email_message = str_replace(
+			array(
+				'<forum_name>',
+				'<new_username>'
+			),
+			array(
+				 $cache -> cache['config']['board_name'],
+				 $form -> form_state['#username']['value']
+			),
+			$email_message
+		);
+
+		// Send the e-mail
+		$mail = new email;
+		$mail -> send_mail($cache -> cache['config']['admin_email'], $lang['email_admin_registration_subject'], $email_message);
+                        
+	}
+                	
+}
+
+
+/**
+ * Doing account validation by URL
+ */
+function activate_account_url()
 {
 
-        global $user, $lang, $output, $template_global, $db;
+	global $user, $lang, $output, $template_global, $db;
         
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));        
-                return(false);
-        
-        }
+	// If we are logged in, we need a error
+	if(!$user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_logged_in']));
+		return;
+	}
 
-        // If the user has used the activation form we need to get the data from posts
-        if($_POST['activateform'] == "true")
-        {
+	// If user ID isn't given, set it to one from the URL
+	if(!isset($_GET['user']) || !$_GET['user'] || !isset($_GET['code']) || !$_GET['code'])
+	{
+		show_activation_form();
+		return;	
+	}
+	
+	$user_id = (int)$_GET['user'];
+	$validation_code = trim($_GET['code']);
+	
+	$db -> basic_select(array(
+		"table" => "users",
+		"what" => "id, need_validate, validate_id",
+		"where" => "id = ".(int)$user_id,
+		"limit" => 1
+	));
+
+	// Check if user exists
+	if(!$db -> num_rows())
+	{
+		$output -> add($template_global -> normal_error($lang['error_no_user']));
+		return;
+	}
+
+	$user_array = $db -> fetch_array();
                 
-                // Get validation code and user id from post data
-                $v_code = $_POST['code'];
-                $user_id = $_POST['userid'];
-                
-        }
-        else
-        {
+	// Check it needs activating
+	if(!$user_array['need_validate'])
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_activated']));
+		include ROOT."pages/login.php";
+		return;
+	}
 
-                // Get validation code and user id from url
-                $v_code = $_GET['code'];
-                $user_id = $_GET['user'];
-        
-        }
-        
-        // grab user from DB
-        $select_user = $db -> query("select id, need_validate, validate_id from ".$db -> table_prefix."users where id='".$user_id."'");
-        
-        // See if it exists
-        if ($db -> num_rows($select_user) > 0)
-        {
+	// Check if the code is right
+	if($user_array['validate_id'] != $validation_code)
+	{
+		$output -> add($template_global -> normal_error($lang['error_bad_activation_code']));                                
+		show_activation_form($user_id);
+		return;
+	}
 
-                // Grab the full info
-                $user_array = $db -> fetch_array($select_user);
-                
-                // Check it needs activating
-                if ($user_array['need_validate'] == 1)
-                {
-
-                        // Check if the url code is right
-                        if ($user_array['validate_id'] == trim($v_code))
-                        {
-
-                                // Validate the user in the database
-				$validate_query = array('need_validate' => 0, 'user_group' => 3);
-				
-                                if(!$db -> basic_update("users", $validate_query, "id='".$user_array['id']."'"))
-                                {
-
-                                        $output -> add($template_global -> normal_error($lang['error_activation_failed']));                                
-                                        show_activation_form($user_id);
-                                
-                                }                                
-                                else
-                                        // Print message telling user they can login now
-                                        $output -> add($template_global -> message($lang['account_registration'], $lang['reg_completed']));        
-
-                        }
-                        else
-                        {
-                        
-                                $output -> add($template_global -> normal_error($lang['error_bad_activation_code']));                                
-                                show_activation_form($user_id);
-
-                        }
-                                                        
-                }
-                else
-                {
-                        // Fix message
-                        $output -> replace_number_tags($lang['error_already_activated'], array(ROOT));
-
-                        $output -> add($template_global -> normal_error($lang['error_already_activated']));        
-                }
-                        
-        }
-        else
-                $output -> add($template_global -> normal_error($lang['error_no_user']));        
-        
-        return(true);
+	activate_account($user_id);
         
 }
 
 
-//***********************************************
-// If from the URL didn't work, users can activate manually using a form
-//***********************************************
-function show_activation_form($user_id = "")
+
+/*
+ * Manually activate with a form
+ * 
+ * @param int $user_id
+ */
+function show_activation_form($user_id = NULL)
 {
 
-        global $user, $lang, $output, $template_global, $template_register, $db;
+	global $user, $lang, $output, $template_global, $template_register, $db;
 
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
+	// If we are logged in, we need a error
+	if(!$user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_logged_in']));
+		return;
+	}
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));        
-                return(false);
+	// If user ID isn't given, set it to one from the URL
+	if(!$user_id)
+		$user_id = (isset($_GET['user'])) ? (int)$_GET['user'] : NULL;
+	
+	if($user_id !== NULL)
+	{
+		
+		$db -> basic_select(array(
+			"table" => "users",
+			"what" => "id, need_validate, validate_id",
+			"where" => "id = ".(int)$user_id,
+			"limit" => 1
+		));
+	
+		// Check if user exists
+		if(!$db -> num_rows())
+		{
+			$output -> add($template_global -> normal_error($lang['error_no_user']));
+			return;
+		}
+	
+		$user_array = $db -> fetch_array();
+	                
+		// Check it needs activating
+		if(!$user_array['need_validate'])
+		{
+			$output -> add($template_global -> normal_error($lang['error_already_activated']));
+			include ROOT."pages/login.php";
+			return;
+		}
+
+	}
+	
+	// Activation form
+	$form = new form(array(
+        "meta" => array(
+			"name" => "account_activation",
+        	"title" => $lang['user_activation'],
+        	"description" => $lang['activate_notice'],
+			"validation_func" => "form_activation_validate",
+			"complete_func" => "form_activation_complete"	
+        ),
         
-        }
-
-        // If user ID isn't given, set it to one from the URL
-        if($user_id == "")
-                $user_id = $_GET['user'];
-
-        // grab user from DB
-        $select_user = $db -> query("select id, need_validate, validate_id from ".$db -> table_prefix."users where id='".$user_id."'");
-        
-        // See if it exists
-        if ($db -> num_rows($select_user) > 0)
-        {
-
-                // Grab the full info
-                $user_array = $db -> fetch_array($select_user);
-                
-                // Check it needs activating
-                if ($user_array['need_validate'] == 1)
-                {
-
-                        $output -> add($template_register -> activate_form($user_id));        
-
-                }
-                else
-                        $output -> add($template_global -> normal_error($lang['error_already_activated']));        
-                        
-        }
-        else
-                $output -> add($template_global -> normal_error($lang['error_no_user']));        
+        "#userid" => array(
+        	"type" => "int",
+        	"name" => $lang['user_id'],
+        	"required" => True,
+        	"value" => $user_id
+        ),
+        "#code" => array(
+        	"type" => "text",
+        	"name" => $lang['activation_code'],
+        	"required" => True
+        ),
+        "#submit" => array(
+        	"type" => "submit",
+        	"value" => $lang['activate_submit']
+        )
+	));
+	
+	$output -> add($form -> render());	
 
 }
+
+
+
+/**
+ * Validation function for the activation form
+ *
+ * @param object $form
+ */
+function form_activation_validate($form)
+{
+	
+	global $lang, $db;
+	
+	$db -> basic_select(array(
+		"table" => "users",
+		"what" => "validate_id",
+		"where" => "id = ".(int)$form -> form_state['#userid']['value'],
+		"limit" => 1
+	));
+
+	$wanted_code = $db -> result();
+	
+	if($form -> form_state['#code']['value'] != $wanted_code)
+		$form -> set_error("code", $lang['error_bad_activation_code_form']);
+	
+}
+
+
+
+/**
+ * Completion function for the activation form
+ *
+ * @param object $form
+ */
+function form_activation_complete($form)
+{
+	activate_account($form -> form_state['#userid']['value']);
+}
+
+
+
+/**
+ * Simple function will activate accounts for us
+ *
+ * @param int $account_id
+ */
+function activate_account($account_id)
+{
+
+	global $db, $lang,$output, $template_global;
+	
+	$validate_query = array('need_validate' => 0, 'user_group' => 3);
+
+	$res = $db -> basic_update(array(
+		"table" => "users",
+		"where" => "id = ".(int)$account_id,
+		"limit" => 1,
+		"data" => array(
+			"need_validate" => 0,
+			"user_group" => USERGROUP_MEMBERS
+		)
+	));
+
+	if(!$res)
+	{
+		$_POST = array();
+		$output -> add($template_global -> normal_error($lang['error_activation_failed']));                                
+		show_activation_form($account_id);                                
+	}                                
+	else
+	{
+		$output -> add($template_global -> message($lang['account_registration'], $lang['reg_completed']));
+		include ROOT."pages/login.php";         
+	}
+	
+}
+
+
 ?>

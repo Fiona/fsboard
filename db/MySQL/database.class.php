@@ -558,15 +558,29 @@ class database
         // -------------------------------------
         // Do a quick update
         // -------------------------------------
-        function basic_update($table, $entries_array, $where = "", $just_return = false)
+        function basic_update($info, $entries_array = array(), $where = "", $just_return = false)
         {
 
-                $update = $this -> create_update_string($entries_array);
+                if(is_string($info))
+        		{
+        			$table = $info;
+                	$update = $this -> create_update_string($entries_array);
+                	$where = ($where) ? " WHERE ".$where : "";
+                	$limit = "";
+        		}
+				else
+				{
+        			if(!isset($info['table']) || !isset($info['data']))
+        				return false;
 
-                if($where)
-                        $where = " WHERE ".$where;
+        			$table = $info['table'];
+        			$update = $this -> create_update_string($info['data']);					        		
+        			$just_return = (isset($info['just_return'])) ? True : False;
+        			$where = (isset($info['where'])) ? " WHERE ".$info['where'] : "";
+        			$limit = (isset($info['limit'])) ? " LIMIT ".$info['limit'] : "";
+				}
 
-                $full_query = "UPDATE ".$this -> table_prefix.$table." SET ".$update.$where;
+                $full_query = "UPDATE ".$this -> table_prefix.$table." SET ".$update.$where.$limit;
                                 
                 if($just_return)
                         return $full_query;

@@ -126,9 +126,7 @@ if($php_header)
 $quick_links = (isset($quick_links)) ? $quick_links : "";
 $last_visit = (isset($last_visit)) ? $last_visit : "";
 
-$output -> add(
-        $template_global -> main_page_header(IMGDIR, $quick_links, $last_visit, $template_global -> quick_login())
-);
+$output -> page_blocks['header'] = $template_global -> main_page_header(IMGDIR, $quick_links, $last_visit, $template_global -> quick_login());
 
 
 //***********************************************
@@ -154,9 +152,7 @@ if($output -> page_title == "")
 else
         $output -> page_title .= " - ".$cache -> cache['config']['board_name'];
 
-$output -> add(
-        $template_global -> main_page_footer()
-);
+$output -> page_blocks['footer'] = $template_global -> main_page_footer();
 
 
 //***********************************************
@@ -175,14 +171,25 @@ if ($cache -> cache['config']['debug'] >= "2")
 // If we're in maintenance mode, and an admin show up the little message thing
 //***********************************************
 if($user -> perms['perm_see_maintenance_mode'] && $cache -> cache['config']['maintenance'])
-        $output -> page_output = "<p style=\"border-style : dashed; border-color: #FF4040; border-width: 1px;\"align=\"center\"><b>".$lang['admin_message_maintenance_mode']."</b></p>\n".$output -> page_output;
+        $output -> page_blocks['header'] = "<p style=\"border-style : dashed; border-color: #FF4040; border-width: 1px;\"align=\"center\"><b>".$lang['admin_message_maintenance_mode']."</b></p>\n".$output -> page_blocks['header'];
         
         
 //***********************************************
 // Show up the final page
 //***********************************************
+$output -> page_blocks['content'] = $output -> page_output;
+$output -> page_blocks['error_box'] = $output -> get_error_information();
+
+
 $output -> finish(
-        $template_global -> global_wrapper($output -> page_title, $output -> stylesheet, CHARSET, $output -> page_output, $debug_level_1, $debug_level_2)
+        $template_global -> global_wrapper(
+        	$output -> page_title,
+        	$output -> stylesheet,
+        	CHARSET, 
+        	$output -> page_blocks,
+        	$debug_level_1,
+        	$debug_level_2
+        )
 );
 
 

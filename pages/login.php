@@ -103,7 +103,7 @@ switch ($secondary_mode)
 
         default:
 
-                show_login_form();
+                show_login_form($template_login);
                 $output -> page_title = $lang['login_page_title'];
         	break;
         
@@ -113,10 +113,13 @@ switch ($secondary_mode)
 //***********************************************
 // Show the login form.
 //***********************************************
-function show_login_form()
+function show_login_form($template_login = NULL)
 {
 
-        global $template_login, $template_global, $output, $lang, $user;
+		if($template_login === NULL)
+        	global $template_login;
+
+        global $template_global, $output, $lang, $user;
 
         // If we are logged in, we need a error
         if(!$user -> is_guest)
