@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="25-10-08 11:48 pm">
+<template_set_file fsboard_version="0.1" time="26-10-08 3:18 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -466,7 +466,24 @@
   <ENDFOREACH>
 </select>]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: In-form message" class_name="template_global_forms" function_name="form_field_sub_message"><![CDATA[</dl>
+</div>
+
+<div class="form_wrapper">
+<IF "isset($info['title'])">
+  <p class="form_title">{$info['title']}</p>
+<ENDIF>
+<IF "isset($info['description'])">
+  <p class="form_description">{$info['description']}</p>
+<ENDIF>
+</div>
+
+<div class="form_wrapper">
+<dl>]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
 		<template name="Form field: Password input" class_name="template_global_forms" function_name="form_field_password"><![CDATA[<input type="password" name="{$id}" id="{$form_state['meta']['name']}_{$id}" size="{$info['size']}" />]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Single checkbox input" class_name="template_global_forms" function_name="form_field_checkbox"><![CDATA[<input type="checkbox" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="1" <IF "$info['value']">checked="checked"<ENDIF>>]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
 		<template name="Form field: Submit button" class_name="template_global_forms" function_name="form_field_submit"><![CDATA[<input type="submit" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="{$info['value']}" />]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
@@ -499,243 +516,6 @@
 
 </div>]]></template>
 		<template_parameters><![CDATA[$form_state, $form_contents]]></template_parameters>
-		<template name="Account Login Form" class_name="template_login" function_name="login_form"><![CDATA[<br />
-        <script language="JavaScript" type="text/javascript">
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.loginform.username.value == '') { Check = 1; }
-                if (document.loginform.password.value == '') { Check = 1; }
-        
-                if (Check == 1) {
-                        alert('{$lang['error_login']}');
-                        return false;
-                } else {
-                        document.loginform.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-        
-        <form action="index.php?m=login&m2=login" method="post" name="loginform" onsubmit="return ValidateForm()">
-        
-                <table width=60% align="center" style="border-collapse: collapse;">
-                        <tr>
-                                <td class="strip2" colspan=2>
-                                        <p>{$lang['enter_login_info']}</p>
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['login_username']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="text" class="inputtext" name="username" value="{$entered_data['username']}" style="width : 95%" tabindex="1">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['login_password']}:</b><br />
-                                        <font class="small_text"><a href="index.php?m=login&m2=passwordform" tabindex="6">{$lang['login_forgot_password']}</a></font></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="password" class="inputtext" name="password" style="width : 95%" tabindex="2">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['stay_logged_in']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="checkbox" class="inputtext" name="stay_logged_in" value="1" {$entered_data['stay_logged_in']} tabindex="3">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                       <p><b>{$lang['login_invisible']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="checkbox" class="inputtext" name="invisible" value="1" {$entered_data['invisible']} tabindex="4">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="strip2" align="center" colspan=2>
-                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['login_submit']}" tabindex="5">
-                                </td>
-                        </tr>
-                </table>
-        </form>]]></template>
-		<template_parameters><![CDATA[$entered_data]]></template_parameters>
-		<template name="Reset Password (Initial)" class_name="template_login" function_name="lost_password_form"><![CDATA[<br />
-        <script language="JavaScript" type="text/javascript">
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.passwordform.username.value == '') { Check = 1; }
-        
-                if (Check == 1) {
-                        alert('{$lang['error_login']}');
-                        return false;
-                } else {
-                        document.passwordform.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-        
-        <form action="index.php?m=login&m2=newpasswordemail" method="post" name="passwordform" onsubmit="return ValidateForm()">
-        
-                <table width=60% align="center" style="border-collapse: collapse;">
-                        <tr>
-                                <td class="strip2" colspan=2>
-                                        <p>{$lang['reset_password_form_notice']}</p>
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_username']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="text" class="inputtext" name="username" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="strip2" align="center" colspan=2>
-                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['password_form_submit']}">
-                                </td>
-                        </tr>
-                </table>
-        </form>]]></template>
-		<template_parameters><![CDATA[]]></template_parameters>
-		<template name="Reset Password (Long)" class_name="template_login" function_name="password_form2_long"><![CDATA[<br />
-        <script language="JavaScript" type="text/javascript">
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.passwordform2.userid.value == '') { Check = 1; }
-                if (document.passwordform2.code.value == '') { Check = 1; }
-                if (document.passwordform2.password.value == '') { Check = 1; }
-                if (document.passwordform2.password2.value == '') { Check = 1; }
-        
-                if (Check == 1) {
-                        alert('{$lang['error_login']}');
-                        return false;
-                } else {
-                        document.passwordform2.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-        
-        <form action="index.php?m=login&m2=resetpassword" method="post" name="passwordform2" onsubmit="return ValidateForm()">
-        
-                <table width=60% align="center" style="border-collapse: collapse;">
-                        <tr>
-                                <td class="strip2" colspan=2>
-                                        <p>{$lang['reset_password_form2_long_notice']}</p>
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_userid']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="text" class="inputtext" name="userid" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_code']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="text" class="inputtext" name="code" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="strip2" colspan=2>
-                                        <p>{$lang['reset_password_form2_notice']}</p>
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_password']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="password" class="inputtext" name="password" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_password2']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="password" class="inputtext" name="password2" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="strip2" align="center" colspan=2>
-                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['password_form2_submit']}">
-                                </td>
-                        </tr>
-                </table>
-        </form>]]></template>
-		<template_parameters><![CDATA[]]></template_parameters>
-		<template name="Reset Password (Short)" class_name="template_login" function_name="password_form2_short"><![CDATA[<br />
-        <script language="JavaScript" type="text/javascript">
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.passwordform2.password.value == '') { Check = 1; }
-                if (document.passwordform2.password2.value == '') { Check = 1; }
-        
-                if (Check == 1) {
-                        alert('{$lang['error_login']}');
-                        return false;
-                } else {
-                        document.passwordform2.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-        
-        <form action="index.php?m=login&m2=resetpassword" method="post" name="passwordform2" onsubmit="return ValidateForm()">
-        
-                <table width=60% align="center" style="border-collapse: collapse;">
-                        <tr>
-                                <td class="strip2" colspan=2>
-                                        <p>{$lang['reset_password_form2_notice']}</p>
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_password']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="password" class="inputtext" name="password" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="normalcell" width=50%>
-                                        <p><b>{$lang['password_form_password2']}:</b></p>
-                                </td>
-                                <td class="normalcell" width=50%>
-                                        <input type="password" class="inputtext" name="password2" style="width : 99%">
-                                </td>
-                        </tr>
-                        <tr>
-                                <td class="strip2" align="center" colspan=2>
-                                        <input type="hidden" name="userid" value="{$entered_data['userid']}">
-                                        <input type="hidden" name="code" value="{$entered_data['code']}">
-                                        <input class="submitbutton" type="submit" name="submit" value="{$lang['password_form2_submit']}">
-                                </td>
-                        </tr>
-                </table>
-        </form>]]></template>
-		<template_parameters><![CDATA[$entered_data]]></template_parameters>
 		<template name="Custom profile field" class_name="template_view_profile" function_name="profile_view_custom"><![CDATA[<table class="global_table profile_view_table">
   <tr>
     <td>

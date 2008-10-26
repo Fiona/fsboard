@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="25-10-08 11:48 pm">
+<languages_file fsboard_version="0.1" time="26-10-08 3:19 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2287,7 +2287,6 @@ Hitting the help button <img src="<1>admin/themes/FSBoard_Green/help.png" /> whe
 		<phrases variable_name="template_group_name_template_control_panel" group="admin_templates"><![CDATA[User Control Panel]]></phrases>
 		<phrases variable_name="template_group_name_template_global" group="admin_templates"><![CDATA[Global site-wide templates]]></phrases>
 		<phrases variable_name="template_group_name_template_global_forms" group="admin_templates"><![CDATA[Global forms]]></phrases>
-		<phrases variable_name="template_group_name_template_login" group="admin_templates"><![CDATA[Login/password resetting]]></phrases>
 		<phrases variable_name="template_group_name_template_view_profile" group="admin_templates"><![CDATA[User Profile View]]></phrases>
 		<phrases variable_name="template_list_message" group="admin_templates"><![CDATA[Edit individual templates here by expanding the groups and hitting the edit button. It is recommended you backup your templates before making drastic changes to them.]]></phrases>
 		<phrases variable_name="template_list_title" group="admin_templates"><![CDATA[Template list for:]]></phrases>
@@ -2883,7 +2882,7 @@ Follow the instructions on the pages to reset your password.
 --
 This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="email_lost_password_subject" group="login"><![CDATA[Password Reset Request]]></phrases>
-		<phrases variable_name="enter_login_info" group="login"><![CDATA[Carefully enter your username and password to login.<br />You must have <a href="<1>index.php?m=reg">registered</a> before you can login.]]></phrases>
+		<phrases variable_name="enter_login_info" group="login"><![CDATA[Carefully enter your username and password to login.<br />You must have <a href="<1>">registered</a> before you can login.]]></phrases>
 		<phrases variable_name="error_already_logged_in" group="login"><![CDATA[You are already logged in.]]></phrases>
 		<phrases variable_name="error_code_not_right" group="login"><![CDATA[The validation code you entered did not match the required one. Double check the e-mail you receievd and try again.]]></phrases>
 		<phrases variable_name="error_logging_in" group="login"><![CDATA[There was an error logging you in. Please try again. If this problem persists contact an administrator.]]></phrases>
@@ -2895,7 +2894,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="error_no_user" group="login"><![CDATA[Username does not exist or has been banned.]]></phrases>
 		<phrases variable_name="error_password_not_matched" group="login"><![CDATA[The passwords you entered did not match.]]></phrases>
 		<phrases variable_name="error_resetting_password" group="login"><![CDATA[There was an error in resetting your password. Please try again. If this problem persists please contact an administrator.]]></phrases>
-		<phrases variable_name="error_wrong_password" group="login"><![CDATA[The password you have entered is incorrect.<br />If you have forgotten your password, you can reset it using the <a href="<1>index.php?m=login&m2=passwordform">Lost Password page</a>]]></phrases>
+		<phrases variable_name="error_wrong_password" group="login"><![CDATA[The password you have entered is incorrect.<br />If you have forgotten your password, you can reset it using the <a href="<1>">Lost Password page</a>]]></phrases>
 		<phrases variable_name="logged_in" group="login"><![CDATA[You are now logged in.]]></phrases>
 		<phrases variable_name="logged_out" group="login"><![CDATA[You have been logged out.]]></phrases>
 		<phrases variable_name="login_forgot_password" group="login"><![CDATA[I forgot my password!]]></phrases>
@@ -2913,10 +2912,11 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="password_form_userid" group="login"><![CDATA[Account User ID]]></phrases>
 		<phrases variable_name="password_form_username" group="login"><![CDATA[Enter your username]]></phrases>
 		<phrases variable_name="password_page_title" group="login"><![CDATA[Reset Account Password]]></phrases>
-		<phrases variable_name="password_reset" group="login"><![CDATA[Your password has been sucessfully reset. You may now <a href="<1>index.php?m=login">login</a>.]]></phrases>
+		<phrases variable_name="password_reset" group="login"><![CDATA[Your password has been sucessfully reset. You may now <a href="<1>">login</a>.]]></phrases>
 		<phrases variable_name="password_sent_mail" group="login"><![CDATA[An e-mail has been sent to the address tied to this account, follow the instructions contained in it to reset your password.]]></phrases>
 		<phrases variable_name="reset_password_form2_long_notice" group="login"><![CDATA[Enter your user ID and validation code, which you should have recieved in an e-mail sent to you.]]></phrases>
 		<phrases variable_name="reset_password_form2_notice" group="login"><![CDATA[To finish resetting your password, enter the password you desire here twice. Taking special care to enter it exactly the same.]]></phrases>
+		<phrases variable_name="reset_password_form2_subtitle" group="login"><![CDATA[Specify new password]]></phrases>
 		<phrases variable_name="reset_password_form_notice" group="login"><![CDATA[If you have forgotten your password you can reset it here.<br />Carefully enter your username into this form, this will send an e-mail to the address tied to this account, which will supply further instructions.]]></phrases>
 		<phrases variable_name="stay_logged_in" group="login"><![CDATA[Stay logged in on this computer]]></phrases>
 		<phrases variable_name="account_registration" group="register"><![CDATA[New Account Registration]]></phrases>

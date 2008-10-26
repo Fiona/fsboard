@@ -1,38 +1,24 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
 FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       Login Page              *
-*       Started by Fiona        *
-*       03rd Aug 2005           *
-*********************************
-*       Last edit by Fiona      *
-*       27th Mar 2006           *
-*********************************
-
-Lets the user login, logout and retrieve a lost password.
 */
+
+/**
+ * Login page
+ * Lets the user login, logout and retrieve a lost password.
+ * 
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Main
+ */
 
 
 
@@ -58,549 +44,604 @@ $secondary_mode = $_GET['m2'];
 
 switch ($secondary_mode)
 {
+	
+	case "logout":
+		do_logout();
+		$output -> page_title = $lang['logout_page_title'];
+		break;
 
-        case "loginform":
+	case "passwordform":
+		form_lost_password();
+		$output -> page_title = $lang['password_page_title'];
+		break;
 
-                show_login_form();
-                $output -> page_title = $lang['login_page_title'];
-        	break;
+	case "passwordform2":
+		form_lost_password_step2();
+		$output -> page_title = $lang['password_page_title'];
+		break;
 
-        case "login":
+	case "resetpassword":
+		reset_password();
+		$output -> page_title = $lang['password_page_title'];
+		break;
 
-                login();
-                $output -> page_title = $lang['login_page_title'];
-        	break;
-
-        case "logout":
-
-                logout();
-                $output -> page_title = $lang['logout_page_title'];
-        	break;
-
-        case "passwordform":
-
-                show_lost_password_form();
-                $output -> page_title = $lang['password_page_title'];
-        	break;
-
-        case "newpasswordemail":
-
-                send_new_password_email();
-                $output -> page_title = $lang['password_page_title'];
-        	break;
-
-        case "passwordform2":
-
-                show_lost_password_form2();
-                $output -> page_title = $lang['password_page_title'];
-        	break;
-
-        case "resetpassword":
-
-                reset_password();
-                $output -> page_title = $lang['password_page_title'];
-        	break;
-
-        default:
-
-                show_login_form($template_login);
-                $output -> page_title = $lang['login_page_title'];
-        	break;
+	default:
+		form_login($template_login);
+		$output -> page_title = $lang['login_page_title'];
+		break;
         
 }
 
 
-//***********************************************
-// Show the login form.
-//***********************************************
-function show_login_form($template_login = NULL)
+/**
+ * Display the login form
+ *
+ * @param object $template_login
+ */
+function form_login($template_login = NULL)
 {
 
-		if($template_login === NULL)
-        	global $template_login;
+	// This was necessary because the file being included from
+	// the regstration file was causing the $template_login var
+	// to not be registered as a global. If everything was built
+	// as a class this wouldn't be an issue - but that's a refactor
+	// for another day
+	if($template_login === NULL)
+        global $template_login;
 
-        global $template_global, $output, $lang, $user;
+	global $template_global, $output, $lang, $user;
 
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
+	// If we are logged in, we need a error
+	if(!$user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_logged_in']));
+		return;
+	}
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return;
+	
+	$form = new form(array(
+        "meta" => array(
+			"name" => "login",
+        	"title" => $lang['login_page_title'],
+        	"description" => $output -> replace_number_tags($lang['enter_login_info'], ROOT."index.php?m=reg"),
+			"validation_func" => "form_login_validate",
+			"complete_func" => "form_login_complete"	
+        ),
         
-        }
-
-        $entered_data = array(
-        	"username" 			=> (isset($_POST['username'])) 			? $_POST['username'] 	: "",
-        	"stay_logged_in" 	=> (isset($_POST['stay_logged_in']))	? "checked" 			: "",
-        	"invisible" 	 	=> (isset($_POST['invisible'])) 		? "checked" 			: ""
-        );
-
-        // Fix message
-        $output -> replace_number_tags($lang['enter_login_info'], array(ROOT));
-        
-        $output -> add($template_login -> login_form($entered_data));
-        
+        "#username" => array(
+        	"type" => "text",
+        	"name" => $lang['login_username'],
+        	"required" => True
+        ),
+        "#password" => array(
+        	"type" => "password",
+        	"name" => $lang['login_password'],
+        	"description" => "<a href=\"".ROOT."index.php?m=login&amp;m2=passwordform\">".$lang['login_forgot_password']."</a>",
+        	"required" => True
+        ),
+        "#stay_logged_in" => array(
+        	"type" => "checkbox",
+        	"name" => $lang['stay_logged_in']
+        ),
+        "#invisible" => array(
+        	"type" => "checkbox",
+        	"name" => $lang['login_invisible']
+        ),
+		"#submit" => array(
+			"type" => "submit",
+			"value" => $lang['login_submit']
+		)        
+	));	
+	
+	$output -> add($form -> render());
+	
 }
 
 
-//***********************************************
-// Try to login to the forum
-//***********************************************
-function login()
+/*
+ * Validation function for the login form
+ * 
+ * @param object $form
+ */
+function form_login_validate($form)
+{
+	
+	global $db, $lang, $output;
+	
+	if(!$form -> form_state['#username']['value'] || !$form -> form_state['#password']['value'])
+		return;
+		
+	// Check user exists
+	$db -> basic_select(array(
+		"table" => "users",
+		"what" => "`password`, `id`, `need_validate`, `username`, `user_group`",
+		"where" => "LOWER(`username`) = '".$db -> escape_string(_strtolower($form -> form_state['#username']['value']))."'",
+		"limit" => 1
+	));
+	
+	if(!$db -> num_rows())
+	{
+		$form -> set_error("username", $lang['error_no_user']);        
+		return;
+	}
+
+	$form -> form_state['user_data'] = $db -> fetch_array();
+        
+	// Check password
+	if($form -> form_state['user_data']['password'] != md5($form -> form_state['#password']['value']))
+	{
+		$lang['error_wrong_password'] = $output -> replace_number_tags($lang['error_wrong_password'], ROOT."index.php?m=login&m2=passwordform");
+		$form -> set_error("password", $lang['error_wrong_password']);        
+		return;
+	}
+
+	
+	// Check if account is waiting for validation
+	if($form -> form_state['user_data']['need_validate'])
+	{
+		$form -> set_error("username", $lang['error_need_validation']);        
+		return;
+	}
+	
+}
+
+
+/**
+ * Completing login procedure
+ *
+ * @param unknown_type $form
+ */
+function form_login_complete($form)
 {
 
-        global $template_login, $template_global, $output, $lang, $user, $db;
-
-        // **************************
-        // If we are logged in, we need a error
-        // **************************
-        if(!$user -> is_guest)
-        {
-
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                break;
-        
-        }
-        
-
-        // **************************
-        // grab user from DB
-        // **************************
-        $select_user = $db -> basic_select("users", "password, id, need_validate, username, user_group", "lower(username) = '".$db -> escape_string(_strtolower($_POST['username']))."'"); 
-        
-        // See if it exists
-        if ($db -> num_rows($select_user) < 1)
-        {
-        
-                $output -> add($template_global -> normal_error($lang['error_no_user']));
-                show_login_form();
-                return false;
-                
-        }
-        
-        // Grab the full info
-        $user_array = $db -> fetch_array($select_user);
-        
-        
-        // **************************
-        // Check password
-        // **************************
-        if($user_array['password'] != md5($_POST['password']))
-        {
-
-                // Fix message
-                $output -> replace_number_tags($lang['error_wrong_password'], array(ROOT));
-        
-                $output -> add($template_global -> normal_error($lang['error_wrong_password']));
-                show_login_form();
-                
-                return false;
-        
-        }
-
-
-        // **************************
-        // Check validation
-        // **************************
-        if ($user_array['need_validate'] != "0")
-        {
-        
-                $output -> add($template_global -> normal_error($lang['error_need_validation']));
-                show_login_form();
-
-                return false;
-                        
-        }
-        
-        
-        // **************************
-        // Update last login and IP
-        // **************************
-        $update_last_login = array(
+	global $db, $lang, $output, $user;
+	
+	// Update last login and IP address
+	$res = $db -> basic_update(array(
+		"table" => "users",
+		"where" => "id = ".(int)$form -> form_state['user_data']['id'],
+		"data" => array(
 			"last_active" => TIME,
 			"ip_address" => user_ip(),
 			"reset_password" => "0"
-        	);
+		),
+		"limit" => 1
+	));
+	
+	if(!$res)
+	{
+		$output -> add($template_global -> normal_error($lang['error_logging_in']));
+		return;	
+	}
+	
+
+	// Playin' wit cookies
+	if(!$form -> form_state['#stay_logged_in']['value'])
+		$form -> form_state['#stay_logged_in']['value'] = 0;
+		
+	fs_setcookie("user_id", $form -> form_state['user_data']['id'], (int)$form -> form_state['#stay_logged_in']['value']);
+	fs_setcookie("password", $form -> form_state['user_data']['password'], (int)$form -> form_state['#stay_logged_in']['value']);                                
         
-        if(!$db -> basic_update("users", $update_last_login, "id='".$user_array['id']."'"))
-        {
+	if($form -> form_state['#invisible']['value'])
+		fs_setcookie("anonymous", "1", (int)$form -> form_state['#stay_logged_in']['value']);                                
+
+		
+	// Deal with session stuff
+	$s = $user -> get_cookie("session");
+	$session_id = ($s) ? $s : 0;
+
+	// Build data that will go into the session
+	$session_update_info = array(
+			"user_id" => $form -> form_state['user_data']['id'],
+			"username" => $form -> form_state['user_data']['username'],
+			"user_group" => $form -> form_state['user_data']['user_group'],	
+			"last_active" => TIME,
+			"ip_address" => user_ip(),
+			"browser" => $_SERVER['HTTP_USER_AGENT'],
+			"location" => 0
+		);
+	
+	$del_extra = "";
+	
+	if(!$session_id)
+		$session_update_info['id'] = md5(uniqid(rand(), true));
+	else
+		$del_extra =  "and id <> '".$db -> escape_string($session_id)."'";
+									
+	// remove old sessions
+	$db -> save_shutdown_query(
+		$db -> basic_delete(array(
+			"table" => "sessions",
+			"where" => "`ip_address` = '".user_ip()."'".$del_extra,
+			"just_return" => True
+		))
+	);
+	
+	// We have a sess so update the older one
+	if($session_id)
+		$db -> save_shutdown_query(
+			$db -> basic_update(array(
+				"table" => "sessions",
+				"data" => $session_update_info,
+				"where" => "id = '".$db -> escape_string($session_id)."'",
+				"just_return" => true
+			))
+		);
+	// Otherwise add a new one
+	else
+		$db -> save_shutdown_query(
+			$db -> basic_insert(array(
+				"table" => "sessions",
+				"data" => $session_update_info,
+				"just_return" => true						
+			))
+		);			
+
+
+	fs_setcookie("session", $session_id, false);
         
-                $output -> add($template_global -> critical_error($lang['error_logging_in']));
-                show_login_form();
-
-                return false;
-                
-        }                        
-
-        // **************************
-        // Process login
-        // **************************
-        if ($_POST['stay_logged_in'] == "")
-                $_POST['stay_logged_in'] == 0;
-
-        // Write cookies                        
-        fs_setcookie("user_id", $user_array['id'], $_POST['stay_logged_in']);
-        fs_setcookie("password", $user_array['password'], $_POST['stay_logged_in']);                                
-        
-        if ($_POST['invisible'])
-                fs_setcookie("annonymous", "1", $_POST['stay_logged_in']);                                
+	$user -> session = $session_id;
+	$user -> user_id = $form -> form_state['user_data']['id'];
 
 
-        // **************************
-        // Deal with session stuff
-        // **************************
-        $s = $user -> get_cookie("session");
-        $session_id = ($s) ? $s : 0;
-        
-        // Already have a session! So update it.
-        if($session_id)
-        {
-
-                // Delete older sessions, kay?        
-                $db -> save_shutdown_query("delete from ".$db -> table_prefix."sessions where ip_address='".user_ip()."' and id <> '".$session_id."'");
-        
-                // Update older session.
-                $db -> save_shutdown_query(
-                        $db -> basic_update(
-                                "sessions",
-                                array(
-                                        "user_id" => $user_array['id'],
-                                        "username" => $user_array['username'],
-                                        "user_group" => $user_array['user_group'],
-                                        "last_active" => TIME,
-                                        "ip_address" => user_ip(),
-                                        "browser" => $_SERVER['HTTP_USER_AGENT'],
-                                        "location" => '0'
-                                ),
-                                "id = '".$session_id."'",
-                                true
-                        )
-                );
-                                
-        }
-        // No session cookie found. So create new one.
-        else
-        {
-
-                // Delete older ones..
-                $db -> save_shutdown_query("delete from ".$db -> table_prefix."sessions where ip_address='".user_ip()."'");
-
-                // Generate session id
-                $session_id = md5(uniqid(rand(), true));
-
-                $db -> save_shutdown_query(
-                        $db -> basic_insert(
-                                "sessions",
-                                array(
-                                        "id" => $session_id,
-                                        "user_id" => $user_array['id'],
-                                        "username" => $user_array['username'],
-                                        "user_group" => $user_array['user_group'],
-                                        "last_active" => TIME,
-                                        "ip_address" => user_ip(),
-                                        "browser" => $_SERVER['HTTP_USER_AGENT'],
-                                        "location" => 0
-                                ),
-                                true
-                        )
-                );
-                        
-        }
-
-        fs_setcookie("session", $session_id, false);
-        
-        $user -> session = $session_id;
-        $user -> user_id = $user_array['id'];
-
-
-        // **************************
-        // Redirect the user
-        // **************************
-        $output -> redirect(ROOT."index.php", $lang['logged_in']);
-        
+	// Redirect the user
+	$form -> form_state['meta']['redirect'] = array(
+		"url" => ROOT."index.php",
+		"message" => $lang['logged_in']
+	);
+	
 }
 
 
-//***********************************************
-// Try to logout. :(
-//***********************************************
-function logout()
+
+/**
+ * Try to log out
+ */
+function do_logout()
 {
 
-        global $db, $user, $output, $template_global, $lang;
+	global $db, $user, $output, $template_global, $lang;
         
-        // If we are not logged in, we need a error
-        if($user -> is_guest)
-        {
+	// If we are not logged in, we need a error
+	if($user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_not_logged_in']));
+		return;
+	}
 
-                $output -> add($template_global -> normal_error($lang['error_not_logged_in']));
-                return(false);
-        
-        }
+	// Invalidate Cookies
+	fs_setcookie("user_id", "", false, TIME - 36000);
+	fs_setcookie("password", "", false, TIME - 36000);
+	fs_setcookie("annonymous", "", false, TIME - 36000);                                
 
-        // Invalidate Cookies
-        fs_setcookie("user_id", "", false, TIME - 36000);
-        fs_setcookie("password", "", false, TIME - 36000);
-        fs_setcookie("annonymous", "", false, TIME - 36000);                                
+	// Go away admin
+	if(isset($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
+		unset($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']);        
 
-        // Go away admin
-        if(isset($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
-                unset($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']);        
+	// Guestify session
+	$s = $user -> get_cookie("session");
+	$session_id = ($s) ? $s : 0;
 
-        // Guestify session
-        $s = $user -> get_cookie("session");
-        $session_id = ($s) ? $s : 0;
-
-        if($session_id)
-                $db -> save_shutdown_query(
-                        $db -> basic_update(
-                                "sessions",
-                                array(
-                                        "user_id" => 0,
-                                        "username" => 0,
-                                        "user_group" => 4,
-                                        "last_active" => TIME,
-                                        "ip_address" => user_ip(),
-                                        "browser" => $_SERVER['HTTP_USER_AGENT'],
-                                        "location" => '0'
-                                ),
-                                "id = '".$session_id."'",
-                                true
-                        )
-                );
-                
-        // Redirect the user
-        $output -> redirect(ROOT."index.php", $lang['logged_out']);
+	if($session_id)
+		$db -> save_shutdown_query(
+			$db -> basic_update(array(
+				"table" => "sessions",
+				"where" => "id = '".$db -> escape_string($session_id)."'",
+				"data" => array(
+					"user_id" => 0,
+					"username" => 0,
+					"user_group" => USERGROUP_GUEST,
+					"last_active" => TIME,
+					"ip_address" => user_ip(),
+					"browser" => $_SERVER['HTTP_USER_AGENT'],
+					"location" => '0'				
+				),
+				"just_return" => True 
+			))
+		);
+		                
+	// Redirect the user
+	$output -> redirect(ROOT."index.php", $lang['logged_out']);
 
 }
 
 
-//***********************************************
-// If people with no memory have forgotten their password
-// They come to this form, and try to retrieve it.
-//***********************************************
-function show_lost_password_form()
+
+/**
+ * If people with no memory have forgotten their password
+ * they come to this form, and try to retrieve it.
+ */
+function form_lost_password()
 {
 
-        global $template_login, $template_global, $output, $lang, $user;
+	global $template_global, $output, $lang, $user;
 
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
+	// If we are logged in, we need a error
+	if(!$user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_logged_in']));
+		return;
+	}	
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return(false);
+	$form = new form(array(
+        "meta" => array(
+			"name" => "lost_password",
+        	"title" => $lang['password_page_title'],
+        	"description" => $lang['reset_password_form_notice'],
+			"validation_func" => "form_lost_password_validate",
+			"complete_func" => "form_lost_password_complete"	
+        ),
         
-        }
-
-        $output -> add($template_login -> lost_password_form());
+        "#username" => array(
+        	"type" => "text",
+        	"name" => $lang['password_form_username'],
+        	"required" => True
+        ),
+		"#submit" => array(
+			"type" => "submit",
+			"value" => $lang['password_form_submit']
+		)        
+	));	
+	
+	$output -> add($form -> render());	
 
 }
 
 
-//***********************************************
-// After visitng the previous form, this function sends the mail
-// That includes a link they have to click on which sends them to the next form
-//***********************************************
-function send_new_password_email()
+/**
+ * Lost password form validation function
+ *
+ * @param object $form
+ */
+function form_lost_password_validate($form)
+{
+	
+	global $db, $lang;
+	
+	if(!$form -> form_state['#username']['value'])
+		return;
+	
+	$db -> basic_select(array(
+		"table" => "users",
+		"what" => "id, username, email, need_validate",
+		"where" => "lower(username) = '"._strtolower($db -> escape_string($form -> form_state['#username']['value']))."'",
+		"limit" => 1
+	));
+	
+	if(!$db -> num_rows())
+	{
+		$form -> set_error("username", $lang['error_no_user']);        
+		return;		
+	}
+	
+	$form -> form_state['user_data'] = $db -> fetch_array(); 
+
+	if($form -> form_state['user_data']['need_validate'])
+		$form -> set_error("username", $lang['error_not_activated']);        
+
+}
+
+
+/**
+ * Lost password form completion function
+ *
+ * @param object $form
+ */
+function form_lost_password_complete($form)
 {
 
-        global $cache, $user, $db, $output, $template_global, $lang;
-
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
-
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return(false);
-        
-        }
-
-        $username = $_POST['username'];
-
-        $select_user = $db -> query("select id, email, need_validate from ".$db -> table_prefix."users where username='".$username."'");
-        
-        // See if it exists
-        if ($db -> num_rows($select_user) > 0)
-        {
-
-                // Grab the full info
-                $user_array = $db -> fetch_array($select_user);
-                
-                // Check it needs activating
-                if ($user_array['need_validate'] == 0)
-                {
-
-                        // Generate a unique code        
-                        $validate_code = _substr(md5(uniqid(rand(), true)), 0, 13); 
+	global $db, $lang, $cache, $output, $template_global;
+	
+	// Generate a unique code        
+	$validate_code = _substr(md5(uniqid(rand(), true)), 0, 13); 
+	
                         
-                        // Set we're allowed to retrieve password, and the code
-                        $update_password = array("reset_password" => "1", "validate_id" => $validate_code);
-			$db -> basic_update("users", $update_password, "id='".$user_array['id']."'");
-               
-                        // Get the message from the language file
-                        $email_message = $lang['email_lost_password'];
-                        
-                        // We need to replace certain things so the email sends the right info. Kay?
-                        $email_message = str_replace('<username>', $username, $email_message);
-                        $email_message = str_replace('<forum_name>', $cache -> cache['config']['board_name'], $email_message);
-                        $email_message = str_replace('<password_url>', $cache -> cache['config']['board_url']."/index.php?m=login&m2=passwordform2&user=".$user_array['id']."&code=".$validate_code, $email_message);
-                        $email_message = str_replace('<password_form_url>', $cache -> cache['config']['board_url']."/index.php?m=login&m2=passwordform2", $email_message);
-                        $email_message = str_replace('<validate_code>', $validate_code, $email_message);
-                        $email_message = str_replace('<user_id>', $user_array['id'], $email_message);
+	// Set we're allowed to retrieve password, and the code
+	$db -> basic_update(array(
+		"table" => "users",
+		"data" => array(
+			"reset_password" => "1",
+			"validate_id" => $validate_code
+		),
+		"where" => "id = ".$form -> form_state['user_data']['id']
+	));
 
-                        // Send the e-mail
-                        $mail = new email;
-                        $mail -> send_mail($user_array['email'], $lang['email_lost_password_subject'], $email_message);
 
-                        // Print message telling user what to do
-                        $output -> add($template_global -> message($lang['password_page_title'], $lang['password_sent_mail']));        
+	// Prepare the email
+	$lang['email_lost_password'] = str_replace(
+		array(
+			"<username>",
+			"<forum_name>",
+			"<password_url>",
+			"<password_form_url>",
+			"<validate_code>",
+			"<user_id>"
+		),
+		array(
+			$form -> form_state['user_data']['username'],
+			$cache -> cache['config']['board_name'],
+			$cache -> cache['config']['board_url']."/index.php?m=login&m2=passwordform2&user=".$form -> form_state['user_data']['id']."&code=".$validate_code,
+			$cache -> cache['config']['board_url']."/index.php?m=login&m2=passwordform2",
+			$validate_code,
+			$form -> form_state['user_data']['id']
+		),
+		$lang['email_lost_password']
+	);
+	
 
-                }
-                else
-                {
-                        $output -> add($template_global -> normal_error($lang['error_not_activated']));
-                        show_lost_password_form();
-                }        
-                
-        }
-        else
-        {
-                $output -> add($template_global -> normal_error($lang['error_no_user']));
-                show_lost_password_form();
-        }
+	// Send the e-mail
+	$mail = new email;
+	$mail -> send_mail($form -> form_state['user_data']['email'], $lang['email_lost_password_subject'], $lang['email_lost_password']);
 
+	$output -> add($template_global -> message($lang['password_page_title'], $lang['password_sent_mail']));
+	        	
 }
+
 
 
 //***********************************************
 // When getting to this form, users have to now input a new password 
 //***********************************************
-function show_lost_password_form2()
+function form_lost_password_step2()
 {
 
-        global $cache, $user, $db, $output, $template_global, $template_login, $lang;
+	global $template_global, $output, $lang, $user;
 
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
+	// If we are logged in, we need a error
+	if(!$user -> is_guest)
+	{
+		$output -> add($template_global -> normal_error($lang['error_already_logged_in']));
+		return;
+	}	
 
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return(false);
+	$form = new form(array(
+        "meta" => array(
+			"name" => "lost_password_step2",
+        	"title" => $lang['password_page_title'],
+        	"description" => $lang['reset_password_form2_notice'],
+			"validation_func" => "form_lost_password_step2_validate",
+			"complete_func" => "form_lost_password_step2_complete"	
+        )
+	));
         
-        }
-
-        // Check to see if we're using the URL version
-        if(trim($_GET['user'] == '') || trim($_GET['code'] == ''))
-        {
+	if(!isset($_GET['user']) || !isset($_GET['code']) || !trim($_GET['user']) || !trim($_GET['code']))
+	{
+		 
+		$form -> form_state["meta"]["description"] = $lang['reset_password_form2_long_notice'];
+		
+        $form -> form_state["#userid"] = array(
+        	"type" => "int",
+        	"name" => $lang['password_form_userid'],
+        	"required" => True
+        );
+        $form -> form_state["#code"] = array(
+        	"type" => "text",
+        	"name" => $lang['password_form_code'],
+        	"required" => True
+        );        
+        $form -> form_state["submsg"] = array(
+        	"type" => "message",
+        	"title" => $lang['reset_password_form2_subtitle'],
+        	"description" => $lang['reset_password_form2_notice']
+        );
         
-                // Show the long form
-                $output -> add($template_login -> password_form2_long());
+	}
+	
+	$form -> form_state["#password"] = array(
+        "type" => "password",
+        "name" => $lang['password_form_password'],
+        "required" => True
+	);
+	$form -> form_state["#password2"] = array(
+        "type" => "password",
+        "name" => $lang['password_form_password2'],
+        "identical_to" => "#password"
+	);
         
-        }
-        else
-        {
-                        
-                $entered_data['userid'] = $_GET['user'];
-                $entered_data['code'] = $_GET['code'];
-                $output -> add($template_login -> password_form2_short($entered_data));
-        
-        }
-
+	$form -> form_state["#submit"] = array(
+		"type" => "submit",
+		"value" => $lang['password_form2_submit']
+	);
+	
+	$output -> add($form -> render());
+	
 }
 
 
-//***********************************************
-// After going through all that other crap, this is the final
-// step to resetting a lost password.
-//***********************************************
-function reset_password()
+/**
+ * This is the validation function for last step of lost passwords
+ * 
+ * @param $form object 
+ */
+function form_lost_password_step2_validate($form)
 {
 
-        global $cache, $user, $db, $output, $template_global, $lang;
+	global $db, $lang;
+	
+	if(!$form -> form_state['#password']['value'] || !$form -> form_state['#password2']['value'])
+		return;
+		
+	// Get the user ID and code
+	if(!isset($_GET['user']) || !isset($_GET['code']) || !trim($_GET['user']) || !trim($_GET['code']))
+	{
+		if(!$form -> form_state['#userid']['value'] || !$form -> form_state['#code']['value'])
+			return;
+			
+		$uid = $form -> form_state['#userid']['value'];
+		$code = $form -> form_state['#code']['value'];
+	}	
+	else
+	{
+		$uid = trim($_GET['user']);
+		$code = trim($_GET['code']);
+	}
+	
+	// check user exists
+	$db -> basic_select(array(
+		"table" => "users",
+		"what" => "id, need_validate, reset_password, validate_id",
+		"where" => "id = ".(int)$uid,
+		"limit" => 1
+	));
+	
+	if(!$db -> num_rows())
+	{
+		$form -> set_error(null, $lang['error_no_user']);        
+		return;			
+	}
 
-        // If we are logged in, we need a error
-        if(!$user -> is_guest)
-        {
-
-                $output -> add($template_global -> normal_error($lang['error_already_logged_in']));
-                return(false);
-        
-        }
-
-        $select_user = $db -> query("select id, need_validate, reset_password, validate_id from ".$db -> table_prefix."users where id='".trim($_POST['userid'])."'");
-        
-        // See if it exists
-        if ($db -> num_rows($select_user) > 0)
-        {
-
-                // Grab the full info
-                $user_array = $db -> fetch_array($select_user);
+	$form -> form_state['user_data'] = $db -> fetch_array();
                 
-                // Check it needs activating
-                if ($user_array['need_validate'] == 0)
-                {
+	// Check validation
+	if($form -> form_state['user_data']['need_validate'])
+	{
+		$form -> set_error(null, $lang['error_not_activated']);        
+		return;			
+	}
 
-                        // Check if this user is actually in the process of password reset
-                        if ($user_array['reset_password'] == 1)
-                        {
+	// Check we're actually resetting
+	if(!$form -> form_state['user_data']['reset_password'])
+	{
+		$form -> set_error(null, $lang['error_not_reseting_password']);        
+		return;			
+	}
 
-                                // Check if the validation code is okay
-                                if ($user_array['validate_id'] == trim($_POST['code']))
-                                {
+	// Compare validation code
+	if($form -> form_state['user_data']['validate_id'] != $code)
+		$form -> set_error(null, $lang['error_code_not_right']);        
+                          	
+}
 
 
-                                        // Check the passwords entered are okay
-                                        if (trim($_POST['password']) == trim($_POST['password2']))
-                                        {
-                                        
-                                                // Reset password
-                                                $reset_password_query = array("reset_password" => 0, "password" => md5($_POST['password']));
+/**
+ * This is the completion function for last step of lost passwords
+ * 
+ * @param $form object 
+ */
+function form_lost_password_step2_complete($form)
+{
 
-                                                if(!$db -> basic_update("users", $reset_password_query, "id='".$user_array['id']."'"))
-                                                        $output -> add($template_global -> critical_error($lang['error_resetting_password']));
-                                                
-                                                else
-                                                {
-                                                        // Fix message
-                                                        $lang['password_reset'] = $output -> replace_number_tags($lang['password_reset'], array(ROOT));
-                                                        
-                                                        $output -> add($template_global -> message($lang['password_page_title'], $lang['password_reset']));        
-                                                }
-                                                                                        
-                                        }
-                                        else
-                                        {
-                                                $output -> add($template_global -> normal_error($lang['error_password_not_matched']));
-                                                show_lost_password_form2();
-                                        }                
+	global $db, $lang, $template_global, $output;
 
-                                }
-                                else
-                                {
-                                        $output -> add($template_global -> normal_error($lang['error_code_not_right']));
-                                        show_lost_password_form2();
-                                }                
+	$res = $db -> basic_update(array(
+		"table" => "users",
+		"where" => "id = ".(int)$form -> form_state['user_data']['id'],
+		"data" => array(
+			"reset_password" => 0,
+			"password" => md5($form -> form_state['#password']['value'])
+		),
+		"limit" => 1
+	));
+	
+	if(!$res)
+	{
+		$output -> add($template_global -> normal_error($lang['error_resetting_password']));
+		return;		
+	}
 
-                        }
-                        else
-                                $output -> add($template_global -> normal_error($lang['error_not_reseting_password']));
-                
-                }
-                else
-                {
-                        $output -> add($template_global -> normal_error($lang['error_not_activated']));
-                        show_lost_password_form2();
-                }                
-                                
-        }
-        else
-        {
-                $output -> add($template_global -> normal_error($lang['error_no_user']));
-                show_lost_password_form2();
-        }
-                
+	$lang['password_reset'] = $output -> replace_number_tags($lang['password_reset'], ROOT."index.php?m=login");
+	$output -> add($template_global -> message($lang['password_page_title'], $lang['password_reset']));
+                                                	
 }
 
 ?>

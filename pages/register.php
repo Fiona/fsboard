@@ -13,6 +13,7 @@ See gpl.txt for a full copy of this license.
 /**
  * Registration page
  * Deals with creating new accounts validation of them by the user
+ * 
  * @author Fiona Burrows <fiona@fsboard.com>
  * @version 1.0
  * @package FSBoard
@@ -45,16 +46,8 @@ $output -> page_title = $lang['register_page_title'];
 switch ($secondary_mode)
 {
 
-	case "form":
-		show_registration_form();
-        break;
-
-	case "create":
-		create_account();
-        break;
-
 	case "activateform":
-		show_activation_form();
+		form_activation();
         break;
 
 	case "activate":
@@ -62,7 +55,7 @@ switch ($secondary_mode)
         break;
 
 	default:
-		show_registration_form();
+		form_register();
         
 }
 
@@ -70,7 +63,7 @@ switch ($secondary_mode)
 /**
  * Display the account registration form
  */
-function show_registration_form()
+function form_register()
 {
 
 	global $cache, $template_register, $template_global, $output, $lang, $user;
@@ -494,7 +487,7 @@ function activate_account_url()
 	// If user ID isn't given, set it to one from the URL
 	if(!isset($_GET['user']) || !$_GET['user'] || !isset($_GET['code']) || !$_GET['code'])
 	{
-		show_activation_form();
+		form_activation();
 		return;	
 	}
 	
@@ -529,7 +522,7 @@ function activate_account_url()
 	if($user_array['validate_id'] != $validation_code)
 	{
 		$output -> add($template_global -> normal_error($lang['error_bad_activation_code']));                                
-		show_activation_form($user_id);
+		form_activation($user_id);
 		return;
 	}
 
@@ -544,7 +537,7 @@ function activate_account_url()
  * 
  * @param int $user_id
  */
-function show_activation_form($user_id = NULL)
+function form_activation($user_id = NULL)
 {
 
 	global $user, $lang, $output, $template_global, $template_register, $db;
@@ -686,7 +679,7 @@ function activate_account($account_id)
 	{
 		$_POST = array();
 		$output -> add($template_global -> normal_error($lang['error_activation_failed']));                                
-		show_activation_form($account_id);                                
+		form_activation($account_id);                                
 	}                                
 	else
 	{
