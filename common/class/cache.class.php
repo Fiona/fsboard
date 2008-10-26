@@ -92,7 +92,7 @@ class cache
 	function load_cache()
 	{
 	
-	        global $db, $mode_file_list;
+	        global $db, $extra_cache;
 	
 		// Select the cache
 		if(defined('ADMIN'))
@@ -162,7 +162,7 @@ class cache
 			{
 
 				foreach($this -> cache_types as $val)
-					if(in_array($val, $mode_file_list[CURRENT_MODE][1]) || in_array($val, $this -> always_load))
+					if(in_array($val, $extra_cache) || in_array($val, $this -> always_load))
 						$loading_cache_types[] = "'".$val."'";
 	
 	 			$db -> basic_select("cache", "name,content", "name IN(".implode(",", $loading_cache_types).")");
@@ -175,7 +175,7 @@ class cache
 				foreach($this -> cache_types as $val)
 				{
 					
-					if(in_array($val, $mode_file_list[CURRENT_MODE][1]) || in_array($val, $this -> always_load))
+					if(in_array($val, $extra_cache) || in_array($val, $this -> always_load))
 					{
 						include ROOT."cache/cache_".$val.".php";
 						eval("\$this -> cache[strtolower(\$val)] = return_cache_array_".$val."();"); 

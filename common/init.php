@@ -316,7 +316,7 @@ if(defined('ADMIN'))
         $output -> theme_folder = $theme_folder;
         
         // This is some legacy stuff, probably not needed now
-        $imgdir = ROOT."admin/themes/".$theme_folder;
+        $imgdir = $cache -> cache['config']['board_url']."/admin/themes/".$theme_folder;
         
         /**
          * Definition of the current theme image directory (admin)
@@ -345,7 +345,7 @@ else
         /**
          * Definition of the current theme image directory (main)
          */
-        define('IMGDIR', ROOT.$theme_array['image_dir']);
+        define('IMGDIR', $cache -> cache['config']['board_url']."/".$theme_array['image_dir']);
         
         // This string is put into the outputted file
         $stylesheet = $theme_array['css'];

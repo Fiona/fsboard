@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+
+	RewriteEngine on
+	
+	# Nothing - Go to index.php [L] = end here
+	RewriteRule ^$						index.php [L]
+	
+	# Check if the requested files are not actually in the file system
+	RewriteCond %{REQUEST_FILENAME}		!-f
+	RewriteCond %{REQUEST_FILENAME}		!-d
+	RewriteRule (.*)					index.php?q=$1	[QSA,L] # QSA - appends query string
+	
+</IfModule>

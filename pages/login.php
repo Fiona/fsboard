@@ -38,11 +38,9 @@ load_language_group("login");
 //***********************************************
 // What are we doing?
 //***********************************************
-$_GET['m2'] = (isset($_GET['m2'])) ? $_GET['m2'] : "main";
-$secondary_mode = $_GET['m2'];
+$secondary_mode = (isset($page_matches['mode'])) ? $page_matches['mode'] : "";
 
-
-switch ($secondary_mode)
+switch($secondary_mode)
 {
 	
 	case "logout":
@@ -50,18 +48,13 @@ switch ($secondary_mode)
 		$output -> page_title = $lang['logout_page_title'];
 		break;
 
-	case "passwordform":
+	case "lost_password":
 		form_lost_password();
 		$output -> page_title = $lang['password_page_title'];
 		break;
 
-	case "passwordform2":
+	case "lost_password_step_2":
 		form_lost_password_step2();
-		$output -> page_title = $lang['password_page_title'];
-		break;
-
-	case "resetpassword":
-		reset_password();
 		$output -> page_title = $lang['password_page_title'];
 		break;
 
@@ -103,7 +96,7 @@ function form_login($template_login = NULL)
         "meta" => array(
 			"name" => "login",
         	"title" => $lang['login_page_title'],
-        	"description" => $output -> replace_number_tags($lang['enter_login_info'], ROOT."index.php?m=reg"),
+        	"description" => $output -> replace_number_tags($lang['enter_login_info'], l("register/")),
 			"validation_func" => "form_login_validate",
 			"complete_func" => "form_login_complete"	
         ),
@@ -116,7 +109,7 @@ function form_login($template_login = NULL)
         "#password" => array(
         	"type" => "password",
         	"name" => $lang['login_password'],
-        	"description" => "<a href=\"".ROOT."index.php?m=login&amp;m2=passwordform\">".$lang['login_forgot_password']."</a>",
+        	"description" => "<a href=\"".l("login/lost_password/")."\">".$lang['login_forgot_password']."</a>",
         	"required" => True
         ),
         "#stay_logged_in" => array(
@@ -170,7 +163,7 @@ function form_login_validate($form)
 	// Check password
 	if($form -> form_state['user_data']['password'] != md5($form -> form_state['#password']['value']))
 	{
-		$lang['error_wrong_password'] = $output -> replace_number_tags($lang['error_wrong_password'], ROOT."index.php?m=login&m2=passwordform");
+		$lang['error_wrong_password'] = $output -> replace_number_tags($lang['error_wrong_password'], l("login/lost_password/"));
 		$form -> set_error("password", $lang['error_wrong_password']);        
 		return;
 	}
@@ -286,7 +279,7 @@ function form_login_complete($form)
 
 	// Redirect the user
 	$form -> form_state['meta']['redirect'] = array(
-		"url" => ROOT."index.php",
+		"url" => l("/"),
 		"message" => $lang['logged_in']
 	);
 	
@@ -341,7 +334,7 @@ function do_logout()
 		);
 		                
 	// Redirect the user
-	$output -> redirect(ROOT."index.php", $lang['logged_out']);
+	$output -> redirect(l("/"), $lang['logged_out']);
 
 }
 
@@ -460,8 +453,8 @@ function form_lost_password_complete($form)
 		array(
 			$form -> form_state['user_data']['username'],
 			$cache -> cache['config']['board_name'],
-			$cache -> cache['config']['board_url']."/index.php?m=login&m2=passwordform2&user=".$form -> form_state['user_data']['id']."&code=".$validate_code,
-			$cache -> cache['config']['board_url']."/index.php?m=login&m2=passwordform2",
+			$cache -> cache['config']['board_url']."/login/lost_password_step_2/".$form -> form_state['user_data']['id']."/".$validate_code."/",
+			$cache -> cache['config']['board_url']."/login/lost_password_step_2/",
 			$validate_code,
 			$form -> form_state['user_data']['id']
 		),
@@ -485,7 +478,7 @@ function form_lost_password_complete($form)
 function form_lost_password_step2()
 {
 
-	global $template_global, $output, $lang, $user;
+	global $template_global, $output, $lang, $user, $page_matches;
 
 	// If we are logged in, we need a error
 	if(!$user -> is_guest)
@@ -504,7 +497,7 @@ function form_lost_password_step2()
         )
 	));
         
-	if(!isset($_GET['user']) || !isset($_GET['code']) || !trim($_GET['user']) || !trim($_GET['code']))
+	if(!isset($page_matches['user_id']) || !isset($page_matches['activate_code']) || !trim($page_matches['user_id']) || !trim($page_matches['activate_code']))
 	{
 		 
 		$form -> form_state["meta"]["description"] = $lang['reset_password_form2_long_notice'];
@@ -556,13 +549,13 @@ function form_lost_password_step2()
 function form_lost_password_step2_validate($form)
 {
 
-	global $db, $lang;
+	global $db, $lang, $page_matches;
 	
 	if(!$form -> form_state['#password']['value'] || !$form -> form_state['#password2']['value'])
 		return;
 		
 	// Get the user ID and code
-	if(!isset($_GET['user']) || !isset($_GET['code']) || !trim($_GET['user']) || !trim($_GET['code']))
+	if(!isset($page_matches['user_id']) || !isset($page_matches['activate_code']) || !trim($page_matches['user_id']) || !trim($page_matches['activate_code']))
 	{
 		if(!$form -> form_state['#userid']['value'] || !$form -> form_state['#code']['value'])
 			return;
@@ -572,8 +565,8 @@ function form_lost_password_step2_validate($form)
 	}	
 	else
 	{
-		$uid = trim($_GET['user']);
-		$code = trim($_GET['code']);
+		$uid = trim($page_matches['user_id']);
+		$code = trim($page_matches['activate_code']);
 	}
 	
 	// check user exists
@@ -639,7 +632,7 @@ function form_lost_password_step2_complete($form)
 		return;		
 	}
 
-	$lang['password_reset'] = $output -> replace_number_tags($lang['password_reset'], ROOT."index.php?m=login");
+	$lang['password_reset'] = $output -> replace_number_tags($lang['password_reset'], l("login/"));
 	$output -> add($template_global -> message($lang['password_page_title'], $lang['password_reset']));
                                                 	
 }
