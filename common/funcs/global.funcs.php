@@ -263,6 +263,44 @@ function end_debug_timer()
 }
 
 
+/**
+ * Returns a link relative to the current URL if clean urls is on, otherwise
+ * gives back a url with a query string appended.
+ * 
+ * @param $path Path to something on the board we want, relative
+ * 		to board root and without following slash.
+ * @param string Correct path.
+ */
+function l($path)
+{
+	
+	global $cache;
+
+	$relative_path = parse_url($cache -> cache['config']['board_url'], PHP_URL_PATH);
+	$relative_path = ($relative_path[0] != "/") ? "/".$relative_path : $relative_path;
+
+	if($cache -> cache['config']['clean_urls'])
+		return $relative_path."/".$path;
+	else
+		return $relative_path."/?q=".urlencode($path);
+	
+}
+
+
+
+/**
+ * Returns a link to an image in the current theme.
+ * 
+ * @param $path Image filename we want.
+ * @param string Correct path.
+ */
+function img($path)
+{
+	
+	global $cache;
+	return IMGDIR."/".$path;
+		
+}
 
 /**
  * Return the current IP being used to browse the script.

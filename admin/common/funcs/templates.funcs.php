@@ -200,7 +200,9 @@ function return_function_call($template_array)
                 '#\<ELSE\>#e',
                 '#\<ENDIF\>#e',
                 '#\<FOREACH \"(.*?)\"\>#e',
-                '#\<ENDFOREACH\>#e'
+                '#\<ENDFOREACH\>#e',
+                '#\<URL \"(.*?)\"\>#e',
+                '#\<IMG \"(.*?)\"\>#e'
 		);
 
         $replace = array(
@@ -208,7 +210,9 @@ function return_function_call($template_array)
                 'handle_else()',
                 'handle_closing_if()',
                 'handle_opening_foreach(\'$1\')',
-                'handle_closing_foreach()'        
+                'handle_closing_foreach()',
+                'handle_url(\'$1\')',
+                'handle_img(\'$1\')'
         );
 
         $template_array['text'] = preg_replace($find, $replace, $template_array['text']);
@@ -304,6 +308,39 @@ END;
 }
 // End foreach statement!
 $return_this .= <<<END
+';
+
+}
+
+
+
+//***********************************************
+// URL generation
+//***********************************************
+function handle_url($path)
+{
+	
+	return
+'
+END;
+
+$return_this .= l(\''.$path.'\').<<<END
+';
+
+}
+
+
+//***********************************************
+// Image path generation
+//***********************************************
+function handle_img($path)
+{
+	
+	return
+'
+END;
+
+$return_this .= img(\''.$path.'\').<<<END
 ';
 
 }

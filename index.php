@@ -56,27 +56,103 @@ define( 'ROOT', "./" );
 
 // List of pages and thier cache
 $mode_file_list = array(
-                'index' 	=> array("view_main.php", 	array()),
-                'login' 	=> array("login.php", 		array()),
-                'reg'   	=> array("register.php", 	array("profile_fields")),
-                'profile' 	=> array("view_profile.php", 	array("profile_fields", "avatars", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")),
-                'control' 	=> array("control_panel.php", 	array("profile_fields", "avatars", "small_image_cats", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons"))
-        );
+
+	// ----------------
+	// Index page - usually forum view
+	// ----------------
+	'index' => array(
+		"page" => "view_main",
+		"cache" => array()
+	),
+	
+	
+	// ----------------
+	// Login and lost password
+	// ----------------
+	'login(/(?<mode>logout|lost_password|lost_password_step_2))?' => array("page" => "login", "cache" => array()),
+	'login/(?<mode>lost_password_step_2)/(?<user_id>[0-9]+)/(?<activate_code>[a-zA-Z0-9]+)' => array(
+		"page" => "login",
+		"cache" => array()
+	),
+	
+	
+	// ----------------
+	// Registration and activation
+	// ----------------
+	'register(/(?<mode>activateform))?' => array(
+		"page" => "register",
+		"cache" => array("profile_fields")
+	),
+	'register(/(?<mode>activateform))?' => array(
+		"page" => "register",
+		"cache" => array("profile_fields")
+	),
+
+	
+	// ----------------
+	// Profile and control panel sections
+	// ----------------
+	'profile' => array(
+		"page" => "view_profile",
+		"cache" => array("profile_fields", "avatars", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
+	),
+	'control' => array(
+		"page" => "control_panel",
+		"cache" => array("profile_fields", "avatars", "small_image_cats", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
+	)
+);
 
 
-// If we want the main page
-$m_mode = isset($_GET['m']) ? $_GET['m'] : "";
+        
+// TODO: Remove old 'm' page getting
+if(isset($_GET['m']))
+	$page_val = $_GET['m'];
+else
+{
+	$page_val = (isset($_GET['q'])) ? $_GET['q'] : "index/";
+	unset($_GET['q']);	
+}
 
-if ($m_mode == '' || $mode_file_list[$m_mode][0] == '')
-        $current_mode_definition = "index";
-else 
-        // Get the wanted mode from the url
-        $current_mode_definition = $m_mode;
+
+// If we don't have a / on the end, we do need it
+/*
+if(substr($page_val, strlen($page_val) - 1, 1) != "/")
+{
+       $q = explode("?", $_SERVER['REQUEST_URI']);
+       $q = $q[0]."/".(isset($q[1]) ?  "?".$q[1] : "");
+       header("location:".$q);
+       die();
+}
+*/
+
+
+$match = NULL;
+$extra_cache = array();
+$page_matches = array();
+
+
+// Iterate through the different page types and get ours
+foreach($mode_file_list as $regex => $page_to)
+{
+	
+	$regex = str_replace("/", "\/", $regex);
+	
+	if(preg_match("/^".$regex."\/?$/i", $page_val, $page_matches))
+	{
+		$match = $page_to['page'];
+		$extra_cache = $page_to['cache'];
+		break;
+	}
+	
+}
+
+
 
 /**
  * Quick way to access the name of the current page.
- */        
-define('CURRENT_MODE', $current_mode_definition);
+ */    
+define("CURRENT_MODE", $match);
+
 
 //***********************************************
 // Now we know the page, do the inital tasks
@@ -133,13 +209,13 @@ $output -> page_blocks['header'] = $template_global -> main_page_header(IMGDIR, 
 // Work out what page we're requesting and stuff
 //***********************************************
 // If the page doesn't exist
-if(CURRENT_MODE != '' && $mode_file_list[CURRENT_MODE][0] == '')
-        $output -> add($template_global -> critical_error($lang['error_page_no_exist']));
+if(CURRENT_MODE == NULL)
+        $output -> set_error_message($lang['error_page_no_exist']);
 else
 {
 
         //include the right file
-        include ROOT."pages/".$mode_file_list[CURRENT_MODE][0];
+        include ROOT."pages/".CURRENT_MODE.".php";
 
 }
 

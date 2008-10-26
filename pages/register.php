@@ -38,8 +38,7 @@ load_language_group("register");
 //***********************************************
 // What are we doing?
 //***********************************************
-$_GET['m2'] = (isset($_GET['m2'])) ? $_GET['m2'] : "main";
-$secondary_mode = $_GET['m2'];
+$secondary_mode = (isset($page_matches['mode'])) ? $page_matches['mode'] : "";
 
 $output -> page_title = $lang['register_page_title'];
 
