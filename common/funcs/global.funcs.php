@@ -66,7 +66,7 @@ function fs_setcookie($cookie_name, $value = "", $no_expire = true, $time_expire
         if($time_expire == 0 && $no_expire == false)
         {
         
-                if(@setcookie($cookie_name, $value, "", "/"))
+                if(@setcookie($cookie_name, $value, 0, "/"))
                         return true;
                 else
                         return false;                 

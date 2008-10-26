@@ -105,10 +105,15 @@ class database
 				// Collect version number
 				$this -> version = mysql_get_server_info($this -> connection_link);
 
-				// Force UTF-8 if supported
             	if(version_compare($this -> version, '4.1.3', '>='))
-					@mysql_query("SET NAMES 'utf8'");
-
+            	{
+					// Force UTF-8
+            		@mysql_query("SET NAMES 'utf8'");
+            		
+            		// Force no SQL mode (hack to disable strict mode)
+					@mysql_query("SET @@sql_mode = ''");
+            	}
+            	
 			}
 			
 			                                
@@ -430,7 +435,7 @@ class database
 
                 foreach($info as $key => $data)
                 {
-                        if(strpos($data, "`") !== false || is_numeric($data))
+                        if(strpos($data, "`") !== false)
                                 $data = $data;
                         else
                                 $data = "'".$this -> escape_string($data)."'";

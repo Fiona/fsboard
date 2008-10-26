@@ -128,11 +128,16 @@ class form
 				foreach($this -> form_state as $id => $info)
 				{
 					
+					if($id[0] != "#")
+						continue;
+						 
 					$id = substr($id, 1);
 					
 					if(isset($request[$id]))
 						$this -> form_state["#".$id]['value'] = trim($request[$id]);
-										
+					else
+						$this -> form_state["#".$id]['value'] = "";
+						
 					// Preliminary tests
 					if(isset($info['required']))
 						if($this -> form_state["#".$id]['value'] == "")
@@ -149,8 +154,21 @@ class form
 				if(isset($this -> form_state['meta']['validation_func']))
 					call_user_func($this -> form_state['meta']['validation_func'], $this);
 					
+				// Call completion function if we have no errors
 				if(!isset($this -> form_state['meta']['show_error']))
-					return call_user_func($this -> form_state['meta']['complete_func'], $this);
+				{
+					$ret = call_user_func($this -> form_state['meta']['complete_func'], $this);
+					
+					// Check if we should redirect
+					if(isset($this -> form_state['meta']['redirect']) && is_array($this -> form_state['meta']['redirect']))
+					{
+						global $output;
+						$output -> redirect($this -> form_state['meta']['redirect']['url'], $this -> form_state['meta']['redirect']['message']);						
+					}
+
+					return $ret;
+					
+				}
 					
 			}
 			
@@ -174,8 +192,12 @@ class form
 				
 				// all fields start with a hash
 				if($id[0] != "#")
+				{
+					if(isset($info['type']) && $info['type'] == "message")
+						$inner_form_html .= $template_global_forms -> form_field_sub_message($id, $info, $this -> form_state);
 					continue;
-					
+				}
+								
 				$id = _substr($id, 1);
 	
 				// Different fields for each field type
@@ -213,6 +235,10 @@ class form
 						$field_html = $template_global_forms -> form_field_dropdown($id, $info, $this -> form_state);
 						break;
 						
+					case "checkbox":
+						$field_html = $template_global_forms -> form_field_checkbox($id, $info, $this -> form_state);
+						break;
+						
 					case "text":
 					default:
 						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
@@ -243,11 +269,19 @@ class form
 	 */
 	function set_error($field_id, $error_message)
 	{
+		
 		global $output;
 		
-		$output -> set_error_message($this -> form_state["#".$field_id]['name'].": ".$error_message);
-		$this -> form_state["#".$field_id]['error'] = $error_message;
-		$this -> form_state['meta']['show_error'] = True;					
+		if($field_id == NULL)
+			$output -> set_error_message($error_message);
+		else
+		{
+			$output -> set_error_message($this -> form_state["#".$field_id]['name'].": ".$error_message);
+			$this -> form_state["#".$field_id]['error'] = $error_message;
+		}
+
+		$this -> form_state['meta']['show_error'] = True;
+		
 	}
 	
 }
