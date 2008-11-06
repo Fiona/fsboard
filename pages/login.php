@@ -30,8 +30,6 @@ See gpl.txt for a full copy of this license.
 if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-$template_login = load_template_class("template_login");
-
 load_language_group("login");
 
 
@@ -59,7 +57,7 @@ switch($secondary_mode)
 		break;
 
 	default:
-		form_login($template_login);
+		form_login();
 		$output -> page_title = $lang['login_page_title'];
 		break;
         
@@ -71,16 +69,8 @@ switch($secondary_mode)
  *
  * @param object $template_login
  */
-function form_login($template_login = NULL)
+function form_login()
 {
-
-	// This was necessary because the file being included from
-	// the regstration file was causing the $template_login var
-	// to not be registered as a global. If everything was built
-	// as a class this wouldn't be an issue - but that's a refactor
-	// for another day
-	if($template_login === NULL)
-        global $template_login;
 
 	global $template_global, $output, $lang, $user;
 
