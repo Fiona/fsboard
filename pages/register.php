@@ -31,7 +31,7 @@ See gpl.txt for a full copy of this license.
 if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-$template_register = load_template_class("template_register");
+//$template_register = load_template_class("template_register");
 
 load_language_group("register");
 

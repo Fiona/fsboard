@@ -282,7 +282,7 @@ function l($path)
 	if($cache -> cache['config']['clean_urls'])
 		return $relative_path."/".$path;
 	else
-		return $relative_path."/?q=".urlencode($path);
+		return $relative_path."/?q=".$path;
 	
 }
 
