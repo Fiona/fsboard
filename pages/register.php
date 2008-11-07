@@ -26,6 +26,7 @@ See gpl.txt for a full copy of this license.
 // ----------------------------------------------------------------------------------------------------------------------
 
 
+
 // Check script entry
 if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
 
@@ -410,8 +411,8 @@ function form_register_complete($form)
 			),
 			array(
 				$cache -> cache['config']['board_name'],
-				$cache -> cache['config']['board_url']."/index.php?m=reg&m2=activate&user=".$user_id."&code=".$validate_code,
-				$cache -> cache['config']['board_url']."/index.php?m=reg&m2=activateform&user=".$user_id,
+				$cache -> cache['config']['board_url']."/register/activate/".$user_id."/".$validate_code."/",
+				$cache -> cache['config']['board_url']."/register/activate/",
 				$validate_code,
 				$user_id
 			),
@@ -423,7 +424,7 @@ function form_register_complete($form)
 		$mail -> send_mail($form -> form_state['#email']['value'], $lang['email_activate_subject'], $email_message);
 
 		// Fix message
-		$lang['reg_sent_mail'] = $output -> replace_number_tags($lang['reg_sent_mail'], ROOT."index.php?m=login");
+		$lang['reg_sent_mail'] = $output -> replace_number_tags($lang['reg_sent_mail'], l("login/"));
 
 		// Print message telling user what to do
 		$output -> add($template_global -> message($lang['account_registration'], $lang['reg_sent_mail']));        
@@ -539,7 +540,13 @@ function activate_account_url()
 function form_activation($user_id = NULL)
 {
 
-	global $user, $lang, $output, $template_global, $template_register, $db;
+	global $user, $lang, $output, $template_global, $template_register, $db, $page_matches;
+
+	// Check if we actually want the url version
+	if(isset($page_matches['user_id']) && $page_matches['user_id'] && isset($page_matches['activate_code']) && $page_matches['activate_code'])
+	{
+
+	}
 
 	// If we are logged in, we need a error
 	if(!$user -> is_guest)
