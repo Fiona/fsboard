@@ -79,11 +79,11 @@ $mode_file_list = array(
 	// ----------------
 	// Registration and activation
 	// ----------------
-	'register(/(?<mode>activateform))?' => array(
+	'register(/(?<mode>activate))?' => array(
 		"page" => "register",
 		"cache" => array("profile_fields")
 	),
-	'register(/(?<mode>activateform))?' => array(
+	'register/(?<mode>activate)/(?<user_id>[0-9]+)/(?<activate_code>[a-zA-Z0-9]+)' => array(
 		"page" => "register",
 		"cache" => array("profile_fields")
 	),

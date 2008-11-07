@@ -4,7 +4,7 @@
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
-FSBoard is free software; you can redistribute it and/or modify
+SBoard is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License.
 See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
@@ -612,7 +612,7 @@ function form_lost_password_step2_validate($form)
  * @param $form object 
  */
 function form_lost_password_step2_complete($form)
-{
+x{
 
 	global $db, $lang, $template_global, $output;
 
