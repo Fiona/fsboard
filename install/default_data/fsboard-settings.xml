@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<configuration_file fsboard_version="0.1" time="25-10-08 11:48 pm">
+<configuration_file fsboard_version="0.1" time="07-11-08 11:15 pm">
 
 	<config_group name="ignore" order="-10">
 
@@ -55,6 +55,8 @@
 
 		<config name="debug" config_type="dropdown" dropdown_values="0|1|2" order="1"><![CDATA[2]]></config>
 		<config_default name="debug"><![CDATA[1]]></config_default>
+		<config name="clean_urls" config_type="yesno" dropdown_values="" order="0"><![CDATA[1]]></config>
+		<config_default name="clean_urls"><![CDATA[]]></config_default>
 	</config_group>
 	<config_group name="login_register" order="5">
 

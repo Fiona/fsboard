@@ -1,43 +1,29 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
-FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+SBoard is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       Admin Index             *
-*       Started by Fiona        *
-*       7th Aug 2005            *
-*********************************
-*       Last edit by Fiona      *
-*       2rd Oct 2007            *
-*********************************
-
-Index for the admin area. Shows the menu, the header, the framset etc.
 */
+
+/**
+ * Admin index
+ * 
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Admin
+ */
 
 
 
 
 // ----------------------------------------------------------------------------------------------------------------------
+
 
 
 //***********************************************
@@ -61,8 +47,8 @@ require ROOT.'common/init.php';
 //***********************************************
 // Get the admin templates
 //***********************************************
-require ROOT."admin/common/templates/admin.tpl.php";
-$template_admin = new template_admin;
+//require ROOT."admin/common/templates/admin.tpl.php";
+//$template_admin = new template_admin;
 
 
 //***********************************************
@@ -76,33 +62,65 @@ load_language_group("admin_global");
 //***********************************************
 if(!$user -> perms['perm_admin_area'])
 {
-        $output -> page_output = $template_admin -> critical_error($lang['permission_denied']);
-        $output -> finish();
-        die();
+	$output -> set_error_message($lang['permission_denied']);
+	$output -> build_and_output();
+	die();
 }
 
 
 //***********************************************
 // Get the required page from the URL
 //***********************************************
-$m_mode = isset($_GET['m']) ? $_GET['m'] : "";
-define('CURRENT_MODE', $m_mode);
+// TODO: Remove old 'm' page getting
+if(isset($_GET['m']))
+	$page_val = $_GET['m'];
+else
+{
+	$page_val = (isset($_GET['q'])) ? $_GET['q'] : "index/";
+	unset($_GET['q']);	
+}
 
 
 //***********************************************
 // Check if we're logged into the admin area or not
 //***********************************************
-if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']) && CURRENT_MODE != "login") 
+if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session'])) 
 {
 
-        $extra_url = ($m_mode) ? "&amp;go_m=".$m_mode : "";
-
-		$output -> add($template_admin -> login($extra_url));
-        $output -> finish();
-        die();
+	$extra_url = ($page_val) ? "&amp;go=".$page_val : "";
+	
+	$form = new form(array(
+		"meta" => array(
+			"name" => "admin_login",
+			"title" => $lang['admin_login_title'],
+			"description" => $lang['admin_login_msg'],
+			"validation_func" => "form_admin_login_validate",
+			"complete_func" => "form_admin_login_complete"	
+		),
+        
+		"#username" => array(
+			"type" => "text",
+			"name" => $lang['admin_username'],
+			"required" => True
+		),
+		"#password" => array(
+			"type" => "password",
+			"name" => $lang['admin_password'],
+			"required" => True
+		),
+		"#submit" => array(
+			"type" => "submit",
+			"value" => $lang['admin_login']
+		)        
+	));	
+	
+	$output -> add($form -> render());
+	$output -> build_and_output();
+	die();
         
 }
 
+/*
 
 //***********************************************
 // What part of the admin index do we want?
@@ -288,100 +306,123 @@ switch(CURRENT_MODE)
                 die();
 
 }
+*/
 
 
 
-
-// ---------------------------------------------------
-// process_admin_login()
-// Checks login info inputted with a form and does... stuff.
-//
-// Params  - None
-// Returns - true on success.
-// ---------------------------------------------------
-function process_admin_login()
+/**
+ * form_admin_login_validate()
+ * Does quick validation of user information sent from login form
+ *
+ * @param object $form    
+ */
+function form_admin_login_validate($form)
 {
 
-        global $db, $output, $lang, $template_admin, $user;
+	global $db, $lang, $user;
+	
+	if(!$form -> form_state['#username']['value'] || !$form -> form_state['#password']['value'])
+		return;
 
-        // grab user from DB
-        $select_user = $db -> basic_select("users", "password, id, need_validate", "lower(username) = '".$db -> escape_string(_strtolower($_POST['username']))."'"); 
+	// grab user from DB
+	$db -> basic_select(array(
+		"table" => "users",
+		"what" => "password, id, need_validate",
+		"where" => "LOWER(username) = '".$db -> escape_string(_strtolower($form -> form_state['#username']['value']))."'",
+		"limit" => 1
+	));
 
-        // See if it exists
-        if($db -> num_rows($select_user) < 1)
-        {
-                $output -> add($template_admin -> normal_error($lang['error_no_user']));
-                $output -> add($template_admin -> login());
-                $output -> finish();
-                die();
-        }
+	if(!$db -> num_rows())
+	{
+		$form -> set_error("username", $lang['error_no_user']);
+		return;
+	}
 
-        // Grab the full info
-        $user_array = $db -> fetch_array($select_user);
+	$user_array = $db -> fetch_array();
         
-        // Check password
-        if($user_array['password'] != md5($_POST['password']))
-        {
-                $output -> add($template_admin -> normal_error($output -> replace_number_tags($lang['error_wrong_password'], array(ROOT))));
-                $output -> add($template_admin -> login());
-                $output -> finish();
-                die();
-        }
+	// Check password
+	if($user_array['password'] != md5($form -> form_state['#password']['value']))
+	{
+		$lang['error_wrong_password'] = $output -> replace_number_tags($lang['error_wrong_password'], l("login/lost_password/"));
+		$form -> set_error("password", $lang['error_wrong_password']);
+		return;
+	}
 
-        // Same user as logged in as?
-        if($user -> info['id'] != $user_array['id'])
-        {
-                $output -> add($template_admin -> normal_error($lang['login_error_user_not_same']));
-                $output -> add($template_admin -> login());
-                $output -> finish();
-                die();
-        }
+
+	// Same user as logged in as?
+	if($user -> info['id'] != $user_array['id'])
+	{
+		$form -> set_error("password", $lang['login_error_user_not_same']);
+		return;
+	}
         
-        // Check validation
-        if($user_array['need_validate'] != "0")
-        {
-                $output -> add($template_admin -> normal_error($lang['error_need_validation']));
-                $output -> add($template_admin -> login());
-                $output -> finish();
-                die();
-        }
-
-        // Worked - done.
-        return true;
+	// Check validation
+	if($user_array['need_validate'])
+	{
+		$form -> set_error("password", $lang['error_need_validation']);
+		return;
+	}
         
 }
 
 
 
-// ---------------------------------------------------
-// log_admin_action()
-// Logs an action done by an admin and saves it to the DB.
-//
-// Params  - None
-// Returns - true on success.
-// ---------------------------------------------------
+/**
+ * form_admin_login_complete()
+ * After form goes through validation this sets the user as being allowed to access admin
+ *
+ * @param object $form    
+ */
+function form_admin_login_complete($form)
+{
+
+	global $db, $lang, $user;
+
+	// magic cookie
+	$_SESSION["fsboard_".$db -> table_prefix.'admin_area_session'] = true;
+
+	// Redirect the user
+	$form -> form_state['meta']['redirect'] = array(
+		"url" => l("admin/"),
+		"message" => $lang['logged_in']
+	);
+
+
+}
+
+
+
+
+/**
+ * log_admin_action()
+ * Quickly throws an admin action into the database log
+ *
+ * @param string $page_mode
+ * @param string $secondary_mode
+ * @param string $note
+ * @return True on success
+ */
 function log_admin_action($page_mode, $secondary_mode = "", $note = "Admin action.")
 {
 
-        global $mode_file_list, $db, $user;
-        
-        if($mode_file_list[$page_mode] == '')
-                return false;
+	global $mode_file_list, $db, $user;
+      
+	if($mode_file_list[$page_mode] == '')
+		return false;
                 
-        // Log it.
-        if($db -> basic_insert("admin_logs",
-        	array(
-                	"date" => TIME,
-                        "page_name" => $page_mode,
-                        "mode" => $secondary_mode,
-                        "member" => $user -> user_id,
-                        "ip" => user_ip(),
-                        "note" => $note
-                )
-        ))
-                return true;
-        else
-                return false;
+	if($db -> basic_insert("admin_logs",
+       	array(
+			"date" => TIME,
+			"page_name" => $page_mode,
+			"mode" => $secondary_mode,
+			"member" => $user -> user_id,
+			"ip" => user_ip(),
+			"note" => $note
+		)
+	))
+		return true;
+	else
+		return false;
  
 }
 

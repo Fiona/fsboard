@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="26-10-08 3:18 pm">
+<template_set_file fsboard_version="0.1" time="07-11-08 11:19 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -242,7 +242,7 @@
 		<template name="Main Page Header" class_name="template_global" function_name="main_page_header"><![CDATA[<table width=95% align="center" style="border-collapse : collapse;">
                 <tr>
                         <td class="logo_header">
-                                <a href="{$cache -> cache['config']['board_url']}"><img src="{$GLOBAL_OTHER['imgdir']}/logo.png" alt="{$cache -> cache['config']['board_name']}" border=0></a>
+                                <a href="{$cache -> cache['config']['board_url']}"><img src="<IMG "logo.png">" alt="{$cache -> cache['config']['board_name']}" border=0></a>
                         </td>
                         <td class="user_links_header" align="right" valign="bottom" style="padding : 15px">
 
@@ -250,21 +250,21 @@
                                         <IF "$user -> is_guest">
                                         {$lang['not_logged_in']}
                                         <ELSE>
-                                        {$lang['logged_in_as']} <b><a href="index.php?m=profile&amp;uid={$user -> user_id}">{$user -> info['username']}</a></b>
+                                        {$lang['logged_in_as']} <b><a href="<URL "profile/'.$user -> user_id.'/">">{$user -> info['username']}</a></b>
                                         <ENDIF>
                                 </p>
 
                                 <p class="user_tools_links">
                                         <IF "$user -> is_guest">
-                                        <a href="index.php?m=reg">Register</a> - <a href="index.php?m=login">Login</a>
+                                        <a href="<URL "register/">">Register</a> - <a href="<URL "login/">">Login</a>
                                         <ELSE>
-                                        <a href="index.php?m=control">{$lang['profile_settings']}</a>   -   <a href="index.php?m=login&amp;m2=logout">{$lang['logout']}</a>
+                                        <a href="<URL "control/">">{$lang['profile_settings']}</a>   -   <a href="<URL "login/logout/">">{$lang['logout']}</a>
                                         <ENDIF>
                                 </p>
 
                                 <p class="admin_links">
                                         <IF "$user -> perms['perm_admin_area']">
-                                        <a href="admin/index.php" target="_blank">{$lang['admin_area']}</a>
+                                        <a href="admin/" target="_blank">{$lang['admin_area']}</a>
                                         <ENDIF>
 
                                         <IF "$user -> perms['perm_admin_area'] && $user -> perms['perm_global_mod']">

@@ -81,7 +81,6 @@ function form_login()
 		return;
 	}
 
-	
 	$form = new form(array(
         "meta" => array(
 			"name" => "login",
@@ -130,10 +129,11 @@ function form_login_validate($form)
 {
 	
 	global $db, $lang, $output;
-	
+		
 	if(!$form -> form_state['#username']['value'] || !$form -> form_state['#password']['value'])
 		return;
-		
+
+	
 	// Check user exists
 	$db -> basic_select(array(
 		"table" => "users",
@@ -602,7 +602,7 @@ function form_lost_password_step2_validate($form)
  * @param $form object 
  */
 function form_lost_password_step2_complete($form)
-x{
+{
 
 	global $db, $lang, $template_global, $output;
 
