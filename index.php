@@ -36,7 +36,7 @@ See gpl.txt for a full copy of this license.
 // ----------------------------------------------------------------------------------------------------------------------
 
 
-error_reporting(E_ALL);
+error_reporting(E_ALL|E_STRICT);
 
 //***********************************************
 // Initial tasks
@@ -161,11 +161,6 @@ define("CURRENT_MODE", $match);
 require ROOT.'common/init.php';
 
 
-//***********************************************
-// Start the global template stuff
-//***********************************************
-$template_global = load_template_class("template_global");
-
 
 //***********************************************
 // Check maintenance mode stuff
@@ -232,17 +227,6 @@ else
 $output -> page_blocks['footer'] = $template_global -> main_page_footer();
 
 
-//***********************************************
-// Get all the debug stuff
-//***********************************************
-// Level 1 Debug = Query amount and Execution time
-if ($cache -> cache['config']['debug'] >= "1")
-        $debug_level_1 = $output -> return_debug_level(1);
-
-// Level 2 Debug = Query printing
-if ($cache -> cache['config']['debug'] >= "2")
-        $debug_level_2 = $output -> return_debug_level(2);
-
 
 //***********************************************
 // If we're in maintenance mode, and an admin show up the little message thing
@@ -254,20 +238,7 @@ if($user -> perms['perm_see_maintenance_mode'] && $cache -> cache['config']['mai
 //***********************************************
 // Show up the final page
 //***********************************************
-$output -> page_blocks['content'] = $output -> page_output;
-$output -> page_blocks['error_box'] = $output -> get_error_information();
-
-
-$output -> finish(
-        $template_global -> global_wrapper(
-        	$output -> page_title,
-        	$output -> stylesheet,
-        	CHARSET, 
-        	$output -> page_blocks,
-        	$debug_level_1,
-        	$debug_level_2
-        )
-);
+$output -> build_and_output();
 
 
 //***********************************************

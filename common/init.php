@@ -298,62 +298,39 @@ define("CHARSET", $cache -> cache['languages'][LANG_ID]['charset']);
 load_language_group("global");
 
 
-//***********************************************
-// Load the main output class thingy ma bob
-//***********************************************
-if(defined('ADMIN'))
-{
+// Load the global template
+$template_global = load_template_class("template_global");
 
-        // The admin area has it's own output class that extends from the main one
-        require ROOT."common/class/output.class.php";
-        require ROOT."admin/common/class/admin_output.class.php";
-        
-        $output = new admin_output;
-        
-        $output -> template_set($cache -> cache['config']['default_template_set']);
-        
-        $theme_folder = $cache -> cache['config']['admin_area_theme'];
-        $output -> theme_folder = $theme_folder;
-        
-        // This is some legacy stuff, probably not needed now
-        $imgdir = $cache -> cache['config']['board_url']."/admin/themes/".$theme_folder;
-        
-        /**
-         * Definition of the current theme image directory (admin)
-         */
-        define('IMGDIR', ROOT."admin/themes/".$theme_folder);
-        
-}
-else
-{
-        
-        // The normal output class for non admim pages
-        require ROOT."common/class/output.class.php";
-        $output = new output;
-        
-        // Load the set in
-        $output -> template_set($cache -> cache['config']['default_template_set']);
-        
-        //***********************************************
-        // Load Stylesheet, one wonders why she's not doing tihs in the output class yet
-        // TODO ******* REWRITE THIS BIT FIONA ********
-        //***********************************************
-        // TEMPORARY
-        $grab_theme_row = $db -> query("SELECT te.default_theme, th.css, th.image_dir FROM ".$db -> table_prefix."template_sets te, ".$db -> table_prefix."themes th WHERE te.id = '".$output -> template_set_id."' AND th.id = te.default_theme LIMIT 1");
-        $theme_array = $db -> fetch_array($grab_theme_row);
-        
-        /**
-         * Definition of the current theme image directory (main)
-         */
-        define('IMGDIR', $cache -> cache['config']['board_url']."/".$theme_array['image_dir']);
-        
-        // This string is put into the outputted file
-        $stylesheet = $theme_array['css'];
-        
-        // Replace $imgdir with the right stuff in the stylesheet
-        $output -> stylesheet = str_replace('$imgdir', IMGDIR, $stylesheet);
 
-}
+//***********************************************
+// Load global output class and theme specific stuff
+//***********************************************
+require ROOT."common/class/output.class.php";
+$output = new output;
+        
+// Load the set in
+$output -> template_set($cache -> cache['config']['default_template_set']);
+        
+
+//***********************************************
+// Load Stylesheet, one wonders why she's not doing tihs in the output class yet
+// TODO ******* REWRITE THIS BIT FIONA ********
+//***********************************************
+// TEMPORARY
+$grab_theme_row = $db -> query("SELECT te.default_theme, th.css, th.image_dir FROM ".$db -> table_prefix."template_sets te, ".$db -> table_prefix."themes th WHERE te.id = '".$output -> template_set_id."' AND th.id = te.default_theme LIMIT 1");
+$theme_array = $db -> fetch_array($grab_theme_row);
+        
+/**
+ * Definition of the current theme image directory (main)
+ */
+define('IMGDIR', $cache -> cache['config']['board_url']."/".$theme_array['image_dir']);
+        
+// This string is put into the outputted file
+$stylesheet = $theme_array['css'];
+        
+// Replace $imgdir with the right stuff in the stylesheet
+$output -> stylesheet = str_replace('$imgdir', IMGDIR, $stylesheet);
+
 
 // This array is used in some templates
 $GLOBAL_OTHER = array();

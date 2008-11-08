@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="26-10-08 3:19 pm">
+<languages_file fsboard_version="0.1" time="07-11-08 11:19 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -836,6 +836,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_desc_avatar_upload_path" group="admin_config"><![CDATA[Avatars uploaded through the admin area are placed here. Relative to message board root. <br /> <b>MUST BE WRITABLE</b> (CHMOD 777)]]></phrases>
 		<phrases variable_name="admin_config_desc_board_name" group="admin_config"><![CDATA[The name of your message board that appears in various places.]]></phrases>
 		<phrases variable_name="admin_config_desc_board_url" group="admin_config"><![CDATA[Directory that your board is located, without trailing slash. ' / ']]></phrases>
+		<phrases variable_name="admin_config_desc_clean_urls" group="admin_config"><![CDATA[Turning this on will enable 'friendly URLs' across FSBoard.]]></phrases>
 		<phrases variable_name="admin_config_desc_copyright_text" group="admin_config"><![CDATA[Copyright message that appears at the bottom of every page.]]></phrases>
 		<phrases variable_name="admin_config_desc_debug" group="admin_config"><![CDATA[Debug information to show at page footer. (Everyone can see this.)]]></phrases>
 		<phrases variable_name="admin_config_desc_dst_on" group="admin_config"><![CDATA[If your time is out by an hour, it is probably due to daylight savings time.<br />Members can also change this in thier own settings.]]></phrases>
@@ -881,6 +882,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_name_avatar_upload_path" group="admin_config"><![CDATA[Admin avatar upload path]]></phrases>
 		<phrases variable_name="admin_config_name_board_name" group="admin_config"><![CDATA[Message Board Name]]></phrases>
 		<phrases variable_name="admin_config_name_board_url" group="admin_config"><![CDATA[Message Board URL]]></phrases>
+		<phrases variable_name="admin_config_name_clean_urls" group="admin_config"><![CDATA[Enable clean URLs]]></phrases>
 		<phrases variable_name="admin_config_name_copyright_text" group="admin_config"><![CDATA[Copyright Text]]></phrases>
 		<phrases variable_name="admin_config_name_debug" group="admin_config"><![CDATA[Debug level]]></phrases>
 		<phrases variable_name="admin_config_name_dst_on" group="admin_config"><![CDATA[Turn on Daylight Savings]]></phrases>

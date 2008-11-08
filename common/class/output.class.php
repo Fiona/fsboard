@@ -130,13 +130,42 @@ class output
 
         
 	/**
-	 * Outputs the contents of the buffer in whole to the user
+	 * Builds the final page and outputs the contents of the buffer in whole to the user
 	 * 
 	 * @param string $final_output The text to throw out - usually main output buffer.
 	 */
-	function finish($final_output)
+	function build_and_output()
 	{
+
+		global $cache, $template_global;
+
+		// Put blocks together
+		$this -> page_blocks['content'] = $this -> page_output;
+		$this -> page_blocks['error_box'] = $this -> get_error_information();
        
+		// Level 1 Debug = Query amount and Execution time
+		if ($cache -> cache['config']['debug'] >= "1")
+			$debug_level_1 = $this -> return_debug_level(1);
+		else
+			$debug_level_1 = "";
+
+		// Level 2 Debug = Query printing
+		if ($cache -> cache['config']['debug'] >= "2")
+			$debug_level_2 = $this -> return_debug_level(2);
+		else 
+			$debug_level_2 = "";
+
+		// Send final info to the wrapper
+		$final_output =  $template_global -> global_wrapper(
+        	$this -> page_title,
+        	$this -> stylesheet,
+        	CHARSET, 
+        	$this -> page_blocks,
+        	$debug_level_1,
+        	$debug_level_2
+		);
+
+		// Built it up and output
 		$buffer = 8192;
 		
 		$chars = strlen($final_output)-1;
@@ -196,17 +225,12 @@ END;
 		}
 
 		// Print redirect page
+		$this -> page_output = ($template_global -> redirect($msg, $redirect_to, $header, $this -> stylesheet));
+		$this -> build_and_output();
+
 		if(defined("ADMIN"))
-		{
-                	
 			$this -> show_breadcrumb = false;
-			$this -> page_output = ($template_admin -> redirect($msg, $redirect_to, $header, $this -> stylesheet));                
-			$this -> finish();
-                	
-		}
-		else
-			$this -> finish($template_global -> redirect($msg, $redirect_to, $header, $this -> stylesheet));                
-                
+
 		die();
         
 	}
