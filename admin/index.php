@@ -120,6 +120,80 @@ if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
         
 }
 
+
+
+// ******************************
+// List of pages and thier cache
+// ******************************
+$mode_file_list = array(
+
+	// ----------------
+	// Index page - usually forum view
+	// ----------------
+	'index' => array(
+		"page" => "view_main",
+		"cache" => array()
+	),
+	
+	
+	// ----------------
+	// Login and lost password
+	// ----------------
+	'login(/(?<mode>logout|lost_password|lost_password_step_2))?' => array("page" => "login", "cache" => array()),
+	'login/(?<mode>lost_password_step_2)/(?<user_id>[0-9]+)/(?<activate_code>[a-zA-Z0-9]+)' => array(
+		"page" => "login",
+		"cache" => array()
+	),
+	
+	
+	// ----------------
+	// Registration and activation
+	// ----------------
+	'register(/(?<mode>activate))?' => array(
+		"page" => "register",
+		"cache" => array("profile_fields")
+	),
+	'register/(?<mode>activate)/(?<user_id>[0-9]+)/(?<activate_code>[a-zA-Z0-9]+)' => array(
+		"page" => "register",
+		"cache" => array("profile_fields")
+	),
+
+	
+	// ----------------
+	// Profile and control panel sections
+	// ----------------
+	'profile' => array(
+		"page" => "view_profile",
+		"cache" => array("profile_fields", "avatars", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
+	),
+	'control' => array(
+		"page" => "control_panel",
+		"cache" => array("profile_fields", "avatars", "small_image_cats", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
+	)
+);
+
+
+$match = NULL;
+$extra_cache = array();
+$page_matches = array();
+
+
+// Iterate through the different page types and get ours
+foreach($mode_file_list as $regex => $page_to)
+{
+	
+	$regex = str_replace("/", "\/", $regex);
+	
+	if(preg_match("/^".$regex."\/?$/i", $page_val, $page_matches))
+	{
+		$match = $page_to['page'];
+		$extra_cache = $page_to['cache'];
+		break;
+	}
+	
+}
+
+
 /*
 
 //***********************************************
