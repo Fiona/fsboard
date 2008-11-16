@@ -171,7 +171,7 @@ class output
 		$chars = strlen($final_output)-1;
 		
 		for($start = 0; $start <= $chars; $start += $buffer)
-			echo _substr($final_output, $start, $buffer);
+			echo substr($final_output, $start, $buffer);
 		        
 	}
 

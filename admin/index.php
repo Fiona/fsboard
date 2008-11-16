@@ -47,8 +47,8 @@ require ROOT.'common/init.php';
 //***********************************************
 // Get the admin templates
 //***********************************************
-//require ROOT."admin/common/templates/admin.tpl.php";
-//$template_admin = new template_admin;
+require ROOT."admin/common/templates/admin.tpl.php";
+$template_admin = new template_admin;
 
 
 //***********************************************
@@ -68,6 +68,7 @@ if(!$user -> perms['perm_admin_area'])
 }
 
 
+
 //***********************************************
 // Get the required page from the URL
 //***********************************************
@@ -82,7 +83,7 @@ else
 
 
 //***********************************************
-// Check if we're logged into the admin area or not
+// Check if we have reauthenticated, otherwise show the login form 
 //***********************************************
 if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session'])) 
 {
@@ -123,7 +124,7 @@ if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
 
 
 // ******************************
-// List of pages and thier cache
+// List of pages of the admin area
 // ******************************
 $mode_file_list = array(
 
@@ -131,11 +132,10 @@ $mode_file_list = array(
 	// Index page - usually forum view
 	// ----------------
 	'index' => array(
-		"page" => "view_main",
-		"cache" => array()
+		"page" => "main"
 	),
 	
-	
+/*	
 	// ----------------
 	// Login and lost password
 	// ----------------
@@ -170,15 +170,55 @@ $mode_file_list = array(
 		"page" => "control_panel",
 		"cache" => array("profile_fields", "avatars", "small_image_cats", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
 	)
+*/
+
+
+                                'index'         => 'main.php',
+                                'help'			=> 'help.php',
+                                'phpinfo'       => 'main.php',
+                                'config'        => 'config.php',
+                                'ieconfig'      => 'ieconfig.php',
+                                'templates'     => 'templates.php',
+                                'ietemplates'   => 'ietemplates.php',
+                                'themes'        => 'themes.php',
+                                'iethemes'      => 'iethemes.php',
+                                'cache'         => 'cache.php',
+                                'emaillogs'     => 'email_logs.php',
+                                'adminlogs'     => 'admin_logs.php',
+                                'sqltools'      => 'sqltools.php',
+                                'langs'         => 'languages.php',
+                                'ielangs'       => 'ielanguages.php',
+                                'forums'        => 'forums.php',
+                                'usergroups'    => 'usergroups.php',
+                                'moderators'    => 'moderators.php',
+                                'users'         => 'users.php',
+                                'profilefields' => 'profilefields.php',
+                                'tasks'         => 'tasks.php',
+                                'tasklogs'      => 'tasks_logs.php',
+                                'bbcode'        => 'bbcode.php',
+                                'attachments'   => 'attachments.php',
+                                'emoticons'     => 'smallimages.php',
+                                'avatars'       => 'smallimages.php',
+                                'posticons'     => 'smallimages.php',
+                                'titles'		=> 'titles.php',
+                                'insignia'		=> 'insignia.php',
+                                'reputations'   => 'reputations.php',
+                                'wordfilter'    => 'wordfilter.php',
+                                'promotions'	=> 'promotions.php',
+                                'mailer'		=> 'mailer.php',
+                                'plugins'		=> 'plugins.php',
+                                'undelete'		=> 'undelete.php'
+
 );
 
 
 $match = NULL;
-$extra_cache = array();
 $page_matches = array();
 
 
-// Iterate through the different page types and get ours
+// ******************************
+// Iterate through the different page types and get our current page
+// ******************************
 foreach($mode_file_list as $regex => $page_to)
 {
 	
@@ -186,12 +226,48 @@ foreach($mode_file_list as $regex => $page_to)
 	
 	if(preg_match("/^".$regex."\/?$/i", $page_val, $page_matches))
 	{
-		$match = $page_to['page'];
-		$extra_cache = $page_to['cache'];
-		break;
+		if(is_array($page_to))
+			$match = $page_to['page'];
+		else
+			$match = substr($page_to, 0, -4);
 	}
 	
 }
+
+define("CURRENT_MODE", $match);
+
+
+//***********************************************
+// If we're here we clearly have access so desplay the header,
+// the page contents (or error if appropriate), set title and show footer
+//***********************************************
+if(CURRENT_MODE == NULL)
+	$output -> set_error_message($lang['error_page_no_exist']);
+else
+	include ROOT."admin/pages/".CURRENT_MODE.".php";
+
+
+if($output -> page_title == "")
+        $output -> page_title = $cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
+else
+        $output -> page_title .= " - ".$cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
+
+$output -> add_breadcrumb($lang['breadcrumb_admin_area'], l("admin/"));
+
+$crumbin = $template_admin -> admin_breadcrumb();
+
+$output -> page_blocks['header'] = $template_admin -> admin_header(
+	$template_admin -> admin_menu(),
+	$crumbin
+);
+$output -> page_blocks['footer'] = $template_admin -> admin_footer($crumbin);
+
+
+
+//***********************************************
+// Show up the final page
+//***********************************************
+$output -> build_and_output();
 
 
 /*

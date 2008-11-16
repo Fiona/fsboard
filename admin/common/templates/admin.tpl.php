@@ -50,222 +50,267 @@ class template_admin
 	var $nav_group_id = 0;
 		
 
-        //***********************************************
-        // Page wrapper.
-        //***********************************************
-        function page_wrapper($theme_folder, $page, $title, $breadcrumb, $debug_level_1, $debug_level_2)
-        {
-        
-                global $lang, $cache;
+	function admin_header($menu, $breadcrumb)
+	{
+
+		global $cache, $lang;
+
+		$back = l("");
+		$logout = l("admin/logout/");
+
+		return <<<END
+
+	<style type="text/css">
+		p.admin_frame_top_left
+		{
+			padding:2px;
+			font-size: 15px;
+			float:right;
+		}
+		p.admin_frame_top_right
+		{
+			height:20px;
+			background:#CDF3CD;
+			border-bottom:1px dotted #aae6aa;
+			margin-bottom : 20px;
+			padding:2px;
+			font-size: 15px;
+		}
+
+		div.admin_frame_menu
+		{
+			position: absolute;
+			width: 200px;
+		}
+
+		div.admin_frame_main
+		{
+			width: auto;
+			margin-left: 220px;
+		}
+
+		/* -------------------- */
+		/* Breadcrumb stuff */
+		/* -------------------- */
+		.breadcrumb_wrapper
+		{
+			float : left;
+			clear : left;
+			margin : 10px auto;
+			width : 95%;
+			text-align : right;
+			border : 1px dotted #99ff99;
+			background-color : #ebffeb;
+		}
+ 
+		.breadcrumb_entry
+		{
+			font-size : 11px;
+			padding : 4px;
+		}
+ 
+		.breadcrumb_seperator
+		{
+			font-size : 10px;
+			color : #00f000;
+		}
+ 
+		a.breadcrumb_link:link, a.breadcrumb_link:visited, a.breadcrumb_link:active
+		{
+			color : #008800;
+			text-decoration : none;
+		}
+		a.breadcrumb_link:hover
+		{
+			color : #00b600;
+			text-decoration : none;
+		}
+
+/* -------------------- */
+/* Menu D:              */
+/* -------------------- */
+ 
+.adminmenugroupwrapper
+{
+        padding: 3px;
+        margin : 3px;
+        margin-top : 10px;
+        border : 1px solid;
+}
+ 
+  .adminmenugroupwrapper_colour_1{ background-color: #d9ffd5; border-color: #C9F3C9; }
+  .adminmenugroupwrapper_colour_2{ background-color: #d9fffb; border-color: #83fffb; }
+  .adminmenugroupwrapper_colour_3{ background-color: #f0ddfb; border-color: #deadfb; }
+  .adminmenugroupwrapper_colour_4{ background-color: #f9ffce; border-color: #f2ff96; }
+  .adminmenugroupwrapper_colour_5{ background-color: #fbdddd; border-color: #fba2a2; }
+  .adminmenugroupwrapper_colour_6{ background-color: #fbe1bb; border-color: #fbc678; }
+  .adminmenugroupwrapper_colour_7{ background-color: #d4d4d4; border-color: #9a9797; }
+  .adminmenugroupwrapper_colour_8{ background-color: #edceef; border-color: #e993ef; }
+  .adminmenugroupwrapper_colour_9{ background-color: #c1e3ef; border-color: #77ccec; }
+ 
+ 
+ 
+.adminmenutable
+{
+        padding : 0px;
+        border-collapse: collapse;
+        border : none;
+        border-spacing: 0px;
+}
+ 
+.adminmenutable_moveabit
+{
+        margin-top : 7px;
+}
+ 
+ 
+.adminmenulink
+{
+        background-color : #C9F3C9;
+        margin : 0px;
+        padding : 1px;
+}
+.adminmenulinkhover
+{
+        background-color : #a5eba5;
+        margin : 0px;
+        padding : 1px;
+}
+ 
+.admingroupheader
+{
+        background-image : url('admin_menu_link_header.gif');
+        background-repeat: repeat-y;
+        background-position: bottom left;
+        border : 1px dotted #99ff99;
+        background-color : #9ae79a;
+        height : 20px;
+        padding-left : 5px;
+        width : auto;
+}
+ 
+.admingroupheaderrow
+{
+        cursor : pointer;
+        padding : 0px;
+        margin : 0px;
+}
+ 
+.adminmenuheadertext
+{
+        vertical-align: middle;
+        font-size : 9px;
+        font-weight : bold;
+}
+ 
+.adminmenuheaderbutton
+{
+        vertical-align: middle;
+}
+ 
+.adminmenuheadericon
+{
+        float : right;
+        margin-top : 2px;
+        margin-right : 2px;
+}
+ 
+.adminlinkgroup
+{
+        width : auto;
+        font-size : 9px;
+        font-family : Verdana, Arial;
+        border : 1px solid #C9F3C9;
+        padding : 1px;
+        background-color : #81e181;
+        border-top :0px;
+}
+ 
+.adminlinkgrouprow
+{
+        padding:0px; margin:0px;
+        text-align : left;
+}
+ 
+		/* -------------------- */
+		/* Definiton lists      */
+		/* -------------------- */
+		dl.admin_info_list
+		{
+			margin: 10px 0 10px 10px;
+			float : left;
+			clear : left;
+		}
+		dl.admin_info_list dt
+		{
+			clear : left;
+			float : left;
+			width : 230px;
+		}
+		dl.admin_info_list dd
+		{
+			float : left;
+		}
+
+	</style>
+
+	<p class="admin_frame_top_left">
+        <b>
+			<a href="{$back}" target="_top">Back to forum</a> -
+			<a href="{$logout}" >{$lang['admin_logout']}</a>
+		</b>
+	</p>
+	<p class="admin_frame_top_right">
+		<b>FSBoard {$cache -> cache['config']['current_version']} {$lang['admin_area']}</b> ({$cache -> cache['config']['board_name']})
+	</p>
+
+	<div class="admin_frame_menu">
+		{$menu}
+	</div>
+	<div class="admin_frame_main">
+		{$breadcrumb}
+	
+END;
+
+	}
+
+
+	function admin_footer($breadcrumb)
+	{
+
+		return <<<END
+		{$breadcrumb}
+	</div>
+	<div style="clear: both;"></div>
+END;
+
+	}
+
+
+	function admin_breadcrumb()
+	{
+
+		global $output;
+
+		$breadcrumb = "";
+		$a = 0;
                 
-                return '
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset='.CHARSET.'">
-    <title>'.$title.' ('.$lang['powered_by'].' FSBoard)</title>
-    <link rel="stylesheet" type="text/css" href="'.ROOT.'admin/themes/'.$theme_folder.'/style.css" />
-    
-    <script src="'.ROOT.'jscript/jquery.js" type="text/javascript"></script>  
-    <script src="'.ROOT.'admin/admin_jscript.js" type="text/javascript"></script>  
+		if(count($output -> breadcrumb) > 0 and $output -> show_breadcrumb)
+		{
+                        
+			foreach($output -> breadcrumb as $crumb)
+				if(++$a != count($output -> breadcrumb))
+					$breadcrumb .= "<span class=\"breadcrumb_entry\"><a href=\"".ROOT."admin/".$crumb['url']."\" class=\"breadcrumb_link\">".$crumb['title']."</a></span> <span class=\"breadcrumb_seperator\">&gt;</span> ";
+				else
+					$breadcrumb .= "<span class=\"breadcrumb_entry\"><b>".$crumb['title']."</b></span>";
+                        
+			$breadcrumb = "<div class=\"breadcrumb_wrapper\">".$breadcrumb."</div>";
+                        
+		}
+     
+		return $breadcrumb;
 
-</head>
-<body>
-
-<script type="text/javascript">define_parent_title();</script>
-		
-'.$breadcrumb.'
-
-'.$page.'
-
-'.$breadcrumb.'
-
-        <br /><br /><p class="footer">
-                '.$debug_level_1.'<br />
-
-                <b>Administration Area</b><br />
-                <a href="http://www.fsboard.com/">FSBoard</a> Development Version '.$cache -> cache['config']['current_version'].'
-                &copy; 2006
-                <i>Fiona Burrows</i><br />
-		'.$cache -> cache['config']['copyright_text'].'
-                <br />
-        </p>
-
-        <div style="margin:5px">
-                '.$debug_level_2.'
-        </div>
-
-</body>
-
-</html>';
-        
-        }
-        
-        //***********************************************
-        // Redirect message
-        //***********************************************
-        function redirect($msg, $redirect_to, $header, $theme_folder)
-        {
-        
-                global $lang, $cache;
-        
-                return '
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-
-    <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset='.CHARSET.'">
-    <title>'.$lang['redirecting'].'</title>
-    '.$header.'
-    <link rel="stylesheet" type="text/css" href="'.ROOT.'admin/themes/'.$theme_folder.'/style.css" />
-
-</head>
-
-<body>
-
-        <br />
-        <table width=60% align="center" style="border-collapse: collapse;">
-                <tr>
-                        <td class="strip3" colspan=2>
-                                <p><b>'.$lang['redirecting'].'</b></p>
-                        </td>
-                </tr>
-                <tr>
-                        <td class="normalcell" style="padding : 10px;" align="center">
-                                <p>'.$msg.'<br /> <br />
-                                '.$lang['forwarding_you'].' <a href="'.$redirect_to.'">'.$lang['here'].'</a>.</p>
-                        </td>
-                </tr>
-        </table>
-
-</body>
-
-</html>';
-        
-        }
-
-        //***********************************************
-        // Generic Message box
-        //***********************************************
-        function message($msg_title="", $msg="")
-        {
-
-                global $lang;
-
-                $table = new table_generate;
-                
-                return 
-                        $table -> start_table("", "border-collapse: collapse; margin-top : 10px; margin-bottom : 10px;", "center", "60%").
-                        $table -> add_basic_row('<b>'.$msg_title.':</b>', "strip2", "", "left").
-                        $table -> add_basic_row($msg, "normalcell", "", "left").
-                        $table -> end_table();
-                
-        }
-        
-        //***********************************************
-        // Errors
-        //***********************************************
-        function critical_error($msg)
-        {
-        
-                global $lang;
-
-                $table = new table_generate;
-                
-                return 
-                        $table -> start_table("", "border-collapse: collapse; margin-top : 10px; margin-bottom : 10px;", "center", "60%").
-                        $table -> add_basic_row('<b>'.$lang['error_found'].':</b>', "errorheader", "", "left").
-                        $table -> add_basic_row($msg, "errorcell", "", "left").
-                        $table -> end_table();
-
-        }
-        
-        function normal_error($msg, $title = "")
-        {
-        
-                global $lang;
-        
-                if($title == "")
-                        $title = $lang['error_found'];
-        
-                $table = new table_generate;
-                
-                return 
-                        $table -> start_table("", "border-collapse: collapse; margin-top : 10px; margin-bottom : 10px;", "center", "60%").
-                        $table -> add_basic_row('<b>'.$title.':</b>', "strip2", "", "left").
-                        $table -> add_basic_row($msg, "errorcell2", "", "left").
-                        $table -> end_table();
-                
-        }
-
-        //***********************************************
-        // Admin area login form
-        //***********************************************        
-        function login($extra_url = "")
-        {
-        
-                global $lang, $cache;
-        
-                return '
-        <br />
-        <script language=\'JavaScript\' type=\'text/javascript\'>
-        <!--
-        function ValidateForm() {
-                var Check = 0;
-                if (document.loginform.username.value == \'\') { Check = 1; }
-                if (document.loginform.password.value == \'\') { Check = 1; }
-
-                if (Check == 1) {
-                        alert(\'You must input your username and password!\');
-                        return false;
-                } else {
-                        document.loginform.submit.disabled = true;
-                        return true;
-                }
-        }
-        //-->
-        </script>
-        <form action="index.php?m=login'.$extra_url.'" method="post" name="loginform" onsubmit="return ValidateForm()"">
-        
-        <table width=60% align="center" style="border-collapse: collapse;">
-                <tr>
-                        <td class="strip3" colspan=2>
-                                <p><b>'.$lang['admin_login_title'].'</b></p>
-                        </td>
-                </tr>
-                <tr>
-                        <td  class="normalcell" style="padding:10px" colspan=2>
-                                <p>'.$lang['admin_login_msg'].'</p>
-                        </td>
-                </tr>
-                <tr>
-                        <td class="normalcell" width=50%>
-                                <p><b>'.$lang['admin_username'].':</b></p>
-                        </td>
-                        <td class="normalcell" width=50%>
-                                <input type="text" class="inputtext" name="username" style="width : 99%">
-                        </td>
-                </tr>
-                <tr>
-                        <td class="normalcell" width=50%>
-                                <p><b>'.$lang['admin_password'].':</b></p>
-                        </td>
-                        <td class="normalcell" width=50%>
-                                <input type="password" class="inputtext" name="password" style="width : 99%">
-                        </td>
-                </tr>
-                <tr>
-                        <td class="strip2" align="center" colspan=2>
-                                <input class="submitbutton" type="submit" name="submit" value="'.$lang['admin_login'].'">
-                        </td>
-                </tr>
-        </table>
-        
-        </form>
-        <br />';
-        
-        }
-
+	}
 
         //***********************************************
         // The Admin navigation menu bar thing jobby you know
@@ -280,7 +325,7 @@ class template_admin
                 // *****************
                 $return = '   
                         <script src="'.ROOT.'admin/admin_jscript.js" type="text/javascript"></script>  
-                        
+
                         <p align="center" class="small_text" style="margin : 10px">
                                 <img src="'.IMGDIR.'/adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
                                 <a href="'.ROOT.'admin/index.php?m=index" target="page">'.$lang['admin_menu_home'].'</a>
@@ -541,12 +586,12 @@ class template_admin
 
 		$row = "";
 		
-		$row .= '<div onclick="parent.frames.page.location = \''.$link_url.'\';" class="adminmenulink" onmouseover="this.className=\'adminmenulinkhover\'" onmouseout="this.className=\'adminmenulink\'">';
+		$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink" onmouseover="this.className=\'adminmenulinkhover\'" onmouseout="this.className=\'adminmenulink\'">';
 		
 		if($menu_extra)
 		        $row .= '<img src="'.IMGDIR.'/menu_extra_icon.gif"> <a href="'.$link_url.'" target="page"><i>'.$link_text.'</i></a>';
 		else
-		        $row .= '<a href="'.$link_url.'" target="page">'.$link_text.'</a>';
+		        $row .= '<a href="'.$link_url.'">'.$link_text.'</a>';
 		                                        
 		$row .= '</div>';
 		

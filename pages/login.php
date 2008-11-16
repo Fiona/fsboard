@@ -269,7 +269,7 @@ function form_login_complete($form)
 
 	// Redirect the user
 	$form -> form_state['meta']['redirect'] = array(
-		"url" => l("/"),
+		"url" => l(""),
 		"message" => $lang['logged_in']
 	);
 	

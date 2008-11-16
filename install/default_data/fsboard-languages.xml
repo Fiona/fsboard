@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="07-11-08 11:19 pm">
+<languages_file fsboard_version="0.1" time="16-11-08 11:36 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1521,7 +1521,7 @@ Message board address: {board_url}]]></phrases>
 		<phrases variable_name="search_no_results" group="admin_mailer"><![CDATA[No users were found with this criteria.]]></phrases>
 		<phrases variable_name="admin_board_information" group="admin_main"><![CDATA[Board and Server Information]]></phrases>
 		<phrases variable_name="admin_board_statistics" group="admin_main"><![CDATA[Daily Board Statistics]]></phrases>
-		<phrases variable_name="admin_board_statistics_message" group="admin_main"><![CDATA[(Full statistics can be found on the <a href="<1>index.php?m=stats">stats page</a>)]]></phrases>
+		<phrases variable_name="admin_board_statistics_message" group="admin_main"><![CDATA[(Full statistics can be found on the <a href="<1>">stats page</a>)]]></phrases>
 		<phrases variable_name="admin_change_theme" group="admin_main"><![CDATA[Change Admin Area Theme]]></phrases>
 		<phrases variable_name="admin_change_theme_message" group="admin_main"><![CDATA[You can change the theme used in the admin area here.]]></phrases>
 		<phrases variable_name="admin_database_version" group="admin_main"><![CDATA[Database Type]]></phrases>
@@ -1529,9 +1529,9 @@ Message board address: {board_url}]]></phrases>
 		<phrases variable_name="admin_fsboard_version" group="admin_main"><![CDATA[FSBoard Version]]></phrases>
 		<phrases variable_name="admin_main_page" group="admin_main"><![CDATA[Main Page]]></phrases>
 		<phrases variable_name="admin_main_page" group="admin_main"><![CDATA[Main Page]]></phrases>
-		<phrases variable_name="admin_main_page_message" group="admin_main"><![CDATA[Welcome to your message board administration area!<br /> Using the menu on the left you can navigate to various sections of the admin area and change parts of your message board.<br /> A good place to start customising your board would be <b><a href="<1>admin/index.php?m=config">configuration settings</a></b> and <b><a href="<1>admin/index.php?m=forums">forums</a></b>.<br /><br />
+		<phrases variable_name="admin_main_page_message" group="admin_main"><![CDATA[Welcome to your message board administration area!<br /> Using the menu on the left you can navigate to various sections of the admin area and change parts of your message board.<br /> A good place to start customising your board would be <b><a href="<1>">configuration settings</a></b> and <b><a href="<2>">forums</a></b>.<br /><br />
 
-Hitting the help button <img src="<1>admin/themes/FSBoard_Green/help.png" /> wherever it appears will help answer any questions you have about that specific area.]]></phrases>
+Hitting the help button <img src="<3>/admin/themes/FSBoard_Green/help.png" /> wherever it appears will help answer any questions you have about that specific area.]]></phrases>
 		<phrases variable_name="admin_new_posts" group="admin_main"><![CDATA[New Posts Today]]></phrases>
 		<phrases variable_name="admin_new_threads" group="admin_main"><![CDATA[New Threads Today]]></phrases>
 		<phrases variable_name="admin_new_users" group="admin_main"><![CDATA[New Users Today]]></phrases>
@@ -1547,7 +1547,7 @@ Hitting the help button <img src="<1>admin/themes/FSBoard_Green/help.png" /> whe
 		<phrases variable_name="admin_server_software" group="admin_main"><![CDATA[Server Software]]></phrases>
 		<phrases variable_name="admin_theme_submit" group="admin_main"><![CDATA[Switch To Theme]]></phrases>
 		<phrases variable_name="admin_users_online" group="admin_main"><![CDATA[Users Online Today]]></phrases>
-		<phrases variable_name="credits_additional_coding" group="admin_main"><![CDATA[Additional coding, some graphics and a barrel of support]]></phrases>
+		<phrases variable_name="credits_additional_coding" group="admin_main"><![CDATA[Some graphics and a barrel of support]]></phrases>
 		<phrases variable_name="credits_geshi" group="admin_main"><![CDATA[GeSHi written by]]></phrases>
 		<phrases variable_name="credits_lead_programmer" group="admin_main"><![CDATA[Lead programmer and designer]]></phrases>
 		<phrases variable_name="credits_special_thanks" group="admin_main"><![CDATA[Special thanks]]></phrases>
