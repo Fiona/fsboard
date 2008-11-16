@@ -204,16 +204,12 @@ $output -> page_blocks['header'] = $template_global -> main_page_header(IMGDIR, 
 //***********************************************
 // Work out what page we're requesting and stuff
 //***********************************************
-// If the page doesn't exist
+// Error if the page doesn't exist or include it
 if(CURRENT_MODE == NULL)
-        $output -> set_error_message($lang['error_page_no_exist']);
+	$output -> set_error_message($lang['error_page_no_exist']);
 else
-{
+	include ROOT."pages/".CURRENT_MODE.".php";
 
-        //include the right file
-        include ROOT."pages/".CURRENT_MODE.".php";
-
-}
 
 
 //***********************************************

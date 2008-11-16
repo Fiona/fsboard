@@ -306,7 +306,14 @@ $template_global = load_template_class("template_global");
 // Load global output class and theme specific stuff
 //***********************************************
 require ROOT."common/class/output.class.php";
-$output = new output;
+
+if(defined("ADMIN"))
+{
+	require ROOT."admin/common/class/admin_output.class.php";
+	$output = new admin_output;
+}
+else
+	$output = new output;
         
 // Load the set in
 $output -> template_set($cache -> cache['config']['default_template_set']);
@@ -323,13 +330,16 @@ $theme_array = $db -> fetch_array($grab_theme_row);
 /**
  * Definition of the current theme image directory (main)
  */
-define('IMGDIR', $cache -> cache['config']['board_url']."/".$theme_array['image_dir']);
-        
+if(defined("ADMIN"))
+	define('IMGDIR', $cache -> cache['config']['board_url']."/admin/themes/FSBoard_Green/");
+else
+	define('IMGDIR', $cache -> cache['config']['board_url']."/".$theme_array['image_dir']);
+    
 // This string is put into the outputted file
 $stylesheet = $theme_array['css'];
         
 // Replace $imgdir with the right stuff in the stylesheet
-$output -> stylesheet = str_replace('$imgdir', IMGDIR, $stylesheet);
+$output -> stylesheet = str_replace('$imgdir', $cache -> cache['config']['board_url']."/".$theme_array['image_dir'], $stylesheet);
 
 
 // This array is used in some templates

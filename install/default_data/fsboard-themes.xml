@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="07-11-08 11:19 pm">
+<theme_file fsboard_version="0.1" time="16-11-08 11:37 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -450,8 +450,9 @@ New forms
 div.form_wrapper
 {
   width : 95%;
-  margin : 0 auto;
+  margin : 0 auto 10px auto;
   clear : left;
+  float:left;
 }
   div.form_wrapper p.form_title
   {
@@ -518,6 +519,42 @@ div.form_wrapper
           color: #ff3333;
         }
 
+
+/*
+----------------------
+Generic info pages
+----------------------
+*/
+div.info_page_wrapper
+{
+  width : 95%;
+  margin : 0 auto;
+  clear : left;
+  float:left;
+}
+  div.info_page_wrapper p.info_page_title
+  {
+    background-image: url('$imgdir/top_header_bar.gif');
+    background-repeat: repeat-x;
+    background-position: top;
+    border-bottom: 1px solid #aae6aa;
+    background-color: #ecffec;
+    height: 25px;
+    padding-left : 15px;
+    padding-top : 5px;
+    font-weight: bold;
+  }
+  div.info_page_wrapper p.info_content_wrap
+  {
+    padding : 10px;
+  }
+  div.info_page_wrapper div.info_page_content
+  {
+    background-color : #ddf3dd;
+    float:left;
+    clear : left;
+    width : 100%;
+  }
 
 
 /*

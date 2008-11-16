@@ -158,13 +158,14 @@ class admin_output extends output
         function return_help_button($field = "", $text = false)
         {
         
-                global $cache;
+                global $cache, $page_matches;
 
                 $page = CURRENT_MODE;
-                $action = $_GET['m2'];
+                $action = isset($page_matches['mode']) ? $page_matches['mode'] : "";
 
                 if(!$action)
                 {
+
                         if(isset($cache -> cache['admin_area_help'][$page]['__yes__']))
                                 return $this -> return_help_button_html($text, $page);
                         else

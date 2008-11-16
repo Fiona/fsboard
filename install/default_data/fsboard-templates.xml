@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="07-11-08 11:19 pm">
+<template_set_file fsboard_version="0.1" time="16-11-08 11:36 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -206,6 +206,24 @@
   {$msg}
 </div>]]></template>
 		<template_parameters><![CDATA[$msg]]></template_parameters>
+		<template name="Generic info table: Content box" class_name="template_global" function_name="generic_info_content"><![CDATA[<div class="info_page_content">
+  <IF "$include_p"><p class="info_content_wrap"><ENDIF>
+    {$content}
+  <IF "$include_p"></p><ENDIF>
+</div>]]></template>
+		<template_parameters><![CDATA[$content, $include_p = True]]></template_parameters>
+		<template name="Generic info table: Wrapper" class_name="template_global" function_name="generic_info_wrapper"><![CDATA[<div class="info_page_wrapper">
+
+<IF "isset($title_msg)">
+  <p class="info_page_title">{$title_msg}</p>
+<ENDIF>
+
+<IF "isset($info_content)">
+    {$info_content}
+<ENDIF>
+
+</div>]]></template>
+		<template_parameters><![CDATA[$title_msg = "", $info_content = ""]]></template_parameters>
 		<template name="Generic Message Box" class_name="template_global" function_name="message"><![CDATA[<div class="message_box_title">
   {$msg_title}
 </div>
@@ -317,8 +335,8 @@
 {$theme_css}
     </style>
     
-    <script type="text/javascript" src="jscript/jquery.js"></script>
-    <script type="text/javascript" src="jscript/board_script.js"></script>
+    <script type="text/javascript" src="{$cache -> cache['config']['board_url']}/jscript/jquery.js"></script>
+    <script type="text/javascript" src="{$cache -> cache['config']['board_url']}/jscript/board_script.js"></script>
 </head>
 
 <body>

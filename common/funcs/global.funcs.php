@@ -735,7 +735,7 @@ function _substr($string, $start, $length = NULL)
 {
 
 	preg_match_all('/[\x01-\x7F]|[\xC0-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF][\x80-\xBF]/', $string, $array);
-	
+
 	if(is_int($length))
 		return implode('', array_slice($array[0], $start, $length));
 	else

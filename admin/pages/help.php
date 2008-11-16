@@ -609,7 +609,7 @@ function do_developer_edit()
                 return;
         }
 
-	include ROOT."admin/common/functions_languages.php";	
+	include ROOT."admin/common/funcs/languages.funcs.php";	
         build_language_files(LANG_ID, "admin_area_help");
 
 	// ******************
@@ -653,7 +653,7 @@ function do_developer_delete()
 	$db -> basic_delete("language_phrases", "language_id = '".LANG_ID."' AND variable_name = '".get_help_lang_var($help_info['page'], $help_info['action'], $help_info['field'])."_title' AND `group` = 'admin_area_help'");
 	$db -> basic_delete("language_phrases", "language_id = '".LANG_ID."' AND variable_name = '".get_help_lang_var($help_info['page'], $help_info['action'], $help_info['field'])."_text' AND `group` = 'admin_area_help'");
 
-	include ROOT."admin/common/functions_languages.php";	
+	include ROOT."admin/common/funcs/languages.funcs.php";	
         build_language_files(LANG_ID, "admin_area_help");
 
 	// ******************

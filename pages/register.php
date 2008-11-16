@@ -43,7 +43,7 @@ $secondary_mode = (isset($page_matches['mode'])) ? $page_matches['mode'] : "";
 
 $output -> page_title = $lang['register_page_title'];
 
-switch ($secondary_mode)
+switch($secondary_mode)
 {
 
 	case "activateform":
