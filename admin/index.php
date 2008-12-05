@@ -173,7 +173,6 @@ $mode_file_list = array(
 */
 
 
-                                'index'         => 'main.php',
                                 'help'			=> 'help.php',
                                 'phpinfo'       => 'main.php',
                                 'config'        => 'config.php',
@@ -248,9 +247,9 @@ else
 
 
 if($output -> page_title == "")
-        $output -> page_title = $cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
+	$output -> page_title = $cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
 else
-        $output -> page_title .= " - ".$cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
+	$output -> page_title .= " - ".$cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
 
 $output -> add_breadcrumb($lang['breadcrumb_admin_area'], l("admin/"));
 

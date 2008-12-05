@@ -161,7 +161,6 @@ define("CURRENT_MODE", $match);
 require ROOT.'common/init.php';
 
 
-
 //***********************************************
 // Check maintenance mode stuff
 //***********************************************

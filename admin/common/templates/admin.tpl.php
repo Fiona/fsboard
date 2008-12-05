@@ -126,112 +126,92 @@ class template_admin
 			text-decoration : none;
 		}
 
-/* -------------------- */
-/* Menu D:              */
-/* -------------------- */
+		/* -------------------- */
+		/* Menu                 */
+		/* -------------------- */
+		.admin_menu_groups_wrapper
+		{
+			padding: 3px;
+			margin : 3px;
+			margin-top : 10px;
+			border : 1px solid;
+		}
  
-.adminmenugroupwrapper
-{
-        padding: 3px;
-        margin : 3px;
-        margin-top : 10px;
-        border : 1px solid;
-}
+		.admin_menu_groups_wrapper_colour_1{ background-color: #d9ffd5; border-color: #C9F3C9; }
+		.admin_menu_groups_wrapper_colour_2{ background-color: #d9fffb; border-color: #83fffb; }
+		.admin_menu_groups_wrapper_colour_3{ background-color: #f0ddfb; border-color: #deadfb; }
+		.admin_menu_groups_wrapper_colour_4{ background-color: #f9ffce; border-color: #f2ff96; }
+		.admin_menu_groups_wrapper_colour_5{ background-color: #fbdddd; border-color: #fba2a2; }
+		.admin_menu_groups_wrapper_colour_6{ background-color: #fbe1bb; border-color: #fbc678; }
+		.admin_menu_groups_wrapper_colour_7{ background-color: #d4d4d4; border-color: #9a9797; }
+		.admin_menu_groups_wrapper_colour_8{ background-color: #edceef; border-color: #e993ef; }
+		.admin_menu_groups_wrapper_colour_9{ background-color: #c1e3ef; border-color: #77ccec; }
  
-  .adminmenugroupwrapper_colour_1{ background-color: #d9ffd5; border-color: #C9F3C9; }
-  .adminmenugroupwrapper_colour_2{ background-color: #d9fffb; border-color: #83fffb; }
-  .adminmenugroupwrapper_colour_3{ background-color: #f0ddfb; border-color: #deadfb; }
-  .adminmenugroupwrapper_colour_4{ background-color: #f9ffce; border-color: #f2ff96; }
-  .adminmenugroupwrapper_colour_5{ background-color: #fbdddd; border-color: #fba2a2; }
-  .adminmenugroupwrapper_colour_6{ background-color: #fbe1bb; border-color: #fbc678; }
-  .adminmenugroupwrapper_colour_7{ background-color: #d4d4d4; border-color: #9a9797; }
-  .adminmenugroupwrapper_colour_8{ background-color: #edceef; border-color: #e993ef; }
-  .adminmenugroupwrapper_colour_9{ background-color: #c1e3ef; border-color: #77ccec; }
+		.admin_menu_moveabit
+		{
+			margin-top : 7px;
+		}
  
+		.adminmenulink
+		{
+			background-color : #C9F3C9;
+			margin : 0px;
+			padding : 1px;
+		}
+		.adminmenulinkhover
+		{
+			background-color : #a5eba5;
+			margin : 0px;
+			padding : 1px;
+		}
  
+		.admin_menu_group
+		{
+			background-image : url('admin_menu_link_header.gif');
+			background-repeat: repeat-y;
+			background-position: bottom left;
+			border : 1px dotted #99ff99;
+			background-color : #9ae79a;
+			width : auto;
+			padding : 0 2px 0 2px;
+		}
  
-.adminmenutable
-{
-        padding : 0px;
-        border-collapse: collapse;
-        border : none;
-        border-spacing: 0px;
-}
+		.admin_menu_group_header
+		{
+			cursor : pointer;
+			padding : 0px;
+			margin : 0px;
+		}
+		
+		.admin_menu_header_text
+		{
+			font-size : 9px;
+			font-weight : bold;
+			height : 19px;
+			vertical-align : middle;
+			margin : 1px 0 0 5px;
+		}
+		
+		.admin_menu_header_button
+		{
+			vertical-align: middle;
+		}
  
-.adminmenutable_moveabit
-{
-        margin-top : 7px;
-}
+		.admin_menu_header_icon
+		{
+			float : right;
+		}
  
- 
-.adminmenulink
-{
-        background-color : #C9F3C9;
-        margin : 0px;
-        padding : 1px;
-}
-.adminmenulinkhover
-{
-        background-color : #a5eba5;
-        margin : 0px;
-        padding : 1px;
-}
- 
-.admingroupheader
-{
-        background-image : url('admin_menu_link_header.gif');
-        background-repeat: repeat-y;
-        background-position: bottom left;
-        border : 1px dotted #99ff99;
-        background-color : #9ae79a;
-        height : 20px;
-        padding-left : 5px;
-        width : auto;
-}
- 
-.admingroupheaderrow
-{
-        cursor : pointer;
-        padding : 0px;
-        margin : 0px;
-}
- 
-.adminmenuheadertext
-{
-        vertical-align: middle;
-        font-size : 9px;
-        font-weight : bold;
-}
- 
-.adminmenuheaderbutton
-{
-        vertical-align: middle;
-}
- 
-.adminmenuheadericon
-{
-        float : right;
-        margin-top : 2px;
-        margin-right : 2px;
-}
- 
-.adminlinkgroup
-{
-        width : auto;
-        font-size : 9px;
-        font-family : Verdana, Arial;
-        border : 1px solid #C9F3C9;
-        padding : 1px;
-        background-color : #81e181;
-        border-top :0px;
-}
- 
-.adminlinkgrouprow
-{
-        padding:0px; margin:0px;
-        text-align : left;
-}
- 
+		.admin_menu_link_group
+		{
+			width : auto;
+			font-size : 9px;
+			border : 1px solid #C9F3C9;
+			background-color : #81e181;
+			border-top :0px;
+			margin-bottom : 2px;
+		}
+
 		/* -------------------- */
 		/* Definiton lists      */
 		/* -------------------- */
@@ -250,6 +230,15 @@ class template_admin
 		dl.admin_info_list dd
 		{
 			float : left;
+		}
+
+		/* --------------- */
+		/* Hack to sort    */
+		/* width on debug  */
+		/* --------------- */
+		.debug_level_2_wrapper
+		{
+			margin-left:200px; !important
 		}
 
 	</style>
@@ -336,7 +325,7 @@ END;
                 // *****************
                 // General                
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_1\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_configuration'], ROOT."admin/index.php?m=config");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_config_maintenance'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=maintenance", true);
@@ -358,7 +347,7 @@ END;
                 // *****************
 				// Users
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_2\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_2\">";
 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_new_user'], ROOT."admin/index.php?m=users&amp;m2=add");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_search_users'], ROOT."admin/index.php?m=users&m2=search");
@@ -381,7 +370,7 @@ END;
                 // *****************
 				// Titles, insignia, reputations
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_3\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_3\">";
                 
                 $return .= $this -> generate_menu_entry($lang['admin_menu_titles'], ROOT."admin/index.php?m=titles");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_insignia'], ROOT."admin/index.php?m=insignia");
@@ -403,7 +392,7 @@ END;
                 // *****************
 				// Emoticons
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_4\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_4\">";
 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_manage_emoticons'], ROOT."admin/index.php?m=emoticons");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
@@ -435,7 +424,7 @@ END;
                 // *****************
 				// Attatchments
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_5\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_5\">";
 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_filetypes'], ROOT."admin/index.php?m=attachments&amp;m2=filetypes");
                 $return .= $this -> generate_menu_header("attachments");
@@ -461,7 +450,7 @@ END;
                 // *****************
 				// Templates and themes
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_6\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_6\">";
                 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_templates'], ROOT."admin/index.php?m=templates");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_export_templates'], ROOT."admin/index.php?m=templates&amp;m2=importexport");
@@ -484,7 +473,7 @@ END;
                 // *****************
 				// Cache and logs
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_7\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_7\">";
                 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_cache'], ROOT."admin/index.php?m=cache");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_admin_logs'], ROOT."admin/index.php?m=adminlogs");
@@ -510,7 +499,7 @@ END;
                 // *****************
 				// Common tasks
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_8\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_8\">";
                 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_task_manager'], ROOT."admin/index.php?m=tasks");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_task_logs'], ROOT."admin/index.php?m=tasklogs");
@@ -522,7 +511,7 @@ END;
                 // *****************
 				// Plugins
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_9\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_9\">";
                 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_plugins_manager'], ROOT."admin/index.php?m=plugins");
 				$return .= $this -> generate_menu_entry($lang['admin_menu_import_export_plugins'], ROOT."admin/index.php?m=plugins&amp;m2=importexport");
@@ -533,7 +522,7 @@ END;
                 // *****************
 				// Undelete
                 // *****************
-                $return .= "<div class=\"adminmenugroupwrapper adminmenugroupwrapper_colour_1\">";
+                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
                 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_undelete_tool'], ROOT."admin/index.php?m=undelete");
                 $return .= $this -> generate_menu_header("undelete");
@@ -551,33 +540,32 @@ END;
         function generate_menu_header($header_name)
         {
 
-		global $lang;        	
+			global $lang;        	
                
-                $table = new table_generate;
+			$table = new table_generate;
 
-                $return = "";
+			$return = "";
 
-                // Menu entry header      
-                $return .= $table -> start_table("adminmenutable", "", "center", "100%").
-                        $table -> add_row(
-                                array('
-                                <div class = "admingroupheader">
-	                                <img src="'.IMGDIR.'/icons/'.$header_name.'.png"  class="adminmenuheadericon" title="'.$lang['admin_menu_'.$header_name].'" />
-                                        <img id="img_'.$this -> nav_group_id.'" src="'.IMGDIR.'/expand.gif" class="adminmenuheaderbutton">&nbsp;<span class="adminmenuheadertext">'.$lang['admin_menu_'.$header_name].'</span>
-                                </div>')
-                        , "admingroupheaderrow", "", 'onclick="javascript:collapse(\''.$this -> nav_group_id.'\', \''.IMGDIR.'\');"');
+			// Menu entry header
+			$image_dir = IMGDIR;
 
-		// The entries
-		$return .= $table -> add_row(array('<div style="display:none;" class = "adminlinkgroup" id="row_'.$this -> nav_group_id.'">'.$this -> nav_current_entries.'</div>'), "adminlinkgrouprow", "");
-
-		// Footer
-                $return .= $table -> end_table();
+			$return .= <<<END
+							<div class="admin_menu_group">
+							  <div class="admin_menu_group_header">
+								<p class="admin_menu_header_text">
+								  <img src="{$image_dir}icons/{$header_name}.png"  class="admin_menu_header_icon" title="{$lang['admin_menu_'.$header_name]}" />
+								  <img id="img_{$this -> nav_group_id}" src="{$image_dir}expand.gif" class="admin_menu_header_button">&nbsp;{$lang['admin_menu_'.$header_name]}
+								</p>
+							  </div>
+							  <div style="display:none;" class="admin_menu_link_group" id="row_{$this -> nav_group_id}">{$this -> nav_current_entries}</div>
+						   </div>
+END;
 
         	$this -> nav_group_id ++;
         	$this -> nav_current_entries = "";
 	                
-                // Send it back
-                return $return;
+			// Send it back
+			return $return;
         	
         }
         
@@ -587,7 +575,7 @@ END;
 
 		$row = "";
 		
-		$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink" onmouseover="this.className=\'adminmenulinkhover\'" onmouseout="this.className=\'adminmenulink\'">';
+		$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink">';
 		
 		if($menu_extra)
 		        $row .= '<img src="'.IMGDIR.'/menu_extra_icon.gif"> <a href="'.$link_url.'" target="page"><i>'.$link_text.'</i></a>';
@@ -604,7 +592,7 @@ END;
         function generate_menu_move_a_bit()
         {
         
-        	return "<div class=\"adminmenutable_moveabit\"></div>";
+        	return "<div class=\"admin_menu_moveabit\"></div>";
         
         }
         

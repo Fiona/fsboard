@@ -1,85 +1,15 @@
 /*
  ----------------------------
- FSBoard Javascript Functions
- ----------------------------
- Thanks to Mark Frimston for the cross-browser stuff.
+ FSBoard Javascript ...
+ Stuff
  ----------------------------
 */
 
 
 
-// ----------------------------------------------------------------------------------------
-var isDHTML =0;
-var isLayers =0;
-var isAll =0;
-var isID =0;
-if(document.getElementById){isID=1; isDHTML=1;}
-else{
-        if(document.all){isAll=1; isDHTML=1;}
-        else{
-                browserVersion = parseInt(navigator.appVersion);
-                if((navigator.appName.indexOf('Netscape') != -1) && (browserVersion == 4)) {isLayers=1; isDHTML=1;}
-        }
-}
-
-function findDOM(objectID, withStyle){
-        if(withStyle == 1){
-                if(isID){return (document.getElementById(objectID).style);}
-                else{
-                        if(isAll){return (document.all[objectID].style);}
-                        else{
-                                if(isLayers){return (document.layers[objectID]);}
-                        };
-                }
-        }else{
-                if(isID){return (document.getElementById(objectID));}
-                else{
-                        if(isAll){return(document.all[objectID]);}
-                        else{
-                                if(isLayers){return (document.layers[objectID]);}
-                        };
-                }
-        }
-        return false;
-}
-
-// ----------------------------------------------------------------------------------------
-
-// Rename the title tag, for the admin area.
-function define_parent_title()
-{
-
-        if(document.title != "" && typeof(parent.document) != 'undefined')
-                parent.document.title = document.title;
-                
-}                        
-
-// ----------------------------------------------------------------------------------------
-
-// Collapses and expands menu items
-function collapse(object, imgDir)
-{
-
-        var dom = findDOM("row_" + object, 0);
-        var dom2 = findDOM("img_" + object, 0);
-        
-        if(dom.style.display == 'none')
-        {
-                dom.style.display = '';
-                dom2.src = imgDir + "/collapse.gif";
-        }
-        else
-        {
-                dom2.src = imgDir + "/expand.gif";
-                dom.style.display = 'none';
-        }
-        
-}
-
-// ----------------------------------------------------------------------------------------
-
-
 // Opens a new window for the admin help stuff
+/*
+REPLACE MEEEE
 function open_admin_area_help(page, action, field)
 {
 
@@ -90,12 +20,33 @@ function open_admin_area_help(page, action, field)
         );        
 
 }
+*/
+
 
 // ----------------------------------------------------------------------------------------
 // Jquery redux
 
 $(document).ready(function()
 {
+
+	/*
+	 ******************
+	 * MENU
+	 ******************
+	 */
+	$("div.admin_menu_group div.admin_menu_group_header").click(function(){
+			$(this).parent().find("div.admin_menu_link_group").slideToggle();
+		});
+
+	$("div.adminmenulink").mouseover(
+		function(){
+			$(this).addClass("adminmenulinkhover");
+		}
+	).mouseout(
+		function(){
+				$(this).removeClass("adminmenulinkhover");
+		}
+	);
 
 	/*
 	 ******************
