@@ -269,7 +269,8 @@ class template_admin
 	</div>
 	<div class="admin_frame_main">
 		{$breadcrumb}
-	
+		
+		<div style="clear : left;"></div>
 END;
 
 	}

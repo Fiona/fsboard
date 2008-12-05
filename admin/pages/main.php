@@ -47,7 +47,7 @@ page_main();
 //***********************************************
 // Just give us the page.
 //***********************************************
-function  page_main()
+function page_main()
 {
 	global $db, $output, $lang, $cache, $template_global;
 
@@ -141,8 +141,6 @@ function  page_main()
 		$template_global -> generic_info_wrapper(
 			$output -> return_help_button("", false).$lang['admin_board_information'],
 			$template_global -> generic_info_content(
-				// TABLE IS FOR TABULAR DATA OKAY
-				// CSS SUCKS
 				"<dl class=\"admin_info_list\">".
 					"<dt>".$lang['admin_fsboard_version'].'</dt> <dd><b>'.$board_info['fsboard_version'].'</b></dd>'.
 					"<dt>".$lang['admin_php_version'].'</dt> <dd><b>'.$board_info['php_version'].'</b> [ <a href="'.ROOT.'admin/index.php?m=phpinfo">'.$lang['get_php_info'].'</a> ]</dd>'.
@@ -165,7 +163,7 @@ function  page_main()
 					"<dt>".$lang['admin_new_posts'].'</dt> <dd><b>#</b></dd>'.
 					"<dt>".$lang['admin_users_online'].'</dt> <dd><b>'.$board_info['users_online_today'].'</b></dd>'.
 				"</dl>".
-				'<br /><div class="small_text" style="text-align:center;">'.$output -> replace_number_tags($lang['admin_board_statistics_message'], array(l("admin/stats/"))).'</div>',
+				'<div class="small_text" style="clear : left; text-align:center;">'.$output -> replace_number_tags($lang['admin_board_statistics_message'], array(l("admin/stats/"))).'</div>',
 				False
 			)
 		)
