@@ -55,8 +55,8 @@ class parser
 	/*
 	 * Constructor
 	 */
-    function parser($html = true, $bbcode = true, $custom_bbcode = true, $emoticons = true, $nl2br = true, $word_filter = true)
-    {
+   function parser($html = true, $bbcode = true, $custom_bbcode = true, $emoticons = true, $nl2br = true, $word_filter = true)
+   {
     
         $this -> do_strip_html = $html;
         $this -> do_bbcode = $bbcode;
@@ -283,19 +283,19 @@ class parser
 			$search2 = "";
 			$tag_name = preg_quote($tag_name);
                         
-			$modifiers = ($tag_array['modifiers']) ? $tag_array['modifiers'] : "is";
+			$modifiers = (isset($tag_array['modifiers'])) ? $tag_array['modifiers'] : "is";
                         
-			if($tag_array['option'])
+			if(isset($tag_array['option']))
 			{
-				$search = ($tag_array['search']) ? $tag_array['search'] : '#\['.$tag_name.'\=(.*?)](.+?)\[/'.$tag_name.'\]#'.$modifiers;
+				$search = (isset($tag_array['search'])) ? $tag_array['search'] : '#\['.$tag_name.'\=(.*?)](.+?)\[/'.$tag_name.'\]#'.$modifiers;
                                 
-				if($tag_array['optional_option'])
-				$search2 = ($tag_array['search']) ? $tag_array['search'] : '#\['.$tag_name.'\](.+?)\[/'.$tag_name.'\]#'.$modifiers;
+				if(isset($tag_array['optional_option']))
+					$search2 = (isset($tag_array['search'])) ? $tag_array['search'] : '#\['.$tag_name.'\](.+?)\[/'.$tag_name.'\]#'.$modifiers;
 			}
 			else
-				$search = ($tag_array['search']) ? $tag_array['search'] : '#\['.$tag_name.'\](.+?)\[/'.$tag_name.'\]#'.$modifiers;
+				$search = (isset($tag_array['search'])) ? $tag_array['search'] : '#\['.$tag_name.'\](.+?)\[/'.$tag_name.'\]#'.$modifiers;
                         
-			$replace = ($tag_array['callback']) ? $tag_array['callback'] : $tag_array['replace'];
+			$replace = (isset($tag_array['callback'])) ? $tag_array['callback'] : $tag_array['replace'];
                         
 			$text = preg_replace($search, $replace, $text);
 

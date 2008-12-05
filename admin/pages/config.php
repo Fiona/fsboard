@@ -1,36 +1,22 @@
 <?php
-/*
- --------------------------------------------------------------------------
- FSBoard - Free, open-source message board system.
- Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+/* 
+--------------------------------------------------------------------------
+FSBoard - Free, open-source message board system.
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
- FSBoard is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+FSBoard is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
+--------------------------------------------------------------------------
+*/
 
- FSBoard is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
-
- *********************************
- *       FSBoard                 *
- *       by Fiona 2006           *
- *********************************
- *       Admin Configuration     *
- *       Started by Fiona        *
- *       15th Aug 2005           *
- *********************************
- *       Last edit by Fiona      *
- *       26th Dec 2005           *
- *********************************
-
+/**
+ * Admin area - Configuration section
+ * 
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Admin
  */
 
 
@@ -44,22 +30,20 @@
 if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
+
 // Include meh language file
-//***********************************************
 load_language_group("admin_config");
 
 
-//***********************************************
 // Include config functions
-//***********************************************
 include ROOT."admin/common/funcs/config.funcs.php";
 
 
 $output -> add_breadcrumb($lang['breadcrumb_config'], "index.php?m=config");
 
-$_GET['m2'] = (isset($_GET['m2'])) ? $_GET['m2'] : "main";
-$secondary_mode = $_GET['m2'];
+
+$secondary_mode = (isset($page_matches['mode'])) ? $page_matches['mode'] : "";
+
 
 switch($secondary_mode)
 {
@@ -98,26 +82,44 @@ switch($secondary_mode)
 		do_new_config_value();
 		break;
 				
-	case "main":
+	default:
 		page_main();
 
 }
 
 
-
-//***********************************************
-// Front page
-//***********************************************
+/**
+ * Main page - lets us select a category from a list
+ */
 function page_main()
 {
 
 	global $output, $lang;
 
-	// *********************
+	// ------------------
 	// Set page title
-	// *********************
+	// ------------------
 	$output -> page_title = $lang['admin_config_title'];
 
+	// ------------------
+	// Our form
+	// ------------------
+	$form = new form(array(
+        "meta" => array(
+			"name" => "config_select",
+        	"title" => $lang['admin_config_title'],
+//			"validation_func" => "form_register_validate",
+//			"complete_func" => "form_register_complete"	
+        ),
+		"config_menu" => array(
+			"name" => "config_menu",
+			"title" => $lang['admin_config_page_message'],
+			"type" => "dropdown"
+		)
+	));
+
+
+/*
 	// Create classes
 	$table = new table_generate;
 	$form = new form_generate;
@@ -160,7 +162,7 @@ function page_main()
 		);	
 				
 	}
-			
+	*/		
 }
 
 
