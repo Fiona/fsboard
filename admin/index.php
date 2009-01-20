@@ -129,10 +129,17 @@ if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
 $mode_file_list = array(
 
 	// ----------------
-	// Index page - usually forum view
+	// Index page - Main view, includes board info and admin notes
 	// ----------------
 	'index' => array(
 		"page" => "main"
+	),
+
+	// ----------------
+	// Configuration
+	// ----------------
+	'config' => array(
+		"page" => "config"
 	),
 	
 /*	
@@ -175,7 +182,7 @@ $mode_file_list = array(
 
                                 'help'			=> 'help.php',
                                 'phpinfo'       => 'main.php',
-                                'config'        => 'config.php',
+//                                'config'        => 'config.php',
                                 'ieconfig'      => 'ieconfig.php',
                                 'templates'     => 'templates.php',
                                 'ietemplates'   => 'ietemplates.php',

@@ -811,7 +811,7 @@ function page_show_templates()
                                 , "strip2", "cursor:pointer;", "left", "100%", "", "onclick=\"javascript:collapse('".$group_number."', '".IMGDIR."');\"")
                         );
                         
-                        $div = "<div style=\"".$display_css."margin : 0px;\" id=\"row_".$group_number."\">";
+                        $div = "<div style=\"".$display_css."margin : 0px;\" id=\"tpl_row_".$group_number."\">";
                                      
                 }
 

@@ -131,7 +131,6 @@ $match = NULL;
 $extra_cache = array();
 $page_matches = array();
 
-
 // Iterate through the different page types and get ours
 foreach($mode_file_list as $regex => $page_to)
 {
