@@ -1,13 +1,20 @@
 <IfModule mod_rewrite.c>
 
 	RewriteEngine on
-	
-	# Nothing - Go to index.php [L] = end here
+
+	# Nothing - Go to index.php
 	RewriteRule ^$						index.php [L]
-	
-	# Check if the requested files are not actually in the file system
+
+	# In admin - but no page
+	RewriteRule ^admin/$				admin/index.php [QSA,L]	
+
+	# Pages that go to the admin subdirectory go to the admin index
+	RewriteCond %{REQUEST_FILENAME}		!-f
+	RewriteRule ^admin/(.*)				admin/index.php?q=$1 [QSA,L]	
+
+	# Every other page goes to main index
 	RewriteCond %{REQUEST_FILENAME}		!-f
 	RewriteCond %{REQUEST_FILENAME}		!-d
-	RewriteRule (.*)					index.php?q=$1	[QSA,L] # QSA - appends query string
+	RewriteRule (.*)					index.php?q=$1	[QSA,L]
 	
 </IfModule>

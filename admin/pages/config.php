@@ -94,7 +94,7 @@ switch($secondary_mode)
 function page_main()
 {
 
-	global $output, $lang;
+	global $db, $output, $lang;
 
 	// ------------------
 	// Set page title
@@ -104,20 +104,84 @@ function page_main()
 	// ------------------
 	// Our form
 	// ------------------
+/*
+	global $db, $lang, $output;
+
+	// Grab all configuration groups in order
+	$select_groups = $db -> query("select * from ".$db -> table_prefix."config_groups where `order` >= 0 order by `order` asc");
+
+	// No groups?! DANGER DANGER WILL ROBINSON
+	if($db -> num_rows($select_groups) < 1)
+	{
+
+		// Bye
+		$output -> page_output = $template_admin -> critical_error($lang['error_no_config_groups']);
+		$output -> finish();
+		die();
+
+	}
+
+	// check if we want the dropdown biiiiiig
+	$dropdown_size = ($big) ? "size=\"10\"" : "";
+	$width = ($big) ? "style=\"width:100%\"" : "style=\"width:90%\"";
+
+	// Start up the form
+	$final_html = "<select class=\"inputtext\" ".$width." ".$dropdown_size." name=\"group\">";
+
+	// Go through all the damn groups now
+	while($group_array = $db -> fetch_array($select_groups))
+	{
+
+		// Check to see if we're on the page
+		if($current == $group_array['name'])
+			$selected = " selected=\"selected\"";
+		else
+			$selected = "";
+
+		// Option html
+		$final_html .= "<option value=\"".$group_array['name']."\"".$selected.">".$lang['config_dropdown_'.$group_array['name']]."</option>";
+
+	}
+*/
+	$db -> basic_select(array(
+							"table" => "config_groups",
+							"where" => "`order` >= 0",
+							"order" => "`order`",
+							"dir" => "ASC"
+							));
+
+	if(!$db -> num_rows())
+	{
+		$output -> set_error_message($lang['error_no_config_groups']);
+		return False;
+	}
+
+	$groups = array();
+
+	while($group = $db -> fetch_array())
+		$groups[$group['name']] = $lang['config_dropdown_'.$group['name']];
+
 	$form = new form(array(
-        "meta" => array(
-			"name" => "config_select",
-        	"title" => $lang['admin_config_title'],
+						 "meta" => array(
+							 "name" => "config_select",
+							 "title" => $lang['admin_config_title'],
+							 "description" => $lang['admin_config_page_message']
 //			"validation_func" => "form_register_validate",
 //			"complete_func" => "form_register_complete"	
-        ),
-		"config_menu" => array(
-			"name" => "config_menu",
-			"title" => $lang['admin_config_page_message'],
-			"type" => "dropdown"
-		)
-	));
+							 ),
+						 "#config_menu" => array(
+							 "name" => $lang['admin_config_menu_input'],
+							 "type" => "dropdown",
+							 "options" => $groups,
+							 "size" => 10
+							 ),
+						 "#submit" => array(
+							 "type" => "submit",
+							 "value" => $lang['admin_config_go']
+							 )
+						 ));
 
+	$output -> add($form -> render());
 
 /*
 	// Create classes
@@ -144,25 +208,40 @@ function page_main()
 		$table -> end_table().
 		$form -> end_form()
 	);
-
+*/
 	// As delveloper we can add a group
 	if(defined("DEVELOPER"))
 	{
-	
-		$output -> add(
-			$form -> start_form("newgroup", ROOT."admin/index.php?m=config&amp;m2=newgroup").
-            $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
-			$table -> add_top_table_header($lang['config_group_add'], 2).
-			$table -> simple_input_row_text($form, $lang['config_group_add_name'], "name", "").
-			$table -> simple_input_row_text($form, $lang['config_group_add_shortname'], "shortname", "").
-			$table -> simple_input_row_int($form, $lang['config_group_add_order'], "order", "").
-			$table -> add_submit_row($form).
-			$table -> end_table().
-			$form -> end_form()
-		);	
+
+		$dev_form = new form(array(
+								 "meta" => array(
+									 "name" => "config_select",
+									 "title" => $lang['config_group_add'],
+									 "action" => l("admin/config/newgroup")
+//			"validation_func" => "form_register_validate",
+//			"complete_func" => "form_register_complete"	
+									 ),
+								 "#name" => array(
+									 "name" => $lang['config_group_add_name'],
+									 "type" => "text"
+									 ),
+								 "#shortname" => array(
+									 "name" => $lang['config_group_add_shortname'],
+									 "type" => "text"
+									 ),
+								 "#order" => array(
+									 "name" => $lang['config_group_add_order'],
+									 "type" => "int"
+									 ),
+								 "#submit" => array(
+									 "type" => "submit"
+									 )
+								 ));
+
+		$output -> add($dev_form -> render());
 				
 	}
-	*/		
+	
 }
 
 

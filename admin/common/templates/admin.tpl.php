@@ -314,11 +314,11 @@ END;
                 // Admin logo
                 // *****************
                 $return = '   
-                        <script src="'.ROOT.'admin/admin_jscript.js" type="text/javascript"></script>  
+                        <script src="'.$cache -> cache['config']['board_url'].'/admin/admin_jscript.js" type="text/javascript"></script>  
 
                         <p align="center" class="small_text" style="margin : 10px">
-                                <img src="'.IMGDIR.'/adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
-                                <a href="'.ROOT.'admin/index.php?m=index" target="page">'.$lang['admin_menu_home'].'</a>
+                                <img src="'.IMGDIR.'adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
+                                <a href="'.l("admin/").'" target="page">'.$lang['admin_menu_home'].'</a>
                         </p>';
         
 
@@ -327,7 +327,7 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_configuration'], ROOT."admin/index.php?m=config");
+				$return .= $this -> generate_menu_entry($lang['admin_menu_configuration'], l("admin/config/"));
 				$return .= $this -> generate_menu_entry($lang['admin_menu_config_maintenance'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=maintenance", true);
 				$return .= $this -> generate_menu_entry($lang['admin_menu_config_import'], ROOT."admin/index.php?m=config&amp;m2=importexport");
                 $return .= $this -> generate_menu_header("general");

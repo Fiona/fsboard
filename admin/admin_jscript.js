@@ -22,6 +22,12 @@ function open_admin_area_help(page, action, field)
 }
 */
 
+// This shit is going places when I refactor the template stuff
+function collapse(id, url)
+{
+	$("div#tpl_row_"+id).slideToggle();
+}
+
 
 // ----------------------------------------------------------------------------------------
 // Jquery redux
