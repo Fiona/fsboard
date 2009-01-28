@@ -303,12 +303,42 @@ END;
 			
 			foreach($db -> saved_queries['queries'] as $key => $query_string)
 			{
-			
-				$return .= "<p class=\"debug_level_2_entry\">".$query_string
-			        ."<br /> <span class=\"debug_level_2_extra\">".$db -> saved_queries['file'][$key]
-			        ." - Line ".$db -> saved_queries['line'][$key]
-			        ." - Time ".$db -> saved_queries['time'][$key]
-			        ."</span></p>";
+
+				if($db -> saved_queries['explain'][$key] != NULL)
+				{
+
+					$items = "";
+
+					foreach($db -> saved_queries['explain'][$key] as $explain_array)
+					{
+
+						$headers = "";
+						$single_items = "";
+
+						foreach($explain_array as $head_name => $val)
+						{
+
+
+							$headers .= "<th>".$head_name."</th>";
+							$single_items .= "<td>".($val ? "<strong>".$val."</strong>" : "NULL")."</td>";
+
+						}
+
+						$items .= "<tr>".$single_items."</tr>";
+
+					}
+
+					$explain = "<table border=\"1\"><tr>".$headers."</tr>".$items."</table>";
+				}
+				else
+					$explain = "";
+
+				$return .= "<p class=\"debug_level_2_entry\">".$query_string.
+			        "<br /> <span class=\"debug_level_2_extra\">".$db -> saved_queries['file'][$key].
+			        " - Line ".$db -> saved_queries['line'][$key].
+			        " - Time ".$db -> saved_queries['time'][$key].
+			        $explain.
+					"</span></p>";
 
 				if($db -> saved_queries['errorno'][$key] > -1)
 					$return .= "<p class=\"debug_level_2_error\"><b>Error ".$db -> saved_queries['errorno'][$key]."</b><br />".$db -> saved_queries['error'][$key]."</p>";
