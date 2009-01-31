@@ -347,8 +347,10 @@ END;
 					"</span></p>";
 
 				if($db -> saved_queries['errorno'][$key] > -1)
+				{
 					$return .= "<p class=\"debug_level_2_error\"><b>Error ".$db -> saved_queries['errorno'][$key]."</b><br />".$db -> saved_queries['error'][$key]."</p>";
-			
+				die($return);
+				}
 			}
 			
 			$return .= "</div>";

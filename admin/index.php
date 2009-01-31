@@ -136,6 +136,13 @@ $mode_file_list = array(
 	),
 
 	// ----------------
+	// Global admin ajax requests
+	// ----------------
+	'ajax/(?<mode>admin_menu)' => array(
+		"page" => "ajax"
+	),
+
+	// ----------------
 	// Configuration
 	// ----------------
 	'config' => array(
@@ -236,6 +243,8 @@ foreach($mode_file_list as $regex => $page_to)
 			$match = $page_to['page'];
 		else
 			$match = substr($page_to, 0, -4);
+
+		break;
 	}
 	
 }

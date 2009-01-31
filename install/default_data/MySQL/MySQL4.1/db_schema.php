@@ -218,6 +218,16 @@ $sql_schema['table']['users']['create'] = "CREATE TABLE `".PREFIX."users` (
 ) CHARACTER SET `utf8` COLLATE `utf8_general_ci`;";
 
 
+// User admin settings
+$sql_schema['table']['users_admin_settings']['drop'] = "DROP TABLE IF EXISTS `".PREFIX."users_admin_settings`;";
+$sql_schema['table']['users_admin_settings']['create'] = "CREATE TABLE `".PREFIX."users_admin_settings` (
+  `user_id` int(12) NOT NULL default '0',
+  `admin_menu` text NOT NULL default '',
+  `access_config` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`user_id`)
+) CHARACTER SET `utf8` COLLATE `utf8_general_ci`;";
+
+
 // Crazy big user groups table
 $sql_schema['table']['user_groups']['drop'] = "DROP TABLE IF EXISTS `".PREFIX."user_groups`;";
 $sql_schema['table']['user_groups']['create'] = "CREATE TABLE `".PREFIX."user_groups` (
