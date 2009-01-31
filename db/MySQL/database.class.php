@@ -237,7 +237,7 @@ class database
 			$this -> saved_queries['line'][] = $backtrace[0]['line'];
 
 			// explain queries
-			if(!$error && preg_match("/^SELECT/", $query))
+			if(!$error && preg_match("/^SELECT/i", $query))
 			{
 
 				$explain = mysql_query("EXPLAIN ".$query);

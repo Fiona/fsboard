@@ -418,12 +418,8 @@ function page_edit_theme()
                                 array($form -> input_text("image_dir", $theme_array['image_dir']), "70%")
                         )
                 , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['edit_theme_style'], "30%"),
-                                array($form -> input_textbox("css", $theme_array['css'], "20"), "70%")
-                        )
-                , "normalcell").
+                $table -> add_basic_row($lang['edit_theme_style'], "normalcell").
+                $table -> add_basic_row($form -> input_textbox("css", $theme_array['css'], "20", "inputtext", "100%", "css_codebox"), "normalcell", "background-color : #fff; font-size:8px;").
                 // ---------------
                 // Submit
                 // ---------------

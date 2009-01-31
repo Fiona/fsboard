@@ -304,6 +304,8 @@ END;
 			foreach($db -> saved_queries['queries'] as $key => $query_string)
 			{
 
+				$explain_link = "";
+
 				if($db -> saved_queries['explain'][$key] != NULL)
 				{
 
@@ -328,7 +330,10 @@ END;
 
 					}
 
-					$explain = "<table border=\"1\"><tr>".$headers."</tr>".$items."</table>";
+					$explain = "<table class=\"explain_table\"><tr>".$headers."</tr>".$items."</table>";
+
+					$explain_link = " - <a href=\"#\" rel=\"explain\">Explain query</a>";
+
 				}
 				else
 					$explain = "";
@@ -337,6 +342,7 @@ END;
 			        "<br /> <span class=\"debug_level_2_extra\">".$db -> saved_queries['file'][$key].
 			        " - Line ".$db -> saved_queries['line'][$key].
 			        " - Time ".$db -> saved_queries['time'][$key].
+					$explain_link.
 			        $explain.
 					"</span></p>";
 
