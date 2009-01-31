@@ -120,6 +120,27 @@ $(document).ready(function()
 		window.location = "../admin/index.php?m=plugins&id="+plugin_id+"&m2="+destination;
 		
 	}
-	
+
+
+	/*
+	 * Code editor
+	 */
+	$("textarea#css_codebox").each(
+		function()
+		{
+			var editor = CodeMirror.fromTextArea(
+				'css_codebox',
+				{
+					height: "350px",
+//        parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "tokenizephp.js", "parsephp.js", "parser3phphtmlmixed.js"],
+//        stylesheet: ["css/xmlcolors.css", "css/jscolors.css", "css/csscolors.css", "css/phpcolors.css"],
+					path: "jscript/codemirror/",
+					parserfile: "parsecss.js",
+					stylesheet: "jscript/codemirror/css/csscolors.css",
+//			continuousScanning: 500
+				}
+			);
+		}
+	);	
 
 });

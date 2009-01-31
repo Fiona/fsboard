@@ -139,15 +139,16 @@ class form_generate
         // ------------------------------       
         // Multi lined input
         // ------------------------------        
-        function input_textbox($name, $value, $rows = 3, $class="inputtext", $width = "90%")
+        function input_textbox($name, $value, $rows = 3, $class="inputtext", $width = "90%", $id = "")
         {
         
                 if($this -> started || $this -> ignore_started)
                 {
 
-			$title = (defined("DEVELOPER")) ? " title = \"".$name."\" " : ""; 
+					$title = (defined("DEVELOPER")) ? " title = \"".$name."\" " : ""; 
 			
-                        return '<textarea class="'.$class.'" rows="'.$rows.'" style="width : '.$width.';" name="'.$name.'"'.$title.'>'.$value.'</textarea>';
+					$id = ($id) ? "id=\"".$id."\"" : "";
+					return '<textarea class="'.$class.'" rows="'.$rows.'" style="width : '.$width.';" name="'.$name.'"'.$title.' '.$id.'>'.$value.'</textarea>';
 
                 }
                         

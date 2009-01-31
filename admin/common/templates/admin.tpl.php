@@ -60,6 +60,9 @@ class template_admin
 
 		return <<<END
 
+	<script language="javascript" type="text/javascript" src="{$cache -> cache['config']['board_url']}/admin/jscript/admin_global.js"></script>  
+	<script language="javascript" type="text/javascript" src="jscript/codemirror/codemirror.js"></script>
+
 	<style type="text/css">
 		p.admin_frame_top_left
 		{
@@ -314,8 +317,6 @@ END;
                 // Admin logo
                 // *****************
                 $return = '   
-                        <script src="'.$cache -> cache['config']['board_url'].'/admin/admin_jscript.js" type="text/javascript"></script>  
-
                         <p align="center" class="small_text" style="margin : 10px">
                                 <img src="'.IMGDIR.'adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
                                 <a href="'.l("admin/").'" target="page">'.$lang['admin_menu_home'].'</a>
