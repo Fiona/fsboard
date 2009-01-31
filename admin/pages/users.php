@@ -264,7 +264,7 @@ function do_add_user()
         VALUES('".$user_info['username']."', '".$user_info['user_group']."', '".user_ip()."', '".md5($user_info['password'])."', '".$user_info['email']."', '".TIME."',
         '".TIME."', '0', '0')";
         
-        $db -> basic_insert("users", $user_info);
+        //$db -> basic_insert("users", $user_info);
         
 
         // Execute the query and check if it died.
@@ -277,6 +277,9 @@ function do_add_user()
 
         // Get the ID number of the account just inserted
         $user_id = $db -> insert_id();
+
+        // Add user to admin settings table
+        $db -> basic_insert("users_admin_settings", array("user_id" => $user_id));
 
         // Redirect the user
         $output -> redirect(ROOT."admin/index.php?m=users&amp;m2=edit&amp;id=".$user_id, $lang['user_added_sucessfully']);

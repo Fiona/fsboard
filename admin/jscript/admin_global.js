@@ -40,9 +40,33 @@ $(document).ready(function()
 	 * MENU
 	 ******************
 	 */
-	$("div.admin_menu_group div.admin_menu_group_header").click(function(){
-			$(this).parent().find("div.admin_menu_link_group").slideToggle();
-		});
+	$("div.admin_menu_group div.admin_menu_group_header").click(
+		function()
+		{
+
+			var group = $(this).parent().find("div.admin_menu_link_group");
+			var row_id = group.attr("id").split("_")[1];
+
+			// We are closed
+			if(group.is(":hidden"))
+			{
+				group.slideDown();
+				var ajax_type = "open";
+				var image_name = "collapse.gif";
+			}
+			// We are open
+			else
+			{
+				group.slideUp();
+				var ajax_type = "close";
+				var image_name = "expand.gif";
+			}
+
+			group.parent().find("img.admin_menu_header_button").attr("src", imgdir + image_name);
+			$.get(board_url + "/admin/ajax/admin_menu/", { t: ajax_type, id: row_id });
+
+		}
+	);
 
 	$("div.adminmenulink").mouseover(
 		function(){
@@ -50,7 +74,7 @@ $(document).ready(function()
 		}
 	).mouseout(
 		function(){
-				$(this).removeClass("adminmenulinkhover");
+			$(this).removeClass("adminmenulinkhover");
 		}
 	);
 
@@ -63,10 +87,17 @@ $(document).ready(function()
 	 /*
 	  * asyncronously get the information about a hook
       */
-	if($("form[name=plugin_files_form] select[name=hook]").attr("value") != "")	 
-		plugin_hook_get_info();
+	$("form[name=plugin_files_form] select[name=hook]").each(
+		function()
+		{
 
-	$("form[name=plugin_files_form] select[name=hook]").change(plugin_hook_get_info);
+			if($(this).attr("value") != "")
+				plugin_hook_get_info();
+
+			$(this).change(plugin_hook_get_info);
+
+		}
+	);
 	
 	function plugin_hook_get_info()
 	{

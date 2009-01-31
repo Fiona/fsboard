@@ -1,44 +1,44 @@
 <?php
-/* 
+  /* 
 
---------------------------------------------------------------------------
- FSBoard - Free, open-source message board system.
- Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+	 --------------------------------------------------------------------------
+	 FSBoard - Free, open-source message board system.
+	 Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
 
- FSBoard is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+	 FSBoard is free software; you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published by
+	 the Free Software Foundation; either version 2 of the License, or
+	 (at your option) any later version.
 
- FSBoard is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+	 FSBoard is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- --------------------------------------------------------------------------
+	 You should have received a copy of the GNU General Public License
+	 along with this program; if not, write to the Free Software
+	 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+	 --------------------------------------------------------------------------
 
- *********************************
- *       FSBoard                 *
- *       by Fiona 2006           *
- *********************************
- *       MySQL Class             *
- *       Started by Fiona        *
- *       01st Aug 05             *
- *********************************
- *       Last edit by Fiona      *
- *       29th Apr 07             *
- *********************************
+	 *********************************
+	 *       FSBoard                 *
+	 *       by Fiona 2006           *
+	 *********************************
+	 *       MySQL Class             *
+	 *       Started by Fiona        *
+	 *       01st Aug 05             *
+	 *********************************
+	 *       Last edit by Fiona      *
+	 *       29th Apr 07             *
+	 *********************************
 
- A class that keeps track of all the variables
- relating to the database connecton, also holds 
- wrappers for all the MySQL functions.
+	 A class that keeps track of all the variables
+	 relating to the database connecton, also holds 
+	 wrappers for all the MySQL functions.
 
- Also has a few functions for lazy inserting, 
- updating and the like. 
-*/
+	 Also has a few functions for lazy inserting, 
+	 updating and the like. 
+  */
 
 
 
@@ -471,14 +471,16 @@ class database
 	// -------------------------------------
 	function basic_select($info, $what = "*", $where = "", $order_by = "", $limit = "", $direction = "", $just_return = false)
 	{
-                
+
+		$join = "";
+
 		if(is_string($info))
 		{
 			$where = ($where) ? " WHERE ".$where."" : "";
 			$order_by = ($order_by) ? " ORDER BY ".$order_by : "";
 			$limit = ($limit) ? " LIMIT ".$limit : "";
-			$direction = ($direction) ? " ".$direction : "";    
-			$table = $info;            
+			$direction = ($direction) ? " ".$direction : "";
+			$table = $info;
 		}
 		else
 		{
@@ -492,6 +494,14 @@ class database
 			$limit = (isset($info['limit'])) ? " LIMIT ".$info['limit'] : "";
 			$direction = (isset($info['direction'])) ? " ".$info['direction'] : "";
 			$just_return = (isset($info['just_return'])) ? True : False;
+
+			if(isset($info['join']))
+			{
+				$type = (isset($info['join_type'])) ? $info['join_type']." " : "";
+				$on = (isset($info['join_on'])) ? " ON(".$info['join_on'].") " : "";
+				$join = " ".$type."JOIN ".$this -> table_prefix.$info['join'].$on." ";
+			}
+
 		}
         		
 		$full_query = "SELECT ".
@@ -499,6 +509,7 @@ class database
 			" FROM ".
 			$this -> table_prefix.
 			$table.
+			$join.
 			$where.
 			$order_by.
 			$direction.

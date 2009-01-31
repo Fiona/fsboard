@@ -178,6 +178,7 @@ function page_main()
 					"<dt>".$lang['credits_lead_programmer']."</dt> <dd><b>Fiona Burrows</b></dd>".
 					"<dt>".$lang['credits_additional_coding']."</dt> <dd><b>Mark Frimston</b></dd>".
 					"<dt>".$lang['credits_geshi']."</dt> <dd><b><a href=\"http://qbnz.com/highlighter\" target=\"_blank\">Nigel McNie</a></b></dd>".
+					"<dt>".$lang['credits_codemirror']."</dt> <dd><b><a href=\"http://marijn.haverbeke.nl/codemirror/\" target=\"_blank\">Marijn Haverbeke</a></b></dd>".
 					"<dt>".$lang['credits_utf8_functions']."</dt> <dd><b>Niels Leenheer &amp; Andy Matsubara</b></dd>".
 					"<dt>".$lang['credits_special_thanks']."</dt> <dd><b><a href=\"http://code.google.com\">Google Code</a> &amp; <a href=\"http://www.github.com\">GitHub</a></b></dd>".
 				"</dl>",

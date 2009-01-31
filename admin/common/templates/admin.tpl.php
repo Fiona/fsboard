@@ -47,7 +47,7 @@ class template_admin
 	
 
 	var $nav_current_entries = "";
-	var $nav_group_id = 0;
+	var $nav_group_id = 1;
 		
 
 	function admin_header($menu, $breadcrumb)
@@ -215,6 +215,11 @@ class template_admin
 			margin-bottom : 2px;
 		}
 
+		.admin_menu_link_group_close
+		{
+			display : none;
+		}
+
 		/* -------------------- */
 		/* Definiton lists      */
 		/* -------------------- */
@@ -319,7 +324,7 @@ END;
                 $return = '   
                         <p align="center" class="small_text" style="margin : 10px">
                                 <img src="'.IMGDIR.'adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
-                                <a href="'.l("admin/").'" target="page">'.$lang['admin_menu_home'].'</a>
+                                <a href="'.l("admin/").'">'.$lang['admin_menu_home'].'</a>
                         </p>';
         
 
@@ -541,24 +546,38 @@ END;
         function generate_menu_header($header_name)
         {
 
-			global $lang;        	
+			global $lang, $user;
                
 			$table = new table_generate;
 
 			$return = "";
 
-			// Menu entry header
+			// Menu entry heade
+
+			// check if we should be open
+			if(in_array($this -> nav_group_id, $user -> admin_menu))
+			{
+				$extra_class = "";
+				$img_name = "collapse.gif";
+			}
+			else
+			{
+				$extra_class = " admin_menu_link_group_close";
+				$img_name = "expand.gif";
+			}
+
 			$image_dir = IMGDIR;
 
+			$extra_class = 
 			$return .= <<<END
 							<div class="admin_menu_group">
 							  <div class="admin_menu_group_header">
 								<p class="admin_menu_header_text">
 								  <img src="{$image_dir}icons/{$header_name}.png"  class="admin_menu_header_icon" title="{$lang['admin_menu_'.$header_name]}" />
-								  <img id="img_{$this -> nav_group_id}" src="{$image_dir}expand.gif" class="admin_menu_header_button">&nbsp;{$lang['admin_menu_'.$header_name]}
+								  <img id="img_{$this -> nav_group_id}" src="{$image_dir}{$img_name}" class="admin_menu_header_button">&nbsp;{$lang['admin_menu_'.$header_name]}
 								</p>
 							  </div>
-							  <div style="display:none;" class="admin_menu_link_group" id="row_{$this -> nav_group_id}">{$this -> nav_current_entries}</div>
+							  <div class="admin_menu_link_group{$extra_class}" id="row_{$this -> nav_group_id}">{$this -> nav_current_entries}</div>
 						   </div>
 END;
 
@@ -574,18 +593,18 @@ END;
         function generate_menu_entry($link_text, $link_url, $menu_extra = false)
         {
 
-		$row = "";
+			$row = "";
 		
-		$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink">';
+			$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink">';
 		
-		if($menu_extra)
-		        $row .= '<img src="'.IMGDIR.'/menu_extra_icon.gif"> <a href="'.$link_url.'" target="page"><i>'.$link_text.'</i></a>';
-		else
+			if($menu_extra)
+		        $row .= '<img src="'.IMGDIR.'/menu_extra_icon.gif"> <a href="'.$link_url.'"><i>'.$link_text.'</i></a>';
+			else
 		        $row .= '<a href="'.$link_url.'">'.$link_text.'</a>';
 		                                        
-		$row .= '</div>';
+			$row .= '</div>';
 		
-		$this -> nav_current_entries .= $row;
+			$this -> nav_current_entries .= $row;
 
         }
 

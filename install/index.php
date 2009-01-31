@@ -1084,6 +1084,13 @@ define('DBCONFIG_PRESENT', 1);
                                 $install_step_fail = true;
                                 break;
                         }
+
+                        if(!$db -> basic_insert("users_admin_settings", array('user_id' => $db -> insert_db())))
+                        {
+                                $output -> page_output .= $output -> install_step_action(false, $lang['step_11_insert_account'], $lang['step_11_fail']);
+                                $install_step_fail = true;
+                                break;
+                        }
                         
                 }
                         
