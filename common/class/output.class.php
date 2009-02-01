@@ -182,24 +182,28 @@ class output
 	 * @param string $redirect_to URL to go to
 	 * @param string $msg Message to display to the user on transit
 	 */
-	function redirect($redirect_to, $msg = '')
+	function redirect($redirect_to, $msg = '', $instant = False)
 	{
         
 		global $cache, $template_global;
                 
 		if(defined("ADMIN"))
 			global $template_admin;
+
+		$time = ($instant) ? 0 : $cache -> cache['config']['redirect_time'];
                 
+		$header = "";
+
 		switch($cache -> cache['config']['redirect_type'])
 		{
 			// Meta Refresh                
 			case '0':
-				$header = "<meta http-equiv='refresh' content='".$cache -> cache['config']['redirect_time']."; url=$redirect_to'>";
+				$header = "<meta http-equiv='refresh' content='".$time."; url=$redirect_to'>";
 				break;
                                         
 			// PHP header refresh
 			case '1':
-				if($cache -> cache['config']['redirect_time'] > 0)
+				if($time > 0)
 					header("Refresh: ".$cache -> cache['config']['redirect_time']."; URL=".$redirect_to);        
 				else	
 					header("location: ".$redirect_to); 
@@ -209,7 +213,7 @@ class output
 			// Jscript refresh
 			case '2':
 	
-				$timeout = $cache -> cache['config']['redirect_time']*1000;
+				$timeout = $time*1000;
 	                
 				$header = <<<END
 	<script language="javascript" type="text/javascript">

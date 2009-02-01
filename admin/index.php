@@ -148,6 +148,12 @@ $mode_file_list = array(
 	'config' => array(
 		"page" => "config"
 	),
+	'config(/(?<mode>show_group)/(?<group_name>[a-zA-Z-_]+))?' => array(
+		"page" => "config"
+	),
+	'config/(?<mode>backup|import|export)' => array(
+		"page" => "config"
+	),
 	
 /*	
 	// ----------------
@@ -256,6 +262,8 @@ define("CURRENT_MODE", $match);
 // If we're here we clearly have access so desplay the header,
 // the page contents (or error if appropriate), set title and show footer
 //***********************************************
+$output -> add_breadcrumb($lang['breadcrumb_admin_area'], l("admin/"));
+
 if(CURRENT_MODE == NULL)
 	$output -> set_error_message($lang['error_page_no_exist']);
 else
@@ -266,8 +274,6 @@ if($output -> page_title == "")
 	$output -> page_title = $cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
 else
 	$output -> page_title .= " - ".$cache -> cache['config']['board_name']." ".$lang['admin_area_title'];
-
-$output -> add_breadcrumb($lang['breadcrumb_admin_area'], l("admin/"));
 
 $crumbin = $template_admin -> admin_breadcrumb();
 

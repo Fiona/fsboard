@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="16-11-08 11:37 pm">
+<theme_file fsboard_version="0.1" time="01-02-09 10:45 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -295,7 +295,33 @@ Form stuff
         width : 95%;
         padding : 5px;
 }
+.debug_level_2_wrapper a
+{
+  color : #919191;
+}
 
+.debug_level_2_wrapper table.explain_table
+{
+  border-collapse: collapse;
+  width : 100%;
+  border-color : 1px  #9AE79A;
+}
+.debug_level_2_wrapper table.explain_table th
+{
+  width : 10%;
+  font-weight: bold;
+  color: #000;
+  background-color: #D9FFD5;
+  border-color : 1px  #9AE79A;
+  padding: 4px;
+}
+.debug_level_2_wrapper table.explain_table td
+{
+  width : 10%;
+  color: #000;
+  background-color: #EBFFEB;
+  border-color : 1px  #9AE79A;
+}
 
 /*
 ----------------------
@@ -441,7 +467,7 @@ div.cp_menu_wrap
   width : 200px;
   border : 1px solid #000;
 }
-	
+  
 /*
 ----------------------
 New forms

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="16-11-08 11:36 pm">
+<languages_file fsboard_version="0.1" time="01-02-09 10:46 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -871,6 +871,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_go" group="admin_config"><![CDATA[Go]]></phrases>
 		<phrases variable_name="admin_config_mail_send_method_value_mail" group="admin_config"><![CDATA[PHP mail() function]]></phrases>
 		<phrases variable_name="admin_config_mail_send_method_value_smtp" group="admin_config"><![CDATA[SMTP server]]></phrases>
+		<phrases variable_name="admin_config_menu_input" group="admin_config"><![CDATA[The configuration is split into sections, select a section from this dropdown box and hit Go.]]></phrases>
 		<phrases variable_name="admin_config_name_attachment_upload_path" group="admin_config"><![CDATA[Uploaded attachments path]]></phrases>
 		<phrases variable_name="admin_config_name_avatars_on" group="admin_config"><![CDATA[Enable avatars?]]></phrases>
 		<phrases variable_name="admin_config_name_avatar_external_on" group="admin_config"><![CDATA[Enable external avatar linking?]]></phrases>
@@ -914,7 +915,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_name_session_last_active_update" group="admin_config"><![CDATA[Last active update]]></phrases>
 		<phrases variable_name="admin_config_name_time_offset" group="admin_config"><![CDATA[Server timezone]]></phrases>
 		<phrases variable_name="admin_config_name_user_avatar_upload_path" group="admin_config"><![CDATA[Uploaded avatars path]]></phrases>
-		<phrases variable_name="admin_config_page_message" group="admin_config"><![CDATA[You can configure various settings in your message board here.<br />The configuration is split into sections, select a section from this dropdown box and hit Go.]]></phrases>
+		<phrases variable_name="admin_config_page_message" group="admin_config"><![CDATA[You can configure various settings in your message board here.]]></phrases>
 		<phrases variable_name="admin_config_reg_validation_value_0" group="admin_config"><![CDATA[All accounts automatically validated]]></phrases>
 		<phrases variable_name="admin_config_reg_validation_value_1" group="admin_config"><![CDATA[User e-mail validation]]></phrases>
 		<phrases variable_name="admin_config_reg_validation_value_2" group="admin_config"><![CDATA[Must be moderator/admin approved]]></phrases>
@@ -958,8 +959,10 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="config_dropdown_nameurl" group="admin_config"><![CDATA[Board name, homepage and URL settings]]></phrases>
 		<phrases variable_name="config_dropdown_paths" group="admin_config"><![CDATA[File and Directory Paths]]></phrases>
 		<phrases variable_name="config_dropdown_timedate" group="admin_config"><![CDATA[Date and time settings]]></phrases>
+		<phrases variable_name="config_error_no_group" group="admin_config"><![CDATA[This configuration group does not exist.]]></phrases>
 		<phrases variable_name="config_group_add" group="admin_config"><![CDATA[Add new configuration group]]></phrases>
 		<phrases variable_name="config_group_add_done" group="admin_config"><![CDATA[Configuration group added successfully!]]></phrases>
+		<phrases variable_name="config_group_add_error_exists" group="admin_config"><![CDATA[A group with this short name already exists.]]></phrases>
 		<phrases variable_name="config_group_add_error_input" group="admin_config"><![CDATA[Please input a name and a short name!]]></phrases>
 		<phrases variable_name="config_group_add_error_insert" group="admin_config"><![CDATA[There was an error inserting the group!]]></phrases>
 		<phrases variable_name="config_group_add_error_phrase" group="admin_config"><![CDATA[There was an error adding the phrase for this group!]]></phrases>
@@ -971,6 +974,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="config_value_add_description" group="admin_config"><![CDATA[Description]]></phrases>
 		<phrases variable_name="config_value_add_done" group="admin_config"><![CDATA[Configuration value added successfully!]]></phrases>
 		<phrases variable_name="config_value_add_dropdown_values" group="admin_config"><![CDATA[<b>Dropdown only</b>: Dropdown values (pipe delimited)]]></phrases>
+		<phrases variable_name="config_value_add_error_exists" group="admin_config"><![CDATA[A value with this short name already exists in this group.]]></phrases>
 		<phrases variable_name="config_value_add_error_input" group="admin_config"><![CDATA[Please input a name and a short name!]]></phrases>
 		<phrases variable_name="config_value_add_error_insert" group="admin_config"><![CDATA[There was an error inserting this value!]]></phrases>
 		<phrases variable_name="config_value_add_error_no_group" group="admin_config"><![CDATA[Specified group was not found.]]></phrases>
@@ -979,7 +983,8 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="config_value_add_order" group="admin_config"><![CDATA[Order]]></phrases>
 		<phrases variable_name="config_value_add_shortname" group="admin_config"><![CDATA[Short name]]></phrases>
 		<phrases variable_name="config_value_add_type" group="admin_config"><![CDATA[Configuration type]]></phrases>
-		<phrases variable_name="error_no_config_groups" group="admin_config"><![CDATA[No configuration groups were found! The table has been damanged or the board was not installed properly.]]></phrases>
+		<phrases variable_name="error_no_config_groups" group="admin_config"><![CDATA[No configuration groups were found! The table has been damaged or the board was not installed properly.]]></phrases>
+		<phrases variable_name="error_no_config_settings" group="admin_config"><![CDATA[There were no configuration settings for this group found.]]></phrases>
 		<phrases variable_name="export_config" group="admin_config"><![CDATA[Export]]></phrases>
 		<phrases variable_name="export_config_reset" group="admin_config"><![CDATA[Reset]]></phrases>
 		<phrases variable_name="export_config_title" group="admin_config"><![CDATA[Export Configuration Settings]]></phrases>
@@ -1548,6 +1553,7 @@ Hitting the help button <img src="<3>/admin/themes/FSBoard_Green/help.png" /> wh
 		<phrases variable_name="admin_theme_submit" group="admin_main"><![CDATA[Switch To Theme]]></phrases>
 		<phrases variable_name="admin_users_online" group="admin_main"><![CDATA[Users Online Today]]></phrases>
 		<phrases variable_name="credits_additional_coding" group="admin_main"><![CDATA[Some graphics and a barrel of support]]></phrases>
+		<phrases variable_name="credits_codemirror" group="admin_main"><![CDATA[CodeMirror written by]]></phrases>
 		<phrases variable_name="credits_geshi" group="admin_main"><![CDATA[GeSHi written by]]></phrases>
 		<phrases variable_name="credits_lead_programmer" group="admin_main"><![CDATA[Lead programmer and designer]]></phrases>
 		<phrases variable_name="credits_special_thanks" group="admin_main"><![CDATA[Special thanks]]></phrases>
