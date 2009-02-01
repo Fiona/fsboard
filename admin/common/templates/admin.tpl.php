@@ -298,7 +298,7 @@ END;
                         
 			foreach($output -> breadcrumb as $crumb)
 				if(++$a != count($output -> breadcrumb))
-					$breadcrumb .= "<span class=\"breadcrumb_entry\"><a href=\"".ROOT."admin/".$crumb['url']."\" class=\"breadcrumb_link\">".$crumb['title']."</a></span> <span class=\"breadcrumb_seperator\">&gt;</span> ";
+					$breadcrumb .= "<span class=\"breadcrumb_entry\"><a href=\"".$crumb['url']."\" class=\"breadcrumb_link\">".$crumb['title']."</a></span> <span class=\"breadcrumb_seperator\">&gt;</span> ";
 				else
 					$breadcrumb .= "<span class=\"breadcrumb_entry\"><b>".$crumb['title']."</b></span>";
                         
@@ -334,8 +334,8 @@ END;
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
 
 				$return .= $this -> generate_menu_entry($lang['admin_menu_configuration'], l("admin/config/"));
-				$return .= $this -> generate_menu_entry($lang['admin_menu_config_maintenance'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=maintenance", true);
-				$return .= $this -> generate_menu_entry($lang['admin_menu_config_import'], ROOT."admin/index.php?m=config&amp;m2=importexport");
+				$return .= $this -> generate_menu_entry($lang['admin_menu_config_maintenance'], l("admin/config/show_group/maintenance/"), true);
+				$return .= $this -> generate_menu_entry($lang['admin_menu_config_import'], l("admin/config/backup/"));
                 $return .= $this -> generate_menu_header("general");
 
                 $return .= $this -> generate_menu_move_a_bit();

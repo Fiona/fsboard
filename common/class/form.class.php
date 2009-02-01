@@ -93,7 +93,7 @@ class form
 		if(!isset($this -> form_state['meta']['method']))
 			$this -> form_state['meta']['method'] = "post";
 			
-		$this -> form_state['meta']['key'] = md5($user -> session);
+		$this -> form_state['meta']['key'] = md5($user -> session.$this -> form_state['meta']['name']);
 
 	}
 	
@@ -119,7 +119,7 @@ class form
 		{
 			
 			// we have submitted the form
-			if($request['form_'.$this -> form_state['meta']['name']] ==  md5($user -> session))
+			if($request['form_'.$this -> form_state['meta']['name']] ==  md5($user -> session.$this -> form_state['meta']['name']))
 			{
 				
 				$this -> form_submitted = True;
@@ -132,12 +132,12 @@ class form
 						continue;
 						 
 					$id = substr($id, 1);
-					
+
 					if(isset($request[$id]))
 						$this -> form_state["#".$id]['value'] = trim($request[$id]);
 					else
 						$this -> form_state["#".$id]['value'] = "";
-						
+
 					// Preliminary tests
 					if(isset($info['required']))
 						if($this -> form_state["#".$id]['value'] == "")
@@ -237,6 +237,11 @@ class form
 						
 					case "checkbox":
 						$field_html = $template_global_forms -> form_field_checkbox($id, $info, $this -> form_state);
+						break;
+
+					case "file":
+						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
+						$field_html = $template_global_forms -> form_field_file($id, $info, $this -> form_state);
 						break;
 						
 					case "text":
