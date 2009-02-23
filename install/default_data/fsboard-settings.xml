@@ -1,148 +1,89 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<configuration_file fsboard_version="0.1" time="07-11-08 11:15 pm">
+<configuration_file fsboard_version="0.1" time="23-02-09 10:04 pm">
 
 	<config_group name="ignore" order="-10">
 
 		<config name="admin_area_theme" config_type="text" dropdown_values="" order="0"><![CDATA[FSBoard_Green]]></config>
-		<config_default name="admin_area_theme"><![CDATA[FSBoard_Green]]></config_default>
 		<config name="admin_notes" config_type="" dropdown_values="" order="0"><![CDATA[Save admin notes here.]]></config>
-		<config_default name="admin_notes"><![CDATA[]]></config_default>
 		<config name="allow_sig_bbcode" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="allow_sig_bbcode"><![CDATA[]]></config_default>
 		<config name="allow_sig_html" config_type="" dropdown_values="" order="0"><![CDATA[0]]></config>
-		<config_default name="allow_sig_html"><![CDATA[]]></config_default>
 		<config name="contact_link" config_type="" dropdown_values="" order="0"><![CDATA[index.php?m=contact]]></config>
-		<config_default name="contact_link"><![CDATA[]]></config_default>
 		<config name="contact_options" config_type="" dropdown_values="" order="0"><![CDATA[Message Board FeebackBug Report]]></config>
-		<config_default name="contact_options"><![CDATA[]]></config_default>
 		<config name="current_version" config_type="" dropdown_values="" order="0"><![CDATA[0.1]]></config>
-		<config_default name="current_version"><![CDATA[]]></config_default>
 		<config name="default_lang" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="default_lang"><![CDATA[1]]></config_default>
 		<config name="default_template_set" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="default_template_set"><![CDATA[]]></config_default>
 		<config name="index_view_birthdays" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="index_view_birthdays"><![CDATA[]]></config_default>
 		<config name="index_view_stats" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="index_view_stats"><![CDATA[]]></config_default>
 		<config name="index_view_users_online" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="index_view_users_online"><![CDATA[]]></config_default>
 		<config name="mass_mailer_waiting" config_type="" dropdown_values="" order="0"><![CDATA[0]]></config>
-		<config_default name="mass_mailer_waiting"><![CDATA[0]]></config_default>
 		<config name="next_task_runtime" config_type="" dropdown_values="" order="0"><![CDATA[-1]]></config>
-		<config_default name="next_task_runtime"><![CDATA[-1]]></config_default>
 		<config name="order_posts_dir" config_type="" dropdown_values="" order="0"><![CDATA[asc]]></config>
-		<config_default name="order_posts_dir"><![CDATA[]]></config_default>
 		<config name="order_posts_type" config_type="" dropdown_values="" order="0"><![CDATA[date]]></config>
-		<config_default name="order_posts_type"><![CDATA[]]></config_default>
 		<config name="redirect_time" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="redirect_time"><![CDATA[]]></config_default>
-		<config name="redirect_type" config_type="" dropdown_values="" order="0"><![CDATA[0]]></config>
-		<config_default name="redirect_type"><![CDATA[]]></config_default>
+		<config name="redirect_type" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
 		<config name="rules_url" config_type="" dropdown_values="" order="0"><![CDATA[]]></config>
-		<config_default name="rules_url"><![CDATA[]]></config_default>
 		<config name="sig_char_length" config_type="" dropdown_values="" order="0"><![CDATA[255]]></config>
-		<config_default name="sig_char_length"><![CDATA[]]></config_default>
 		<config name="view_no_caps" config_type="" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="view_no_caps"><![CDATA[]]></config_default>
 		<config name="view_posts_num" config_type="" dropdown_values="" order="0"><![CDATA[15]]></config>
-		<config_default name="view_posts_num"><![CDATA[]]></config_default>
 		<config name="view_topics_num" config_type="" dropdown_values="" order="0"><![CDATA[25]]></config>
-		<config_default name="view_topics_num"><![CDATA[]]></config_default>
 	</config_group>
 	<config_group name="general" order="1">
 
 		<config name="debug" config_type="dropdown" dropdown_values="0|1|2" order="1"><![CDATA[2]]></config>
-		<config_default name="debug"><![CDATA[1]]></config_default>
 		<config name="clean_urls" config_type="yesno" dropdown_values="" order="0"><![CDATA[1]]></config>
-		<config_default name="clean_urls"><![CDATA[]]></config_default>
 	</config_group>
 	<config_group name="login_register" order="5">
 
 		<config name="login_check_browser" config_type="yesno" dropdown_values="" order="8"><![CDATA[1]]></config>
-		<config_default name="login_check_browser"><![CDATA[0]]></config_default>
 		<config name="login_check_ip" config_type="yesno" dropdown_values="" order="7"><![CDATA[1]]></config>
-		<config_default name="login_check_ip"><![CDATA[1]]></config_default>
 		<config name="reg_disable_new" config_type="yesno" dropdown_values="" order="0"><![CDATA[0]]></config>
-		<config_default name="reg_disable_new"><![CDATA[0]]></config_default>
 		<config name="reg_duplicate_emails" config_type="yesno" dropdown_values="" order="2"><![CDATA[0]]></config>
-		<config_default name="reg_duplicate_emails"><![CDATA[0]]></config_default>
 		<config name="reg_notify_admin" config_type="yesno" dropdown_values="" order="1"><![CDATA[0]]></config>
-		<config_default name="reg_notify_admin"><![CDATA[0]]></config_default>
 		<config name="reg_validation" config_type="dropdown" dropdown_values="0|1|2" order="3"><![CDATA[1]]></config>
-		<config_default name="reg_validation"><![CDATA[1]]></config_default>
 		<config name="rules_on" config_type="yesno" dropdown_values="" order="4"><![CDATA[1]]></config>
-		<config_default name="rules_on"><![CDATA[1]]></config_default>
-		<config name="rules_text" config_type="textbox" dropdown_values="" order="6"><![CDATA[Administrator has not yet set the board rules.]]></config>
-		<config_default name="rules_text"><![CDATA[Administrator has not yet set the board rules.]]></config_default>
 		<config name="rules_title" config_type="text" dropdown_values="" order="5"><![CDATA[Board Rules]]></config>
-		<config_default name="rules_title"><![CDATA[Board Rules]]></config_default>
 		<config name="session_expire" config_type="int" dropdown_values="" order="9"><![CDATA[10]]></config>
-		<config_default name="session_expire"><![CDATA[10]]></config_default>
 		<config name="session_last_active_update" config_type="int" dropdown_values="" order="10"><![CDATA[5]]></config>
-		<config_default name="session_last_active_update"><![CDATA[5]]></config_default>
+		<config name="rules_text" config_type="textarea" dropdown_values="" order="6"><![CDATA[Administrator has not yet set the board rules.]]></config>
 	</config_group>
 	<config_group name="nameurl" order="10">
 
 		<config name="board_name" config_type="text" dropdown_values="" order="1"><![CDATA[My FSBoard]]></config>
-		<config_default name="board_name"><![CDATA[My FSBoard]]></config_default>
 		<config name="board_url" config_type="text" dropdown_values="" order="2"><![CDATA[http://localhost/fsboard]]></config>
-		<config_default name="board_url"><![CDATA[http://localhost/fsboard]]></config_default>
 		<config name="copyright_text" config_type="text" dropdown_values="" order="5"><![CDATA[]]></config>
-		<config_default name="copyright_text"><![CDATA[]]></config_default>
 		<config name="home_address" config_type="text" dropdown_values="" order="4"><![CDATA[http://www.mywebsite.com]]></config>
-		<config_default name="home_address"><![CDATA[http://www.mywebsite.com]]></config_default>
 		<config name="home_name" config_type="text" dropdown_values="" order="3"><![CDATA[My Website]]></config>
-		<config_default name="home_name"><![CDATA[My Website]]></config_default>
 	</config_group>
 	<config_group name="timedate" order="15">
 
 		<config name="dst_on" config_type="yesno" dropdown_values="" order="1"><![CDATA[0]]></config>
-		<config_default name="dst_on"><![CDATA[0]]></config_default>
 		<config name="format_date" config_type="text" dropdown_values="" order="3"><![CDATA[F jS, Y]]></config>
-		<config_default name="format_date"><![CDATA[]]></config_default>
 		<config name="format_time" config_type="text" dropdown_values="" order="4"><![CDATA[g:i a]]></config>
-		<config_default name="format_time"><![CDATA[]]></config_default>
 		<config name="time_offset" config_type="dropdown" dropdown_values="-12|-11|-10|-9|-8|-7|-6|-5|-4|-3|-2|-1|0|1|2|3|4|5|6|7|8|9|10|11|12" order="0"><![CDATA[0]]></config>
-		<config_default name="time_offset"><![CDATA[0]]></config_default>
 	</config_group>
 	<config_group name="email" order="20">
 
 		<config name="mail_from_address" config_type="text" dropdown_values="" order="0"><![CDATA[you@youremail.com]]></config>
-		<config_default name="mail_from_address"><![CDATA[you@youremail.com]]></config_default>
 		<config name="mail_send_method" config_type="dropdown" dropdown_values="mail|smtp" order="1"><![CDATA[mail]]></config>
-		<config_default name="mail_send_method"><![CDATA[mail]]></config_default>
 		<config name="mail_smtp_host" config_type="text" dropdown_values="" order="2"><![CDATA[localhost]]></config>
-		<config_default name="mail_smtp_host"><![CDATA[localhost]]></config_default>
 		<config name="mail_smtp_password" config_type="text" dropdown_values="" order="5"><![CDATA[]]></config>
-		<config_default name="mail_smtp_password"><![CDATA[]]></config_default>
 		<config name="mail_smtp_port" config_type="int" dropdown_values="" order="3"><![CDATA[25]]></config>
-		<config_default name="mail_smtp_port"><![CDATA[25]]></config_default>
 		<config name="mail_smtp_user" config_type="text" dropdown_values="" order="4"><![CDATA[]]></config>
-		<config_default name="mail_smtp_user"><![CDATA[]]></config_default>
 		<config name="mail_html" config_type="yesno" dropdown_values="" order="6"><![CDATA[0]]></config>
-		<config_default name="mail_html"><![CDATA[]]></config_default>
 	</config_group>
 	<config_group name="paths" order="25">
 
 		<config name="attachment_upload_path" config_type="text" dropdown_values="" order="1"><![CDATA[upload/attach/]]></config>
-		<config_default name="attachment_upload_path"><![CDATA[upload/attach/]]></config_default>
 		<config name="avatar_upload_path" config_type="text" dropdown_values="" order="4"><![CDATA[upload/avatar/]]></config>
-		<config_default name="avatar_upload_path"><![CDATA[upload/avatar/]]></config_default>
 		<config name="emoticon_upload_path" config_type="text" dropdown_values="" order="3"><![CDATA[upload/emoticon/]]></config>
-		<config_default name="emoticon_upload_path"><![CDATA[upload/emoticons/]]></config_default>
 		<config name="post_icon_upload_path" config_type="text" dropdown_values="" order="5"><![CDATA[upload/post_icon/]]></config>
-		<config_default name="post_icon_upload_path"><![CDATA[upload/post_icon/]]></config_default>
 		<config name="user_avatar_upload_path" config_type="text" dropdown_values="" order="2"><![CDATA[upload/user_avatar/]]></config>
-		<config_default name="user_avatar_upload_path"><![CDATA[upload/user_avatar/]]></config_default>
 	</config_group>
 	<config_group name="maintenance" order="30">
 
 		<config name="maintenance" config_type="yesno" dropdown_values="" order="1"><![CDATA[0]]></config>
-		<config_default name="maintenance"><![CDATA[0]]></config_default>
-		<config name="maintenance_reason" config_type="textbox" dropdown_values="" order="2"><![CDATA[<p>Sorry, the message board is currently unavailable at the moment.</p><p>Sorry for any inconvenience, try again later!</p>]]></config>
-		<config_default name="maintenance_reason"><![CDATA[<p>Sorry, the message board is currently unavailable at the moment.</p><p>Sorry for any inconvienience, try again later!</p>]]></config_default>
+		<config name="maintenance_reason" config_type="textarea" dropdown_values="" order="2"><![CDATA[<p>Sorry, the message board is currently unavailable at the moment.</p><p>Sorry for any inconvenience, try again later!</p>]]></config>
 	</config_group>
 	<config_group name="contact" order="40">
 
@@ -150,18 +91,11 @@
 	<config_group name="avatar" order="50">
 
 		<config name="avatar_external_on" config_type="yesno" dropdown_values="" order="40"><![CDATA[1]]></config>
-		<config_default name="avatar_external_on"><![CDATA[]]></config_default>
 		<config name="avatar_gallery_on" config_type="yesno" dropdown_values="" order="20"><![CDATA[1]]></config>
-		<config_default name="avatar_gallery_on"><![CDATA[]]></config_default>
 		<config name="avatar_max_filesize" config_type="int" dropdown_values="" order="70"><![CDATA[0]]></config>
-		<config_default name="avatar_max_filesize"><![CDATA[]]></config_default>
 		<config name="avatar_max_height" config_type="int" dropdown_values="" order="60"><![CDATA[0]]></config>
-		<config_default name="avatar_max_height"><![CDATA[]]></config_default>
 		<config name="avatar_max_width" config_type="int" dropdown_values="" order="50"><![CDATA[0]]></config>
-		<config_default name="avatar_max_width"><![CDATA[]]></config_default>
 		<config name="avatar_upload_on" config_type="yesno" dropdown_values="" order="30"><![CDATA[1]]></config>
-		<config_default name="avatar_upload_on"><![CDATA[]]></config_default>
 		<config name="avatars_on" config_type="yesno" dropdown_values="" order="10"><![CDATA[1]]></config>
-		<config_default name="avatars_on"><![CDATA[]]></config_default>
 	</config_group>
 </configuration_file>

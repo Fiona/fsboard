@@ -6,31 +6,12 @@
 */
 
 
-
-// Opens a new window for the admin help stuff
-/*
-REPLACE MEEEE
-function open_admin_area_help(page, action, field)
-{
-
-        window.open(
-                'index.php?m=help&page='+page+'&action='+action+'&field='+field,
-                'fsboard_helpwindow',
-                'statusbar=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes,width=550,height=500'
-        );        
-
-}
-*/
-
 // This shit is going places when I refactor the template stuff
 function collapse(id, url)
 {
 	$("div#tpl_row_"+id).slideToggle();
 }
 
-
-// ----------------------------------------------------------------------------------------
-// Jquery redux
 
 $(document).ready(function()
 {
@@ -77,6 +58,28 @@ $(document).ready(function()
 			$(this).removeClass("adminmenulinkhover");
 		}
 	);
+
+
+	/*
+	 ******************
+	 * HELP BUTTON
+	 ******************
+	 */
+	$("span.admin_help a").click(
+		function()
+		{
+			var info = $(this).attr("rel").split("|");
+
+			window.open(
+                'index.php?m=help&page='+info[0]+'&action='+info[1]+'&field='+info[2],
+                'fsboard_helpwindow',
+                'statusbar=no,menubar=no,toolbar=no,scrollbars=yes,resizable=yes,width=550,height=500'
+			);        
+
+			return false;
+		}		
+	);
+
 
 	/*
 	 ******************
@@ -154,7 +157,9 @@ $(document).ready(function()
 
 
 	/*
-	 * Code editor
+	 ******************
+	 * CODEMIRROR
+	 ******************
 	 */
 	$("textarea#css_codebox").each(
 		function()
@@ -165,9 +170,9 @@ $(document).ready(function()
 					height: "350px",
 //        parserfile: ["parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "tokenizephp.js", "parsephp.js", "parser3phphtmlmixed.js"],
 //        stylesheet: ["css/xmlcolors.css", "css/jscolors.css", "css/csscolors.css", "css/phpcolors.css"],
-					path: "jscript/codemirror/",
+					path: board_url + "/admin/jscript/codemirror/",
 					parserfile: "parsecss.js",
-					stylesheet: "jscript/codemirror/css/csscolors.css",
+					stylesheet: board_url + "/admin/jscript/codemirror/css/csscolors.css",
 //			continuousScanning: 500
 				}
 			);

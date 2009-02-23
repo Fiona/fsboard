@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="01-02-09 10:46 pm">
+<languages_file fsboard_version="0.1" time="23-02-09 10:05 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -49,6 +49,17 @@
 		<phrases variable_name="admin_help_page_not_defined" group="admin_area_help"><![CDATA[Page not defined]]></phrases>
 		<phrases variable_name="admin_help_title" group="admin_area_help"><![CDATA[Admin Area Help]]></phrases>
 		<phrases variable_name="admin_help_toc_title" group="admin_area_help"><![CDATA[Admin Help Topics]]></phrases>
+		<phrases variable_name="config_backup_export_filename_text" group="admin_area_help"><![CDATA[Specify a filename to export the settings as, this should end in .xml for correct import.]]></phrases>
+		<phrases variable_name="config_backup_export_filename_title" group="admin_area_help"><![CDATA[Configuration settings filename]]></phrases>
+		<phrases variable_name="config_backup_file_text" group="admin_area_help"><![CDATA[Select an XML file from your computer to upload and import settings from.]]></phrases>
+		<phrases variable_name="config_backup_file_title" group="admin_area_help"><![CDATA[XML file to upload]]></phrases>
+		<phrases variable_name="config_backup_import_filename_text" group="admin_area_help"><![CDATA[Specify a file path that relative is to your message board root, for instance, if your file is in the includes directory you would input:<br />includes/fsboard-settings.xml]]></phrases>
+		<phrases variable_name="config_backup_import_filename_title" group="admin_area_help"><![CDATA[XML server filename]]></phrases>
+		<phrases variable_name="config_backup_text" group="admin_area_help"><![CDATA[You can export all of your message board settings as an XML file here.<br />
+If you have an XML file of settings to import then you can do this by either uploading the file to the server and specifying the filename, or by uploading from your computer using the form.<br />
+Doing this is useful if you are moving servers or want to backup your settings.<br /><br />
+Note that files that were created from an older version of FSBoard will not be imported.]]></phrases>
+		<phrases variable_name="config_backup_title" group="admin_area_help"><![CDATA[Import/Export Configuration]]></phrases>
 		<phrases variable_name="config_group_attachment_upload_path_text" group="admin_area_help"><![CDATA[This is the directory that attachments that users upload are placed in. It is relative to the message board root, and must have the trailing slash. It must also have writing permissions.]]></phrases>
 		<phrases variable_name="config_group_attachment_upload_path_title" group="admin_area_help"><![CDATA[Uploaded attachments path]]></phrases>
 		<phrases variable_name="config_group_avatars_on_text" group="admin_area_help"><![CDATA[If this is disabled avatars will be turned off across the entire forum.<br /><br />
@@ -174,17 +185,6 @@ If you make a big mistake and you wish to revert the value back to when the mess
 		<phrases variable_name="config_group_title" group="admin_area_help"><![CDATA[Edit Configuration Values]]></phrases>
 		<phrases variable_name="config_group_user_avatar_upload_path_text" group="admin_area_help"><![CDATA[This is the directory that avatars that users upload are placed in. It is relative to the message board root, and must have the trailing slash. It must also have writing permissions.]]></phrases>
 		<phrases variable_name="config_group_user_avatar_upload_path_title" group="admin_area_help"><![CDATA[Uploaded avatars path]]></phrases>
-		<phrases variable_name="config_importexport_export_filename_text" group="admin_area_help"><![CDATA[Specify a filename to export the settings as, this should end in .xml for correct import.]]></phrases>
-		<phrases variable_name="config_importexport_export_filename_title" group="admin_area_help"><![CDATA[Configuration settings filename]]></phrases>
-		<phrases variable_name="config_importexport_file_text" group="admin_area_help"><![CDATA[Select an XML file from your computer to upload and import settings from.]]></phrases>
-		<phrases variable_name="config_importexport_file_title" group="admin_area_help"><![CDATA[XML file to upload]]></phrases>
-		<phrases variable_name="config_importexport_import_filename_text" group="admin_area_help"><![CDATA[Specify a file path that relative is to your message board root, for instance, if your file is in the includes directory you would input:<br />includes/fsboard-settings.xml]]></phrases>
-		<phrases variable_name="config_importexport_import_filename_title" group="admin_area_help"><![CDATA[XML server filename]]></phrases>
-		<phrases variable_name="config_importexport_text" group="admin_area_help"><![CDATA[You can export all of your message board settings as an XML file here.<br />
-If you have an XML file of settings to import then you can do this by either uploading the file to the server and specifying the filename, or by uploading from your computer using the form.<br />
-Doing this is useful if you are moving servers or want to backup your settings.<br /><br />
-Note that files that were created from an older version of FSBoard will not be imported.]]></phrases>
-		<phrases variable_name="config_importexport_title" group="admin_area_help"><![CDATA[Import/Export Configuration]]></phrases>
 		<phrases variable_name="config_main_text" group="admin_area_help"><![CDATA[Here you can select which category of options you wish to change. Just select the category name and press "Go", the values contained in the selected category will be shown and you will be able to edit them.]]></phrases>
 		<phrases variable_name="config_main_title" group="admin_area_help"><![CDATA[Configuration Category Select]]></phrases>
 		<phrases variable_name="config_text" group="admin_area_help"><![CDATA[This area contains all the configuration values for your message board.<br />
@@ -1003,7 +1003,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="reset_error" group="admin_config"><![CDATA[There was an error reverting this setting!]]></phrases>
 		<phrases variable_name="reset_value" group="admin_config"><![CDATA[Reset]]></phrases>
 		<phrases variable_name="reset_value_info" group="admin_config"><![CDATA[Reset this setting to the first-install default value]]></phrases>
-		<phrases variable_name="xml_file_not_found" group="admin_config"><![CDATA[This XML file was not found:]]></phrases>
+		<phrases variable_name="xml_file_not_found" group="admin_config"><![CDATA[This XML file was not found: <1>]]></phrases>
 		<phrases variable_name="xml_version_mismatch" group="admin_config"><![CDATA[This XML file was created with a later version of FSBoard, settings cannot be imported.]]></phrases>
 		<phrases variable_name="admin_emaillogs_error_message" group="admin_emaillogs"><![CDATA[This is a log of every e-mail sent that returned an error.]]></phrases>
 		<phrases variable_name="admin_emaillogs_error_title" group="admin_emaillogs"><![CDATA[E-Mail Error Logs]]></phrases>
@@ -1459,7 +1459,7 @@ For example, you could have insignia that display stars depending on how many po
 		<phrases variable_name="search_variable_only" group="admin_languages"><![CDATA[Search in variable name only]]></phrases>
 		<phrases variable_name="set_default" group="admin_languages"><![CDATA[Set as Default]]></phrases>
 		<phrases variable_name="set_default_language_default" group="admin_languages"><![CDATA[Can't set a language as default when it already is! Crazy person.]]></phrases>
-		<phrases variable_name="xml_file_not_found" group="admin_languages"><![CDATA[This XML file was not found:]]></phrases>
+		<phrases variable_name="xml_file_not_found" group="admin_languages"><![CDATA[This XML file was not found: <1>]]></phrases>
 		<phrases variable_name="xml_version_mismatch" group="admin_languages"><![CDATA[This XML file was created with a later version of FSBoard, languages cannot be imported.]]></phrases>
 		<phrases variable_name="breadcrumb_mailer" group="admin_mailer"><![CDATA[Send mail to users]]></phrases>
 		<phrases variable_name="breadcrumb_preview_mail" group="admin_mailer"><![CDATA[Preview e-mail]]></phrases>
@@ -2303,7 +2303,7 @@ Hitting the help button <img src="<3>/admin/themes/FSBoard_Green/help.png" /> wh
 		<phrases variable_name="template_set_sql_error" group="admin_templates"><![CDATA[There was an error creating the new template set in the database. Please try again.]]></phrases>
 		<phrases variable_name="template_set_temp_sql_error" group="admin_templates"><![CDATA[There was an error inserting a template into the databae. Delete the new set and try again.]]></phrases>
 		<phrases variable_name="template_updated_sucessfully" group="admin_templates"><![CDATA[Template updated sucessfully. Template file rebuilt.]]></phrases>
-		<phrases variable_name="xml_file_not_found" group="admin_templates"><![CDATA[This XML file was not found:]]></phrases>
+		<phrases variable_name="xml_file_not_found" group="admin_templates"><![CDATA[This XML file was not found: <1>]]></phrases>
 		<phrases variable_name="xml_version_mismatch" group="admin_templates"><![CDATA[This XML file was created with a later version of FSBoard, templates cannot be imported.]]></phrases>
 		<phrases variable_name="admin_themes_message" group="admin_themes"><![CDATA[Themes are CSS styles that define how your message board appears in terms of colour.<br />Themes can generally be used with any template sets.]]></phrases>
 		<phrases variable_name="admin_themes_title" group="admin_themes"><![CDATA[Edit Themes]]></phrases>

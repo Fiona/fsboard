@@ -61,7 +61,7 @@ class template_admin
 		return <<<END
 
 	<script language="javascript" type="text/javascript" src="{$cache -> cache['config']['board_url']}/admin/jscript/admin_global.js"></script>  
-	<script language="javascript" type="text/javascript" src="jscript/codemirror/codemirror.js"></script>
+	<script language="javascript" type="text/javascript" src="{$cache -> cache['config']['board_url']}/admin/jscript/codemirror/codemirror.js"></script>
 
 	<style type="text/css">
 		p.admin_frame_top_left
@@ -240,6 +240,34 @@ class template_admin
 			float : left;
 		}
 
+
+		/* ------------------------------- */
+		/* Admin page specific form stuff  */
+		/* ------------------------------- */
+		img.header_icon
+		{
+			vertical-align : middle;
+		}
+
+		/* ------------------------------- */
+		/* Admin area helpful help buttons */
+		/* ------------------------------- */
+		span.admin_help 
+		{
+			float : right;
+		}
+			span.admin_help a
+			{
+				text-decoration : none;
+			}
+			span.admin_help img
+			{
+				border : 0;
+				vertical-align : middle;
+			}
+
+
+
 		/* --------------- */
 		/* Hack to sort    */
 		/* width on debug  */
@@ -253,7 +281,7 @@ class template_admin
 
 	<p class="admin_frame_top_left">
         <b>
-			<a href="{$back}" target="_top">Back to forum</a> -
+			<a href="{$back}" target="_top">Back to message board</a> -
 			<a href="{$logout}" >{$lang['admin_logout']}</a>
 		</b>
 	</p>
@@ -309,6 +337,40 @@ END;
 		return $breadcrumb;
 
 	}
+
+	function form_header_icon($icon_name)
+	{
+
+
+		$imgdir = IMGDIR;
+
+		return <<<END
+			<img src="{$imgdir}icons/{$icon_name}.png" class="header_icon" /> 
+END;
+
+	}
+
+
+
+	function help_button($text, $page, $action = "", $field = "")
+	{
+		
+		global $lang;
+        
+		if($text)
+			$text = $lang['help_button_text'];
+        
+		$imgdir = IMGDIR;
+
+		return <<<END
+			<span class="admin_help">
+				<a href="#" rel="{$page}|{$action}|{$field}">
+					{$text} <img src="{$imgdir}help.png" title="{$lang['help_button_text']}" />
+				</a>
+			</span>
+END;
+        
+        }
 
         //***********************************************
         // The Admin navigation menu bar thing jobby you know
