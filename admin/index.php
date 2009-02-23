@@ -490,7 +490,7 @@ switch(CURRENT_MODE)
 function form_admin_login_validate($form)
 {
 
-	global $db, $lang, $user;
+	global $db, $lang, $user, $output;
 	
 	if(!$form -> form_state['#username']['value'] || !$form -> form_state['#password']['value'])
 		return;

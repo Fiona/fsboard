@@ -112,7 +112,9 @@ class form
 		
 		# ---------------------------
 		# Checking form input
-		# ---------------------------		
+		# ---------------------------	
+		$reshow_form = False;
+	
 		$request = ($this -> form_state['meta']['method'] == "post") ? $_POST : $_GET;
 		
 		if(isset($request['form_'.$this -> form_state['meta']['name']]))
@@ -164,10 +166,11 @@ class form
 					{
 						global $output;
 						$output -> redirect($this -> form_state['meta']['redirect']['url'], $this -> form_state['meta']['redirect']['message']);						
+						return $ret;
 					}
 
-					return $ret;
-					
+					$reshow_form = True;
+				
 				}
 					
 			}
@@ -177,7 +180,7 @@ class form
 		# ---------------------------
 		# Creating the form HTML
 		# ---------------------------
-		if((!$this -> form_submitted) || ($this -> form_submitted && isset($this -> form_state['meta']['show_error'])))
+		if((!$this -> form_submitted) || ($this -> form_submitted && isset($this -> form_state['meta']['show_error'])) || $reshow_form)
 		{
 		
 			// If we have something to put before the form

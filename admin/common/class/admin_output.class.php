@@ -67,61 +67,48 @@ class admin_output extends output
 
         // --------------------------------------------------------------------------------
         
-        
+
         function return_help_button($field = "", $text = false)
         {
+			return $this -> help_button($field, $text);
+		}
         
-                global $cache, $page_matches;
-
-                $page = CURRENT_MODE;
-                $action = isset($page_matches['mode']) ? $page_matches['mode'] : "";
-
-                if(!$action)
-                {
-
-                        if(isset($cache -> cache['admin_area_help'][$page]['__yes__']))
-                                return $this -> return_help_button_html($text, $page);
-                        else
-                                return "";
-                }
-                elseif(!$field)
-                {
-                        if(isset($cache -> cache['admin_area_help'][$page][$action]['__yes__']))
-                                return $this -> return_help_button_html($text, $page, $action);
-                        else
-                                return "";
-                }
-                else
-                {
-                        if(isset($cache -> cache['admin_area_help'][$page][$action][$field]['__yes__']))
-                                return $this -> return_help_button_html($text, $page, $action, $field);
-                        else
-                                return "";
-                }
-                
-        }        
-
-
-
-        // --------------------------------------------------------------------------------
-        
-        
-        function return_help_button_html($text, $page, $action = "", $field = "")
+        function help_button($field = "", $text = false, $different_page = NULL, $different_action = NULL)
         {
         
-                global $lang;
-                
-                if($text)
-                        $text = $lang['help_button_text']." ";
+			global $cache, $page_matches, $template_admin;
+
+			$page = is_null($different_page) ? CURRENT_MODE : $different_page;
+
+			if(is_null($different_action))
+				$action = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+			else
+				$action = $different_action;
+
+			if(!$action)
+			{
+				if(isset($cache -> cache['admin_area_help'][$page]['__yes__']))
+					return $template_admin -> help_button($text, $page);
+				else
+					return "";
+			}
+			elseif(!$field)
+			{
+				if(isset($cache -> cache['admin_area_help'][$page][$action]['__yes__']))
+					return $template_admin -> help_button($text, $page, $action);
+				else
+					return "";
+			}
+			else
+			{
+				if(isset($cache -> cache['admin_area_help'][$page][$action][$field]['__yes__']))
+					return $template_admin -> help_button($text, $page, $action, $field);
+				else
+					return "";
+			}
+			
+        }        
         
-                return "<span class=\"adminhelpbutton\">
-                                <a class=\"adminhelplink\" href=\"javascript:open_admin_area_help('".$page."', '".$action."', '".$field."');\">
-                                        ".$text."
-                                        <img src=\"".IMGDIR."/help.png\" border=0  style=\"vertical-align : middle;\" title=\"".$lang['help_button_text']."\" />
-                                </a>
-                        </span>";
-        
-        }
                  
 }
 
