@@ -76,23 +76,15 @@ function page_main()
 	// ------------------
 	// Our form
 	// ------------------
-	$db -> basic_select(array(
-							"table" => "config_groups",
-							"where" => "`order` >= 0",
-							"order" => "`order`",
-							"dir" => "ASC"
-							));
+	$groups = config_get_config_groups();
 
-	if(!$db -> num_rows())
-	{
-		$output -> set_error_message($lang['error_no_config_groups']);
+	if($groups === False)
 		return False;
-	}
 
-	$groups = array();
+	$menu_groups = array();
 
-	while($group = $db -> fetch_array())
-		$groups[$group['name']] = $lang['config_dropdown_'.$group['name']];
+	foreach($groups as $group)
+		$menu_groups[$group['name']] = $lang['config_dropdown_'.$group['name']];
 
 	$form = new form(array(
 						 "meta" => array(
@@ -106,7 +98,7 @@ function page_main()
 						 "#config_menu" => array(
 							 "name" => $lang['admin_config_menu_input'],
 							 "type" => "dropdown",
-							 "options" => $groups,
+							 "options" => $menu_groups,
 							 "size" => 10,
 							 "required" => True
 							 ),
@@ -167,18 +159,14 @@ function page_main()
 function form_config_select_validate($form)
 {
    
-	global $db, $lang;
+	global $lang;
 
 	if(!$form -> form_state['#config_menu']['value'])
 		return;
 
-	$db -> basic_select(array(
-							"table" => "config_groups",
-							"where" => "name = '".$db -> escape_string($form -> form_state['#config_menu']['value'])."'",
-							"limit" => "1"
-							));
+	$group = config_get_single_config_group($form -> form_state['#config_menu']['value']);
 
-	if(!$db -> num_rows())
+	if($group === False)
 		$form -> set_error("config_menu", $lang['config_error_no_group']);        
 
 }
@@ -212,19 +200,12 @@ function form_config_select_complete($form)
 function form_config_group_add_validate($form)
 {
    
-	global $db, $lang;
+	global $lang;
 
 	// Check this group doesn't already exist
-	$db -> basic_select(
-		array(
-			"what" => "`name`",
-			"table" => "config_groups",
-			"where" => "name = '".$db -> escape_string($form -> form_state['#shortname']['value'])."'",
-			"limit" => "1"
-			)
-		);
+	$group = config_get_single_config_group($form -> form_state['#config_menu']['value']);
 
-	if($db -> num_rows())
+	if($group !== False)
 		$form -> set_error("shortname", $lang['config_group_add_error_exists']);
 
 }
@@ -240,51 +221,19 @@ function form_config_group_add_validate($form)
 function form_config_group_add_complete($form)
 {
    
-	global $db, $lang, $cache, $output;
+	global $lang, $output;
 
 	// Put the group in
-	$insert = $db -> basic_insert(
-		array(
-			"table" => "config_groups",
-			"data" => array(
-				"name" => $form -> form_state['#shortname']['value'],
-				"order" => $form -> form_state['#order']['value'],
-				)
-			)
+	$group_add = config_add_config_group(
+		$form -> form_state['#shortname']['value'],
+		$form -> form_state['#name']['value'],
+		$form -> form_state['#order']['value']
 		);
 
-	if(!$insert)
-	{
-		$output -> set_error_message($lang['config_group_add_error_insert']);
+	if($group_add === False)
 		return False;
-	}
 
-	// Create the phrase
-	$insert = $db -> basic_insert(
-		array(
-			"table" => "language_phrases",
-			"data" => array(
-				"language_id"	=> LANG_ID,
-				"variable_name" => "config_dropdown_".$form -> form_state['#shortname']['value'],
-				"group"			=> "admin_config",
-				"text"			=> $form -> form_state['#name']['value'],
-				"default_text"	=> $form -> form_state['#name']['value']
-				)
-			)
-		);
-
-	if(!$insert)
-	{
-		$output -> set_error_message($lang['config_group_add_error_phrase']);
-		return False;
-	}
-
-	// Update lang files, cache and redirect back to config place
-	require ROOT."admin/common/funcs/languages.funcs.php";
-	build_language_files(LANG_ID, "admin_config");        	
-
-	$cache -> update_cache("config");
-
+	// Redirect back to the main config page
 	$output -> redirect(l("admin/config/"), $lang['config_group_add_done']);        
 
 }
@@ -304,23 +253,15 @@ function page_group($config_group_name)
 	// ********************
 	// Group dropdown menu 
 	// ********************
-	$db -> basic_select(array(
-							"table" => "config_groups",
-							"where" => "`order` >= 0",
-							"order" => "`order`",
-							"dir" => "ASC"
-							));
+	$groups = config_get_config_groups();
 
-	if(!$db -> num_rows())
-	{
-		$output -> set_error_message($lang['error_no_config_groups']);
+	if($groups === False)
 		return False;
-	}
 
-	$groups = array();
+	$menu_groups = array();
 
-	while($group = $db -> fetch_array())
-		$groups[$group['name']] = $lang['config_dropdown_'.$group['name']];
+	foreach($groups as $group)
+		$menu_groups[$group['name']] = $lang['config_dropdown_'.$group['name']];
 
 	$form = new form(array(
 						 "meta" => array(
@@ -333,7 +274,7 @@ function page_group($config_group_name)
 						 "#config_menu" => array(
 							 "name" => $lang['admin_config_menu_input'],
 							 "type" => "dropdown",
-							 "options" => $groups,
+							 "options" => $menu_groups,
 							 "required" => True,
 							 "value" => $config_group_name
 							 ),
@@ -357,6 +298,8 @@ function page_group($config_group_name)
 	// ********************************
 	// The configuration settings form
 	// ********************************
+	$fields = config_get_config_fields($config_group_name);
+
 	$form_state = array(
 		"meta" => array(
 			"name" => "configuration_update",
@@ -365,21 +308,13 @@ function page_group($config_group_name)
 			)
 		);
 
-	$db -> basic_select(array(
-							"table" => "config",
-							"where" => "config_group = '".$db -> escape_string($config_group_name)."'",
-							"order" => "`order` ASC"
-							));
-	 
-	if(!$db -> num_rows())
-		$output -> set_error_message($lang['error_no_config_settings']);
-	else
+	if($fields !== False)
 	{
 
 		// go through all the fields in turn
 		$config_names = array();
 
-		while($config_field = $db -> fetch_array())
+		foreach($fields as $config_field)
 		{
 
 			$config_names[] = $config_field['name'];
@@ -507,16 +442,12 @@ function form_config_update_complete($form)
 	}
 
 
-	foreach($form -> form_state['meta']['config_names'] as $config_name)
-		$db -> basic_update(
-			array(
-				"table" => "config",
-				"data" => array("value" => _html_entity_decode($form -> form_state['#submit_config_'.$config_name]['value'])),
-				"where" => "`name` = '".$config_name."' AND `config_group` = '".$page_matches['group_name']."'"
-				)
-			);
+	$config_values = array();
 
-	$cache -> update_cache("config");
+	foreach($form -> form_state['meta']['config_names'] as $config_name)
+		$config_values[$config_name] = $form -> form_state['#submit_config_'.$config_name]['value'];
+
+	config_update_config_values($config_group_name, $config_values);
 
 	$output -> redirect(l("admin/config/show_group/".$page_matches['group_name']."/"), $lang['admin_config_updated']);
 
