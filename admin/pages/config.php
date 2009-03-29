@@ -175,7 +175,7 @@ function form_config_select_validate($form)
 /**
  * FORM FUNCTION
  * --------------
- * Completion funciton for selecting a new config group
+ * Completion funciton for selecting a config group
  *
  * @param object $form
  */
@@ -334,10 +334,21 @@ function page_group($config_group_name)
 
 			}
 
+
+			if($config_field['name'] == "clean_urls")
+			{
+				$desc = $output -> replace_number_tags(
+					$lang['admin_config_desc_'.$config_field['name']],
+					l("admin/index/check_friendly_urls/", true)
+					);
+			}
+			else
+				$desc = $lang['admin_config_desc_'.$config_field['name']];
+
 			// Form system will do the rest of the work for us
 			$form_state["#submit_config_".$config_field['name']] = array(
 				"name" => $lang['admin_config_name_'.$config_field['name']],
-				"description" => $lang['admin_config_desc_'.$config_field['name']],
+				"description" => $desc,
 				"type" => $config_field['config_type'],
 				"value" => _htmlspecialchars($config_field['value']),
 				"options" => $dropdown_options,
@@ -447,7 +458,7 @@ function form_config_update_complete($form)
 	foreach($form -> form_state['meta']['config_names'] as $config_name)
 		$config_values[$config_name] = $form -> form_state['#submit_config_'.$config_name]['value'];
 
-	config_update_config_values($config_group_name, $config_values);
+	config_update_config_values($page_matches['group_name'], $config_values);
 
 	$output -> redirect(l("admin/config/show_group/".$page_matches['group_name']."/"), $lang['admin_config_updated']);
 
@@ -467,16 +478,9 @@ function form_config_value_add_validate($form)
 	global $db, $lang, $page_matches;
 
 	// Check this value doesn't already exist
-	$db -> basic_select(
-		array(
-			"what" => "`name`",
-			"table" => "config",
-			"where" => "name = '".$db -> escape_string($form -> form_state['#shortname']['value'])."' AND `config_group` = '".$page_matches['group_name']."'",
-			"limit" => "1"
-			)
-		);
+	$field = config_get_single_config_field($page_matches['group_name'], $form -> form_state['#shortname']['value']);
 
-	if($db -> num_rows())
+	if($field !== False)
 		$form -> set_error("shortname", $lang['config_value_add_error_exists']);
 
 }
@@ -494,73 +498,21 @@ function form_config_value_add_complete($form)
    
 	global $db, $lang, $cache, $output, $page_matches;
 
-
-	// Put the value in
-	$insert = $db -> basic_insert(
-		array(
-			"table" => "config",
-			"data" => array(
-				"name" => $form -> form_state['#shortname']['value'],
-				"config_group" => $page_matches['group_name'],
-				"config_type" => $form -> form_state['#type']['value'],
-				"order" => $form -> form_state['#order']['value'],
-				"dropdown_values" => $form -> form_state['#dropdown_values']['value']
-				)
-			)
+	// Put the field in
+	$field_add = config_add_config_field(
+		$page_matches['group_name'],
+		$form -> form_state['#shortname']['value'],
+		$form -> form_state['#name']['value'],
+		$form -> form_state['#description']['value'],
+		$form -> form_state['#type']['value'],
+		$form -> form_state['#order']['value'],
+		$form -> form_state['#dropdown_values']['value']
 		);
 
-	if(!$insert)
-	{
-		$output -> set_error_message($lang['config_value_add_error_insert']);
+	if($field_add === False)
 		return False;
-	}
 
-
-	// Create the phrases
-	$insert = $db -> basic_insert(
-		array(
-			"table" => "language_phrases",
-			"data" => array(
-				"language_id"	=> LANG_ID,
-				"variable_name" => "admin_config_name_".$form -> form_state['#shortname']['value'],
-				"group"			=> "admin_config",
-				"text"			=> $form -> form_state['#name']['value'],
-				"default_text"	=> $form -> form_state['#name']['value']
-				)
-			)
-		);
-
-	if(!$insert)
-	{
-		$output -> set_error_message($lang['config_value_add_error_phrase']);
-		return False;
-	}
-
-	$insert = $db -> basic_insert(
-		array(
-			"table" => "language_phrases",
-			"data" => array(
-				"language_id"	=> LANG_ID,
-				"variable_name" => "admin_config_desc_".$form -> form_state['#shortname']['value'],
-				"group"			=> "admin_config",
-				"text"			=> $form -> form_state['#description']['value'],
-				"default_text"	=> $form -> form_state['#name']['value']
-				)
-			)
-		);
-
-	if(!$insert)
-	{
-		$output -> set_error_message($lang['config_value_add_error_phrase']);
-		return False;
-	}
-
-	// Update lang files, cache and redirect back to config place
-	require ROOT."admin/common/funcs/languages.funcs.php";
-	build_language_files(LANG_ID, "admin_config");        	
-
-	$cache -> update_cache("config");
-
+	// Redirect back to the main config page
 	$output -> redirect(l("admin/config/show_group/".$page_matches['group_name']."/"), $lang['config_value_add_done']);        
 
 }
@@ -654,15 +606,15 @@ function form_config_export_validate($form)
 	global $db, $lang;
 
 	// Select config groups
-	$form -> form_state['meta']['config_group_q'] = $db -> basic_select(
-		array(
-			"table" => "config_groups",
-			"order" => "`order`"
-			)
-		);
+	$groups = config_get_config_groups();
 
-	if(!$db -> num_rows())
+	if($groups === False)
+	{
 		$form -> set_error("shortname", $lang['getting_config_groups_error']);
+		return False;
+	}
+
+	$form -> form_state['meta']['config_group_q'] = $groups;
 
 }
 
@@ -679,61 +631,8 @@ function form_config_export_complete($form)
 
 	global $db, $lang;
 
-	$xml = new xml;
-	$xml -> export_xml_start();
-	$xml -> export_xml_root("configuration_file");
-
-	while($config_group = $db -> fetch_array($form -> form_state['meta']['config_group_q']))
-	{
-
-		// Start off the group
-		$xml -> export_xml_start_group(
-			"config_group",
-			array(
-				"name" => $config_group['name'],
-				"order" => $config_group['order']
-				)
-			);
-
-		// Select the configuration in this group
-		$db -> basic_select(
-			array(
-				"table" => "config",
-				"where" => "`config_group` = '".$config_group['name']."'"
-				)
-			);
-
-		if($db -> num_rows())
-		{
-
-			while($config_array = $db -> fetch_array())
-			{
-
-				// Add the entry
-				$xml -> export_xml_add_group_entry(
-					"config",
-					array(
-						"name" => $config_array['name'],
-						"config_type" => $config_array['config_type'],
-						"dropdown_values" => $config_array['dropdown_values'],
-						"order" => $config_array['order']                                                
-						),
-					trim($config_array['value'])
-					);
-				
-			}
-
-		}
-		 
-		// Finish group
-		$xml -> export_xml_generate_group();
-
-	}
-
-	// Finish XML'ing and chuck the file out
-	$xml -> export_xml_generate();
-
-	output_file($xml -> export_xml, $form -> form_state['#filename']['value'], "text/xml");
+	$config_xml_text = config_get_exported_config_groups($form -> form_state['meta']['config_group_q']);
+	output_file($config_xml_text, $form -> form_state['#filename']['value'], "text/xml");
 
 }
 
@@ -777,7 +676,7 @@ function form_config_import_complete($form)
 
 	global $output, $lang, $db, $template_global, $cache;
 
-	$get_error = import_config_xml(
+	$get_error = config_import_config_xml(
 		file_get_contents($form -> form_state['meta']['real_filename'])
 		);
 

@@ -267,11 +267,13 @@ function end_debug_timer()
  * Returns a link relative to the current URL if clean urls is on, otherwise
  * gives back a url with a query string appended.
  * 
- * @param $path Path to something on the board we want, relative
+ * @param string $path Path to something on the board we want, relative
  * 		to board root and without following slash.
- * @param string Correct path.
+ * @param bool $force_friendly_url Setting this to true will force l() to return
+ *      a path for a friendly URL, ignoring any settings.
+ * @return string Correct path.
  */
-function l($path)
+function l($path, $force_friendly_url = False)
 {
 	
 	global $cache;
@@ -279,7 +281,14 @@ function l($path)
 	$relative_path = parse_url($cache -> cache['config']['board_url'], PHP_URL_PATH);
 	$relative_path = ($relative_path[0] != "/") ? "/".$relative_path : $relative_path;
 
-	if($cache -> cache['config']['clean_urls'])
+	// Check for being in the admin area
+	if(substr($path, 0, 6) == "admin/")
+	{
+		$relative_path .= "/admin";
+		$path = substr($path, 6);
+	}
+
+	if($force_friendly_url || $cache -> cache['config']['clean_urls'])
 		return $relative_path."/".$path;
 	else
 		return $relative_path."/?q=".$path;

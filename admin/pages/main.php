@@ -41,12 +41,18 @@ if(CURRENT_MODE == "phpinfo") die(phpinfo());
 //***********************************************
 load_language_group("admin_main");
 
-page_main();
+if(isset($page_matches['mode']) && $page_matches['mode'] == "check_friendly_urls")
+	page_check_friendly_urls();
+else
+	page_main();
 
 
-//***********************************************
-// Just give us the page.
-//***********************************************
+/**
+ * Main page of the admin area
+ * It provides an introduction to the admin area including the help system,
+ * an easy access to search for users, a place to store admin only notes and
+ * provides various bits of information about the system environment.
+ */
 function page_main()
 {
 	global $db, $output, $lang, $cache, $template_global;
@@ -230,5 +236,26 @@ function form_admin_notes_complete($form)
 
 }
 
+
+
+
+/**
+ * Friendly URL check
+ * This page purely exists to make sure friendly urls work. Simply 
+ * gives a message going "yup".
+ */
+function page_check_friendly_urls()
+{
+
+	global $db, $output, $lang, $cache, $template_global;
+
+	$output -> add(
+		$template_global -> generic_info_wrapper(
+			$lang['admin_friendly_urls_title'],
+			$template_global -> generic_info_content($lang['admin_friendly_urls_message'])
+			)
+	);
+
+}
 
 ?>
