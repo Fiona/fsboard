@@ -2,36 +2,22 @@
 /* 
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
 FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       Managing Users          *
-*       Started by Fiona        *
-*       15th Feb 2006           *
-*********************************
-*       Last edit by Fiona      *
-*       02nd Sep 2007           *
-*********************************
-
 */
+
+/**
+ * Admin area - User management
+ * 
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Admin
+ */
 
 
 
@@ -44,19 +30,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
 // Is this a dagger I see before me? NO!
-//***********************************************
 load_language_group("admin_users");
 
 
-//***********************************************
 // Functions please Jeeves..
-//***********************************************
 include ROOT."admin/common/funcs/users.funcs.php";
 
 
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_users'], l("admin/users/"));
 
+
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
+{
+	case "add":
+		page_add_user();
+		break;
+
+	case "search":
+		page_search_users();
+		break;
+
+	case "edit":
+		page_edit_user($page_matches['user_id']);
+		break;
+
+	default:
+		page_search_users();
+
+}
+
+/*
 $_GET['m2'] = ($_GET['m2']) ? $_GET['m2'] : "search";
 $secondary_mode = $_GET['m2'];
 
@@ -138,51 +145,129 @@ switch($secondary_mode)
                 break;
                 
 }
+*/
 
 
-
-
-//***********************************************
-// Add a user form
-//***********************************************
-function page_add_user($user_info = "")
+/**
+ * Page to create a new user
+ */
+function page_add_user()
 {
 
-        global $output, $lang, $db, $template_admin;
+	global $output, $lang, $db, $template_admin;
 
-        // Keep the groups in arrays
-        $db -> basic_select("user_groups", "id,name", "", "id", "", "asc");
+	$output -> page_title = $lang['add_user_title'];
+	$output -> add_breadcrumb($lang['breadcrumb_users_add'], l("admin/users/add/"));
 
-        while($g_array = $db -> fetch_array())
-        {
-                $dropdown_values[] .= $g_array['id'];
-                $dropdown_text[] .= $g_array['name'];
-        }
+	// Get a list of user groups for the form
+	include ROOT."admin/common/funcs/usergroups.funcs.php";
+	$groups = usergroups_get_groups();
 
-        // *********************
-        // Set page title
-        // *********************
-        $output -> page_title = $lang['add_user_title'];
+	$dropdown_options = array();
 
-        $output -> add_breadcrumb($lang['breadcrumb_users_add'], "index.php?m=users&amp;m2=add");
-        
-        // Create classes
-        $table = new table_generate;
-        $form = new form_generate;
+	foreach($groups as $group_id => $group_info)
+		$dropdown_options[$group_id] = $group_info['name'];
 
-        // Fooooorm
-        $output -> add(
-                $form -> start_form("adduser", ROOT."admin/index.php?m=users&amp;m2=doadd", "post").
-                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
-                $table -> add_top_table_header($lang['add_user_title'], 2, "users_and_groups").
-                $table -> simple_input_row_text($form, $lang['add_user_form_username'], "username", $user_info['username'], "username").     
-                $table -> simple_input_row_text($form, $lang['add_user_form_password'], "password", $user_info['password'], "password").     
-                $table -> simple_input_row_text($form, $lang['add_user_form_email'], "email", $user_info['email'], "email").     
-                $table -> simple_input_row_dropdown($form, $lang['add_user_form_usergroup'], "user_group", $user_info['user_group'], $dropdown_values, $dropdown_text, "usergroup").     
-                $table -> add_submit_row($form, "submit", $lang['add_user_submit']).
-                $table -> end_table().
-                $form -> end_form()
-        );
+	// Add user form
+	$form = new form(
+		array(
+			"meta" => array(
+				"name" => "user_add",
+				"title" => $lang['add_user_title'],
+				"extra_title_contents_left" => $output -> help_button("", True).$template_admin -> form_header_icon("users"),
+				"validation_func" => "form_users_add_validate",
+				"complete_func" => "form_users_add_complete"
+				),
+			"#username" => array(
+				"name" => $lang['add_user_form_username'],
+				"type" => "text",
+				"required" => True,
+				"extra_field_contents_left" => $output -> help_button("username", False)
+				),
+			"#password" => array(
+				"name" => $lang['add_user_form_password'],
+				"type" => "text",
+				"required" => True,
+				"extra_field_contents_left" => $output -> help_button("password", False)
+				),
+			"#email" => array(
+				"name" => $lang['add_user_form_email'],
+				"type" => "text",
+				"required" => True,
+				"extra_field_contents_left" => $output -> help_button("email", False)
+				),
+			"#user_group" => array(
+				"name" => $lang['add_user_form_usergroup'],
+				"type" => "dropdown",
+				"options" => $dropdown_options,
+				"required" => True,
+				"extra_field_contents_left" => $output -> help_button("usergroup", False)
+				),
+			"#submit" => array(
+				"type" => "submit",
+				"value" => $lang['add_user_submit']
+				)
+			)
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for creating a new user
+ *
+ * @param object $form
+ */
+function form_users_add_validate($form)
+{
+   
+	global $db, $lang, $page_matches;
+
+	$form -> form_state['#email']['value'] = users_sanitise_email_address($form -> form_state['#email']['value']);
+
+	$error = users_add_verify_username($form -> form_state['#username']['value'], True);
+	if($error !== True)
+		$form -> set_error("username", $error);
+
+	$error = users_verify_password($form -> form_state['#password']['value'], True);
+	if($error !== True)
+		$form -> set_error("password", $error);
+
+	$error = users_verify_email($form -> form_state['#email']['value'], True);
+	if($error !== True)
+		$form -> set_error("email", $error);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for creating a new user
+ *
+ * @param object $form
+ */
+function form_users_add_complete($form)
+{
+
+	global $output, $lang;
+
+	$new_user_id = users_add_user(
+		$form -> form_state['#username']['value'],
+		$form -> form_state['#password']['value'],
+		$form -> form_state['#email']['value'],
+		$form -> form_state['#user_group']['value']
+		);
+
+	if($new_user_id === False)
+		return False;
+
+	$output -> redirect(l("admin/users/edit/".$new_user_id."/"), $lang['user_added_sucessfully']);
 
 }
 
@@ -191,10 +276,11 @@ function page_add_user($user_info = "")
 //***********************************************
 // Add a user now kthnxbai
 //***********************************************
+/*
 function do_add_user()
 {
 
-        global $output, $lang, $db, $template_admin;
+	global $output, $lang, $db, $template_admin;
 
         $user_info = array(
                 "username" => trim(stripslashes($_POST['username'])),
@@ -285,6 +371,7 @@ function do_add_user()
         $output -> redirect(ROOT."admin/index.php?m=users&amp;m2=edit&amp;id=".$user_id, $lang['user_added_sucessfully']);
 
 }
+*/
 
 
 
@@ -585,6 +672,409 @@ function do_search_users($search_info = "")
 
 
 
+
+/**
+ * Page to edit an existing user
+ */
+function page_edit_user($user_id)
+{
+
+	global $output, $lang, $template_admin;
+
+	// Get the user info
+	$user_info = users_get_user_by_id($user_id);
+
+	if($user_info === False)
+	{
+		$output -> set_error_message($lang['invalid_user_id']);
+		return;
+	}
+
+        
+	// Sort out the birthday vaules
+	$user_info['birthday'] = array(
+		"day" => $user_info['birthday_day'],
+		"month" => $user_info['birthday_month'],
+		"year" => $user_info['birthday_year']
+		);
+
+	// Expand secondary usergroups
+	$user_info['user_groups_secondary_expanded'] = array();
+	foreach(explode(",", $user_info['secondary_user_group']) as $val)
+		$user_info['user_groups_secondary_expanded'][$val] = 1;         
+
+	// Build the timezone dropdown
+	$time_offset_dropdown = array(
+		-12 => $lang['timezone_gmt_minus_12'],
+		-11 => $lang['timezone_gmt_minus_11'],
+		-10 => $lang['timezone_gmt_minus_10'],
+		-9 => $lang['timezone_gmt_minus_9'],
+		-8 => $lang['timezone_gmt_minus_8'],
+		-7 => $lang['timezone_gmt_minus_7'],
+		-6 => $lang['timezone_gmt_minus_6'],
+		-5 => $lang['timezone_gmt_minus_5'],
+		-4 => $lang['timezone_gmt_minus_4'],
+		-3 => $lang['timezone_gmt_minus_3'],
+		-2 => $lang['timezone_gmt_minus_2'],
+		-1 => $lang['timezone_gmt_minus_1'],
+		0 => $lang['timezone_gmt'],
+		1 => $lang['timezone_gmt_plus_1'],
+		2 => $lang['timezone_gmt_plus_2'],
+		3 => $lang['timezone_gmt_plus_3'],
+		4 => $lang['timezone_gmt_plus_4'],
+		5 => $lang['timezone_gmt_plus_5'],
+		6 => $lang['timezone_gmt_plus_6'],
+		7 => $lang['timezone_gmt_plus_7'],
+		8 => $lang['timezone_gmt_plus_8'],
+		9 => $lang['timezone_gmt_plus_9'],
+ 		10 => $lang['timezone_gmt_plus_10'],
+		11 => $lang['timezone_gmt_plus_11'],
+		12 => $lang['timezone_gmt_plus_12']
+        );
+
+	// Get data for user groups fields
+	include ROOT."admin/common/funcs/usergroups.funcs.php";
+	$groups = usergroups_get_groups();
+
+	$user_groups_options = array();
+
+	foreach($groups as $group_id => $group_info)
+		$user_groups_options[$group_id] = $group_info['name'];
+
+
+	// Get data for language selection
+	include ROOT."admin/common/funcs/languages.funcs.php";
+	$langs = languages_get_languages();
+
+	$languages_options = array(-1 => $lang['edit_user_board_default']);
+
+	foreach($langs as $lang_id => $lang_info)
+		$languages_options[$lang_id] = $lang_info['name'];
+
+
+	// Get data for theme selection
+	include ROOT."admin/common/funcs/themes.funcs.php";
+	$themes = themes_get_themes(False);
+
+	$themes_options = array(-1 => $lang['edit_user_board_default']);
+
+	foreach($themes as $theme_id => $theme_info)
+		$themes_options[$theme_id] = $theme_info['name'];
+
+
+	// Set up the page
+	$output -> page_title = $output -> replace_number_tags($lang['edit_user_title'], array($user_info['username']));
+	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
+
+	$form = new form(
+		array(
+			"meta" => array(
+				"name" => "edit_user",
+				"title" => $output -> page_title,
+				"validation_func" => "form_users_edit_user_validate",
+				"complete_func" => "form_users_edit_user_complete",
+				"description" => "[ <b>".$lang['edit_user_edit_profile']."</b>".
+					" -  <a href=\"".l("admin/users/edit/".$user_id."/username/")."\">".$lang['edit_user_change_username']."</a>".
+					" - <a href=\"".l("admin/users/edit/".$user_id."/password/")."\">".$lang['edit_user_change_password']."</a>".
+					" - <a href=\"".l("admin/users/delete/".$user_id."/")."\">".$lang['edit_user_delete_user']."</a> ]",
+				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
+				"data_user_groups" => $groups,
+				"data_languages" => $langs,
+				"data_themes" => $themes
+				),
+			// ----------------
+			// Profile info
+			// ----------------
+			"profile_info_title" => array(
+				"title" => $lang['edit_user_profile_info_title'],
+				"type" => "message"
+				),
+			"#email" => array(
+				"name" => $lang['edit_user_email'],
+				"type" => "text",
+				"value" => $user_info['email'],
+				"required" => True,
+				),
+			"#user_group" => array(
+				"name" => $lang['edit_user_usergroup'],
+				"type" => "dropdown",
+				"value" => $user_info['user_group'],
+				"options" => $user_groups_options,
+				"required" => True,
+				),
+			"#user_group_secondary" => array(
+				"name" => $lang['edit_user_usergroup_secondary'],
+				"type" => "checkboxes",
+				"value" => $user_info['user_groups_secondary_expanded'],
+				"options" => $user_groups_options
+				),
+			"#title" => array(
+				"name" => $lang['edit_user_usertitle'],
+				"type" => "text",
+				"value" => $user_info['title']
+				),
+			"#real_name" => array(
+				"name" => $lang['edit_user_real_name'],
+				"type" => "text",
+				"value" => $user_info['real_name']
+				),
+			"#homepage" => array(
+				"name" => $lang['edit_user_homepage'],
+				"type" => "text",
+				"value" => $user_info['homepage']
+				),
+			"#yahoo_messenger" => array(
+				"name" => $lang['edit_user_yahoo_messenger'],
+				"type" => "text",
+				"value" => $user_info['yahoo_messenger']
+				),
+			"#aol_messenger" => array(
+				"name" => $lang['edit_user_aol_messenger'],
+				"type" => "text",
+				"value" => $user_info['aol_messenger']
+				),
+			"#msn_messenger" => array(
+				"name" => $lang['edit_user_msn_messenger'],
+				"type" => "text",
+				"value" => $user_info['msn_messenger']
+				),
+			"#icq_messenger" => array(
+				"name" => $lang['edit_user_icq_messenger'],
+				"type" => "text",
+				"value" => $user_info['icq_messenger']
+				),
+			"#gtalk_messenger" => array(
+				"name" => $lang['edit_user_gtalk_messenger'],
+				"type" => "text",
+				"value" => $user_info['gtalk_messenger']
+				),
+			"#birthday" => array(
+				"name" => $lang['edit_user_birthday'],
+				"type" => "date",
+				"value" => $user_info['birthday']
+				),
+			"#signature" => array(
+				"name" => $lang['edit_user_signature'],
+				"type" => "textarea",
+				"value" => _htmlentities($user_info['signature'])
+				),
+			"#posts" => array(
+				"name" => $lang['edit_user_posts'],
+				"type" => "int",
+				"value" => $user_info['posts']
+				),
+
+			// ----------------
+			// Display settings
+			// ----------------
+			"display_title" => array(
+				"title" => $lang['edit_user_display_title'],
+				"type" => "message"
+				),
+			"#language" => array(
+				"name" => $lang['edit_user_language'],
+				"type" => "dropdown",
+				"value" => $user_info['language'],
+				"options" => $languages_options
+				),
+			"#theme" => array(
+				"name" => $lang['edit_user_theme'],
+				"type" => "dropdown",
+				"value" => $user_info['theme'],
+				"options" => $themes_options
+				),
+
+			// ----------------
+			// Board settings
+			// ----------------
+			"board_settings_title" => array(
+				"title" => $lang['edit_user_board_settings_title'],
+				"type" => "message"
+				),
+			"#hide_email" => array(
+				"name" => $lang['edit_user_hide_email'],
+				"type" => "yesno",
+				"value" => $user_info['hide_email']
+				),
+			"#view_sigs" => array(
+				"name" => $lang['edit_user_view_sigs'],
+				"type" => "yesno",
+				"value" => $user_info['view_sigs']
+				),
+			"#view_avatars" => array(
+				"name" => $lang['edit_user_view_avatars'],
+				"type" => "yesno",
+				"value" => $user_info['view_avatars']
+				),
+			"#view_images" => array(
+				"name" => $lang['edit_user_view_images'],
+				"type" => "yesno",
+				"value" => $user_info['view_images']
+				),
+			"#email_new_pm" => array(
+				"name" => $lang['edit_user_email_new_pm'],
+				"type" => "yesno",
+				"value" => $user_info['email_new_pm']
+				),
+			"#email_from_admin" => array(
+				"name" => $lang['edit_user_email_from_admin'],
+				"type" => "yesno",
+				"value" => $user_info['email_from_admin']
+				),
+
+			// ----------------
+			// Time settings
+			// ----------------
+			"time_title" => array(
+				"title" => $lang['edit_user_time_title'],
+				"type" => "message"
+				),
+			"#time_offset" => array(
+				"name" => $lang['edit_user_time_offset'],
+				"type" => "dropdown",
+				"value" => $user_info['time_offset'],
+				"options" => $time_offset_dropdown
+				),
+			"#dst_on" => array(
+				"name" => $lang['edit_user_dst_on'],
+				"type" => "yesno",
+				"value" => $user_info['dst_on']
+				),
+			"#registered" => array(
+				"name" => $lang['edit_user_registered'],
+				"type" => "date",
+				"value" => $user_info['registered']
+				),
+			"#last_active" => array(
+				"name" => $lang['edit_user_last_active'],
+				"type" => "date",
+				"value" => $user_info['last_active'],
+				"time" => True
+				),
+			"#last_post_date" => array(
+				"name" => $lang['edit_user_last_post_date'],
+				"type" => "date",
+				"value" => $user_info['last_post_time'],
+				"time" => True
+				),
+
+			)
+
+		);
+
+	
+	// ------------------
+	// Custom profile fields
+	// ------------------
+	include ROOT."admin/common/funcs/profilefields.funcs.php";
+	$fields = profilefields_get_fields();
+
+	if(count($fields) > 0)
+	{
+        
+		$form -> form_state['custom_fields_title'] = array(
+			"title" => $lang['edit_user_custom_fields_title'],
+			"type" => "message"
+			);
+
+		// We have some fields, go through them...
+		foreach($fields as $key => $f_array)
+		{
+
+			$form -> form_state["#field_".$key] = array(
+				"name" => $f_array['name'],
+				"description" => $f_array['description'],
+			);
+
+			if($f_array['field_type'] != "yesno" && $f_array['size'])
+				$form -> form_state["#field_".$key]['size'] = $f_array['size'];
+			
+			// What input?
+			switch($f_array['field_type'])
+			{
+					
+				case "yesno":
+					$form -> form_state["#field_".$key]['type'] = "yesno";
+					break;
+
+				case "textbox":
+					$form -> form_state["#field_".$key]['type'] = "textarea";
+					break;
+
+				case "dropdown":
+					$dropdown_values = explode('|', $f_array['dropdown_values']);
+					$dropdown_text = explode('|', $f_array['dropdown_text']);
+
+					$options = array();
+                                        
+					foreach($dropdown_values as $key2 => $val)
+						$options[trim($val)] = trim($dropdown_text[$key2]);
+
+					$form -> form_state["#field_".$key]['type'] = "dropdown";
+					$form -> form_state["#field_".$key]['options'] = $options;
+					break;
+					
+				case "text":
+				default:
+					$form -> form_state["#field_".$key]['type'] = "text";
+					
+			}
+
+			if($f_array['must_be_filled'])
+				$form -> form_state["#field_".$key]['required'] = True;
+			
+		}
+		
+	}
+
+
+	// ------------------
+	// Submit button
+	// ------------------
+	$form -> form_state['#submit'] = array(
+		"type" => "submit",
+		"value" => $lang['edit_user_submit']
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for editing an existing user
+ *
+ * @param object $form
+ */
+function form_users_edit_user_validate($form)
+{
+
+	global $db, $page_matches, $user, $lang;
+	
+	// Cannot edit your own primary user group
+	if($user -> user_id == $page_matches['user_id'] && $user -> info['user_group'] != $form -> form_state['#user_group']['value'])
+		$form -> set_error("user_group", $lang['cant_edit_own_group']);        
+
+	// Check email is alright
+	$form -> form_state['#email']['value'] = users_sanitise_email_address($form -> form_state['#email']['value']);
+
+	$error = users_verify_email($form -> form_state['#email']['value'], True);
+	if($error !== True)
+		$form -> set_error("email", $error);
+
+	// Check theme
+	if($form -> form_state['#theme']['value'] != -1 && !array_key_exists($form -> form_state['#theme']['value'], $form -> form_state['meta']['data_themes']))
+		$form -> set_error("theme", $lang['edit_user_invalid_theme']);
+
+	// Check language
+	if($form -> form_state['#language']['value'] != -1 && !array_key_exists($form -> form_state['#language']['value'], $form -> form_state['meta']['data_languages']))
+		$form -> set_error("language", $lang['edit_user_invalid_language']);
+
+}
+
+/*
 //***********************************************
 // Edit one user
 //***********************************************
@@ -876,6 +1366,7 @@ function page_edit_user($user_info = "")
         );
                 
 }
+*/
 
 
 

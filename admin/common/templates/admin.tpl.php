@@ -370,314 +370,314 @@ END;
 			</span>
 END;
         
-        }
+	}
 
-        //***********************************************
-        // The Admin navigation menu bar thing jobby you know
-        //***********************************************
-        function admin_menu()
-        {
-        
-                global $lang, $cache, $output;
+	//***********************************************
+	// The Admin navigation menu bar thing jobby you know
+	//***********************************************
+	function admin_menu()
+	{
+		
+		global $lang, $cache, $output;
 
-                // *****************
-                // Admin logo
-                // *****************
-                $return = '   
-                        <p align="center" class="small_text" style="margin : 10px">
-                                <img src="'.IMGDIR.'adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
-                                <a href="'.l("admin/").'">'.$lang['admin_menu_home'].'</a>
-                        </p>';
-        
+		// *****************
+		// Admin logo
+		// *****************
+		$return = '	  
+						<p align="center" class="small_text" style="margin : 10px">
+								<img src="'.IMGDIR.'adminlogo.png" alt="'.$cache -> cache['config']['board_name'].'"><br />
+								<a href="'.l("admin/").'">'.$lang['admin_menu_home'].'</a>
+						</p>';
+		
 
-                // *****************
-                // General                
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
+		// *****************
+		// General				  
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_configuration'], l("admin/config/"));
-				$return .= $this -> generate_menu_entry($lang['admin_menu_config_maintenance'], l("admin/config/show_group/maintenance/"), true);
-				$return .= $this -> generate_menu_entry($lang['admin_menu_config_import'], l("admin/config/backup/"));
-                $return .= $this -> generate_menu_header("general");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_configuration'], l("admin/config/"));
+		$return .= $this -> generate_menu_entry($lang['admin_menu_config_maintenance'], l("admin/config/show_group/maintenance/"), true);
+		$return .= $this -> generate_menu_entry($lang['admin_menu_config_import'], l("admin/config/backup/"));
+		$return .= $this -> generate_menu_header("general");
 
-                $return .= $this -> generate_menu_move_a_bit();
+		$return .= $this -> generate_menu_move_a_bit();
 
-                // *****************
-				// Forums
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_configure_forums'], ROOT."admin/index.php?m=forums");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_forum'], ROOT."admin/index.php?m=forums&amp;m2=add");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_moderators'], ROOT."admin/index.php?m=moderators");
-                $return .= $this -> generate_menu_header("forums", "*** ");
-                
-                $return .= "</div>";
+		// *****************
+		// Forums
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_configure_forums'], ROOT."admin/index.php?m=forums");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_forum'], ROOT."admin/index.php?m=forums&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_moderators'], ROOT."admin/index.php?m=moderators");
+		$return .= $this -> generate_menu_header("forums", "*** ");
+				
+		$return .= "</div>";
 
-                // *****************
-				// Users
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_2\">";
+		// *****************
+		// Users
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_2\">";
 
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_new_user'], ROOT."admin/index.php?m=users&amp;m2=add");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_users'], ROOT."admin/index.php?m=users&m2=search");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_ip'], ROOT."admin/index.php?m=users&m2=ipsearch");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_profile_fields'], ROOT."admin/index.php?m=profilefields");
-                $return .= $this -> generate_menu_header("users", "*** ");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_new_user'], l("admin/users/add/"));
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_users'], l("admin/users/search/"));
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_ip'], l("admin/users/ipsearch/"));
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_profile_fields'], l("admin/profile_fields/"));
+		$return .= $this -> generate_menu_header("users", "*** ");
 
-                $return .= $this -> generate_menu_move_a_bit();
-                
+		$return .= $this -> generate_menu_move_a_bit();
+				
 
-                // *****************
-				// Usergroups
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_user_groups'], ROOT."admin/index.php?m=usergroups");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_promotions'], ROOT."admin/index.php?m=promotions");
-                $return .= $this -> generate_menu_header("usergroups", "*** ");
+		// *****************
+		// Usergroups
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_user_groups'], ROOT."admin/index.php?m=usergroups");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_promotions'], ROOT."admin/index.php?m=promotions");
+		$return .= $this -> generate_menu_header("usergroups", "*** ");
 
-                $return .= "</div>";
-                                
-                // *****************
-				// Titles, insignia, reputations
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_3\">";
-                
-                $return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_titles'], ROOT."admin/index.php?m=titles");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_insignia'], ROOT."admin/index.php?m=insignia");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_reputation'], ROOT."admin/index.php?m=reputations");
-                $return .= $this -> generate_menu_header("titles_insignia_reputation", "*");
+		$return .= "</div>";
+								
+		// *****************
+		// Titles, insignia, reputations
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_3\">";
+				
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_titles'], ROOT."admin/index.php?m=titles");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_insignia'], ROOT."admin/index.php?m=insignia");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_reputation'], ROOT."admin/index.php?m=reputations");
+		$return .= $this -> generate_menu_header("titles_insignia_reputation", "*");
 
-                $return .= $this -> generate_menu_move_a_bit();
+		$return .= $this -> generate_menu_move_a_bit();
 
-                // *****************
-				// Titles, insignia, reputations
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_send_mail'], ROOT."admin/index.php?m=mailer");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs", true);
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
-                $return .= $this -> generate_menu_header("mailer", "*** ");
+		// *****************
+		// Titles, insignia, reputations
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_send_mail'], ROOT."admin/index.php?m=mailer");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs", true);
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
+		$return .= $this -> generate_menu_header("mailer", "*** ");
 
-                $return .= "</div>";
-        
-                // *****************
-				// Emoticons
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_4\">";
+		$return .= "</div>";
+		
+		// *****************
+		// Emoticons
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_4\">";
 
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_emoticons'], ROOT."admin/index.php?m=emoticons");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("emoticons", "*** ");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_emoticons'], ROOT."admin/index.php?m=emoticons");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=importexport");
+		$return .= $this -> generate_menu_header("emoticons", "*** ");
 
-                $return .= $this -> generate_menu_move_a_bit();
+		$return .= $this -> generate_menu_move_a_bit();
 
-                // *****************
-                // Avatars
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_avatars'], ROOT."admin/index.php?m=avatars");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=add");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("avatars", "*** ");
+		// *****************
+		// Avatars
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_avatars'], ROOT."admin/index.php?m=avatars");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=importexport");
+		$return .= $this -> generate_menu_header("avatars", "*** ");
 
-                $return .= $this -> generate_menu_move_a_bit();
+		$return .= $this -> generate_menu_move_a_bit();
 
-                // *****************
-                // Post icons
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_post_icons'], ROOT."admin/index.php?m=posticons");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=add");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("post_icons", "*** ");
-                
-                $return .= "</div>";
+		// *****************
+		// Post icons
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_post_icons'], ROOT."admin/index.php?m=posticons");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=importexport");
+		$return .= $this -> generate_menu_header("post_icons", "*** ");
+				
+		$return .= "</div>";
 
-                // *****************
-				// Attatchments
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_5\">";
+		// *****************
+		// Attatchments
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_5\">";
 
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_filetypes'], ROOT."admin/index.php?m=attachments&amp;m2=filetypes");
-                $return .= $this -> generate_menu_header("attachments", "*");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_filetypes'], ROOT."admin/index.php?m=attachments&amp;m2=filetypes");
+		$return .= $this -> generate_menu_header("attachments", "*");
 
-                $return .= $this -> generate_menu_move_a_bit();
-                
-                // *****************
-                // BBCode
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
-                $return .= $this -> generate_menu_header("bbcode", "*** ");
+		$return .= $this -> generate_menu_move_a_bit();
+				
+		// *****************
+		// BBCode
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
+		$return .= $this -> generate_menu_header("bbcode", "*** ");
 
-                $return .= $this -> generate_menu_move_a_bit();
-                
-                // *****************
-                // Word filter
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_wordfilter'], ROOT."admin/index.php?m=wordfilter");
-                $return .= $this -> generate_menu_header("wordfilter_title", "*** ");
-                
-                $return .= "</div>";
-                
-                // *****************
-				// Templates and themes
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_6\">";
-                
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_templates'], ROOT."admin/index.php?m=templates");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_export_templates'], ROOT."admin/index.php?m=templates&amp;m2=importexport");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_themes'], ROOT."admin/index.php?m=themes");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_export_themes'], ROOT."admin/index.php?m=themes&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("templates_and_themes", "*** ");
-                
-                $return .= $this -> generate_menu_move_a_bit();
-                                
-                // *****************
-				// Languages
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_language_manager'], ROOT."admin/index.php?m=langs");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_in_phrases'], ROOT."admin/index.php?m=langs&amp;m2=search");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_language_import'], ROOT."admin/index.php?m=langs&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("languages_and_phrases", "*** ");
-                
-                $return .= "</div>";
-                                
-                // *****************
-				// Cache and logs
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_7\">";
-                
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_cache'], ROOT."admin/index.php?m=cache");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_admin_logs'], ROOT."admin/index.php?m=adminlogs");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_error_logs'], ROOT."admin/index.php?m=emaillogs&amp;error=1");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
-                $return .= $this -> generate_menu_header("cache_and_logs", "*** ");
-                
-                $return .= $this -> generate_menu_move_a_bit();
-                
-                // *****************
-				// SQL Tools
-                // *****************
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_explorer'], ROOT."admin/index.php?m=sqltools");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_query'], ROOT."admin/index.php?m=sqltools&amp;m2=query");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_backup'], ROOT."admin/index.php?m=sqltools&amp;m2=backup");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_server_status'], ROOT."admin/index.php?m=sqltools&amp;m2=serverstatus");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_system_vars'], ROOT."admin/index.php?m=sqltools&amp;m2=systemvars");
-                $return .= $this -> generate_menu_header("sql_tools", "*** ");
-                
-                $return .= "</div>";                
+		$return .= $this -> generate_menu_move_a_bit();
+				
+		// *****************
+		// Word filter
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_wordfilter'], ROOT."admin/index.php?m=wordfilter");
+		$return .= $this -> generate_menu_header("wordfilter_title", "*** ");
+				
+		$return .= "</div>";
+				
+		// *****************
+		// Templates and themes
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_6\">";
+				
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_templates'], ROOT."admin/index.php?m=templates");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_export_templates'], ROOT."admin/index.php?m=templates&amp;m2=importexport");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_themes'], ROOT."admin/index.php?m=themes");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_export_themes'], ROOT."admin/index.php?m=themes&amp;m2=importexport");
+		$return .= $this -> generate_menu_header("templates_and_themes", "*** ");
+				
+		$return .= $this -> generate_menu_move_a_bit();
+								
+		// *****************
+		// Languages
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_language_manager'], ROOT."admin/index.php?m=langs");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_in_phrases'], ROOT."admin/index.php?m=langs&amp;m2=search");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_language_import'], ROOT."admin/index.php?m=langs&amp;m2=importexport");
+		$return .= $this -> generate_menu_header("languages_and_phrases", "*** ");
+				
+		$return .= "</div>";
+								
+		// *****************
+		// Cache and logs
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_7\">";
+				
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_cache'], ROOT."admin/index.php?m=cache");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_admin_logs'], ROOT."admin/index.php?m=adminlogs");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_error_logs'], ROOT."admin/index.php?m=emaillogs&amp;error=1");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
+		$return .= $this -> generate_menu_header("cache_and_logs", "*** ");
+				
+		$return .= $this -> generate_menu_move_a_bit();
+				
+		// *****************
+		// SQL Tools
+		// *****************
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_explorer'], ROOT."admin/index.php?m=sqltools");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_query'], ROOT."admin/index.php?m=sqltools&amp;m2=query");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_backup'], ROOT."admin/index.php?m=sqltools&amp;m2=backup");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_server_status'], ROOT."admin/index.php?m=sqltools&amp;m2=serverstatus");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_system_vars'], ROOT."admin/index.php?m=sqltools&amp;m2=systemvars");
+		$return .= $this -> generate_menu_header("sql_tools", "*** ");
+				
+		$return .= "</div>";				
 
-                // *****************
-				// Common tasks
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_8\">";
-                
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_task_manager'], ROOT."admin/index.php?m=tasks");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_task_logs'], ROOT."admin/index.php?m=tasklogs");
-                $return .= $this -> generate_menu_header("common_tasks", "*** ");
-                
-                $return .= "</div>";                
-
-
-                // *****************
-				// Plugins
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_9\">";
-                
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_plugins_manager'], ROOT."admin/index.php?m=plugins");
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_plugins'], ROOT."admin/index.php?m=plugins&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("plugins", "*** ");
-                
-                $return .= "</div>";                
-                
-                // *****************
-				// Undelete
-                // *****************
-                $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
-                
-				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_undelete_tool'], ROOT."admin/index.php?m=undelete");
-                $return .= $this -> generate_menu_header("undelete", "*** ");
-                
-                $return .= "</div>";                
-                
-                return $return;
-                
-        }
+		// *****************
+		// Common tasks
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_8\">";
+				
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_task_manager'], ROOT."admin/index.php?m=tasks");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_task_logs'], ROOT."admin/index.php?m=tasklogs");
+		$return .= $this -> generate_menu_header("common_tasks", "*** ");
+				
+		$return .= "</div>";				
 
 
-        // -----------------------------------------------------------------------------
-        
-        
-        function generate_menu_header($header_name, $marker = "")
-        {
+		// *****************
+		// Plugins
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_9\">";
+				
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_plugins_manager'], ROOT."admin/index.php?m=plugins");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_plugins'], ROOT."admin/index.php?m=plugins&amp;m2=importexport");
+		$return .= $this -> generate_menu_header("plugins", "*** ");
+				
+		$return .= "</div>";				
+				
+		// *****************
+		// Undelete
+		// *****************
+		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
+				
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_undelete_tool'], ROOT."admin/index.php?m=undelete");
+		$return .= $this -> generate_menu_header("undelete", "*** ");
+				
+		$return .= "</div>";				
+				
+		return $return;
+				
+	}
 
-			global $lang, $user;
-               
-			$table = new table_generate;
 
-			$return = "";
+	// -----------------------------------------------------------------------------
+		
+		
+	function generate_menu_header($header_name, $marker = "")
+	{
 
-			// Menu entry heade
+		global $lang, $user;
+			   
+		$table = new table_generate;
 
-			// check if we should be open
-			if(in_array($this -> nav_group_id, $user -> admin_menu))
-			{
-				$extra_class = "";
-				$img_name = "collapse.gif";
-			}
-			else
-			{
-				$extra_class = " admin_menu_link_group_close";
-				$img_name = "expand.gif";
-			}
+		$return = "";
 
-			$image_dir = IMGDIR;
+		// Menu entry heade
 
-			$extra_class = 
+		// check if we should be open
+		if(in_array($this -> nav_group_id, $user -> admin_menu))
+		{
+			$extra_class = "";
+			$img_name = "collapse.gif";
+		}
+		else
+		{
+			$extra_class = " admin_menu_link_group_close";
+			$img_name = "expand.gif";
+		}
+
+		$image_dir = IMGDIR;
+
+		$extra_class = 
 			$return .= <<<END
-							<div class="admin_menu_group">
-							  <div class="admin_menu_group_header">
-								<p class="admin_menu_header_text">
-								  <img src="{$image_dir}icons/{$header_name}.png"  class="admin_menu_header_icon" title="{$lang['admin_menu_'.$header_name]}" />
-								  <img id="img_{$this -> nav_group_id}" src="{$image_dir}{$img_name}" class="admin_menu_header_button">&nbsp;{$marker}{$lang['admin_menu_'.$header_name]}
-								</p>
-							  </div>
-							  <div class="admin_menu_link_group{$extra_class}" id="row_{$this -> nav_group_id}">{$this -> nav_current_entries}</div>
-						   </div>
+			<div class="admin_menu_group">
+			<div class="admin_menu_group_header">
+			<p class="admin_menu_header_text">
+			<img src="{$image_dir}icons/{$header_name}.png"  class="admin_menu_header_icon" title="{$lang['admin_menu_'.$header_name]}" />
+			<img id="img_{$this -> nav_group_id}" src="{$image_dir}{$img_name}" class="admin_menu_header_button">&nbsp;{$marker}{$lang['admin_menu_'.$header_name]}
+		</p>
+			  </div>
+			  <div class="admin_menu_link_group{$extra_class}" id="row_{$this -> nav_group_id}">{$this -> nav_current_entries}</div>
+																																	</div>
 END;
 
-        	$this -> nav_group_id ++;
-        	$this -> nav_current_entries = "";
-	                
-			// Send it back
-			return $return;
-        	
-        }
-        
-        
-        function generate_menu_entry($link_text, $link_url, $menu_extra = false)
-        {
-
-			$row = "";
+		$this -> nav_group_id ++;
+		$this -> nav_current_entries = "";
+					
+		// Send it back
+		return $return;
+			
+	}
 		
-			$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink">';
 		
-			if($menu_extra)
-		        $row .= '<img src="'.IMGDIR.'/menu_extra_icon.gif"> <a href="'.$link_url.'"><i>'.$link_text.'</i></a>';
-			else
-		        $row .= '<a href="'.$link_url.'">'.$link_text.'</a>';
-		                                        
-			$row .= '</div>';
+	function generate_menu_entry($link_text, $link_url, $menu_extra = false)
+	{
+
+		$row = "";
 		
-			$this -> nav_current_entries .= $row;
+		$row .= '<div onclick="window.location = \''.$link_url.'\';" class="adminmenulink">';
+		
+		if($menu_extra)
+			$row .= '<img src="'.IMGDIR.'/menu_extra_icon.gif"> <a href="'.$link_url.'"><i>'.$link_text.'</i></a>';
+		else
+			$row .= '<a href="'.$link_url.'">'.$link_text.'</a>';
+												
+		$row .= '</div>';
+		
+		$this -> nav_current_entries .= $row;
 
-        }
+	}
 
-        
-        function generate_menu_move_a_bit()
-        {
-        
-        	return "<div class=\"admin_menu_moveabit\"></div>";
-        
-        }
-        
-        
+		
+	function generate_menu_move_a_bit()
+	{
+		
+		return "<div class=\"admin_menu_moveabit\"></div>";
+		
+	}
+                
 }
+
 ?>
