@@ -157,6 +157,19 @@ $mode_file_list = array(
 	'config/(?<mode>backup|import|export)' => array(
 		"page" => "config"
 	),
+
+	// ----------------
+	// Users
+	// ----------------
+	'users' => array(
+		"page" => "users"
+	),
+	'users/(?<mode>add)' => array(
+		"page" => "users"
+	),
+	'users/(?<mode>edit)/(?<user_id>[0-9]+)' => array(
+		"page" => "users"
+	),
 	
 /*	
 	// ----------------
@@ -198,7 +211,6 @@ $mode_file_list = array(
 
                                 'help'			=> 'help.php',
                                 'phpinfo'       => 'main.php',
-//                                'config'        => 'config.php',
                                 'ieconfig'      => 'ieconfig.php',
                                 'templates'     => 'templates.php',
                                 'ietemplates'   => 'ietemplates.php',
@@ -213,7 +225,6 @@ $mode_file_list = array(
                                 'forums'        => 'forums.php',
                                 'usergroups'    => 'usergroups.php',
                                 'moderators'    => 'moderators.php',
-                                'users'         => 'users.php',
                                 'profilefields' => 'profilefields.php',
                                 'tasks'         => 'tasks.php',
                                 'tasklogs'      => 'tasks_logs.php',

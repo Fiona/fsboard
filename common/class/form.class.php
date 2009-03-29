@@ -136,7 +136,7 @@ class form
 					$id = substr($id, 1);
 
 					if(isset($request[$id]))
-						$this -> form_state["#".$id]['value'] = trim($request[$id]);
+						$this -> form_state["#".$id]['value'] = (is_array($request[$id]) ? $request[$id] : trim($request[$id]));
 					else
 						$this -> form_state["#".$id]['value'] = "";
 
@@ -240,6 +240,39 @@ class form
 						
 					case "checkbox":
 						$field_html = $template_global_forms -> form_field_checkbox($id, $info, $this -> form_state);
+						break;
+
+					case "checkboxes":
+						if(!is_array($info['value']))
+							$info['value'] = array();
+						$field_html = $template_global_forms -> form_field_checkboxes($id, $info, $this -> form_state);
+						break;
+
+					case "date":
+
+						// The date field expects the current value to be passed as an array containing entries for the
+						// different parts of the date. As such we can pass it either the expected array or as a timestamp.
+						// We work out the actual array based on the timestamp if necessary.
+						if(is_numeric($info['value']))
+						{
+							$worked_out_date = array(
+                                "year" 		=> ($info['value'] > 0) ? return_formatted_date("Y", $info['value']) : "",
+                                "month" 	=> ($info['value'] > 0) ? return_formatted_date("n", $info['value']) : "",
+                                "day"		=> ($info['value'] > 0) ? return_formatted_date("j", $info['value']) : "",
+                                "hour" 		=> ($info['value'] > 0) ? return_formatted_date("H", $info['value']) : "",
+                                "minute" 	=> ($info['value'] > 0) ? return_formatted_date("i", $info['value']) : ""
+								);
+							$info['value'] = $worked_out_date;
+						}
+						elseif(!is_array($info['value']))
+						{
+							if(isset($info['time']))
+								$info['value'] = array("day" => "", "month" => "0", "year" => "", "hour" => "", "minute" => "");
+							else
+								$info['value'] = array("day" => "", "month" => "0", "year" => "");
+						}
+
+						$field_html = $template_global_forms -> form_field_date($id, $info, $this -> form_state);
 						break;
 
 					case "file":
