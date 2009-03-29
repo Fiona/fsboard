@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<admin_help_file fsboard_version="0.1" time="23-02-09 10:05 pm">
+<admin_help_file fsboard_version="0.1" time="29-03-09 12:09 pm">
 
 	<help_entry page="config" action="backup" field="" order="0" />
 	<help_entry page="config" action="" field="" order="0" />
 	<help_entry page="config" action="main" field="" order="0" />
 	<help_entry page="config" action="group" field="" order="0" />
+	<help_entry page="config" action="group" field="clean_urls" order="5" />
 	<help_entry page="config" action="group" field="debug" order="10" />
 	<help_entry page="config" action="backup" field="export_filename" order="10" />
 	<help_entry page="config" action="backup" field="import_filename" order="20" />

@@ -134,6 +134,9 @@ $mode_file_list = array(
 	'index' => array(
 		"page" => "main"
 	),
+	'index/(?<mode>check_friendly_urls)' => array(
+		"page" => "main"
+	),
 
 	// ----------------
 	// Global admin ajax requests

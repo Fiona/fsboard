@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="23-02-09 10:05 pm">
+<languages_file fsboard_version="0.1" time="29-03-09 12:09 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -89,6 +89,11 @@ http://www.mysite.com/forum<br /><br />
 This would be an incorrect URL:<br />
 http://www.mysite.com/forum/]]></phrases>
 		<phrases variable_name="config_group_board_url_title" group="admin_area_help"><![CDATA[Message Board URL]]></phrases>
+		<phrases variable_name="config_group_clean_urls_text" group="admin_area_help"><![CDATA[Turning this on will enable 'friendly URLs'. These are special addresses that look cleaner and are easier for search engines to pick up on.<br /><br />
+They will turn URLs like: <strong>http://myboard.com/?q=profile/1/</strong> to something easier to read and type like <strong>http://myboard.com/profile/1/</strong><br /><br />
+Friendly URLs will only work on Apache based web servers, and only when mod_rewrite is enabled. To check if your server is capable visit the link on the description for this configuration setting.<br /><br />
+If you get a page cannot be found error then contact your server administrators and ask them about mod_rewrite.]]></phrases>
+		<phrases variable_name="config_group_clean_urls_title" group="admin_area_help"><![CDATA[Enable clean URLs]]></phrases>
 		<phrases variable_name="config_group_copyright_text_text" group="admin_area_help"><![CDATA[This is a small bit of text that is placed at the bottom of the page, it is designed to place a copyright message.<br />
 Note that the FSBoard copyright message will still appear alongside your own.]]></phrases>
 		<phrases variable_name="config_group_copyright_text_title" group="admin_area_help"><![CDATA[Copyright Text]]></phrases>
@@ -836,7 +841,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="admin_config_desc_avatar_upload_path" group="admin_config"><![CDATA[Avatars uploaded through the admin area are placed here. Relative to message board root. <br /> <b>MUST BE WRITABLE</b> (CHMOD 777)]]></phrases>
 		<phrases variable_name="admin_config_desc_board_name" group="admin_config"><![CDATA[The name of your message board that appears in various places.]]></phrases>
 		<phrases variable_name="admin_config_desc_board_url" group="admin_config"><![CDATA[Directory that your board is located, without trailing slash. ' / ']]></phrases>
-		<phrases variable_name="admin_config_desc_clean_urls" group="admin_config"><![CDATA[Turning this on will enable 'friendly URLs' across FSBoard.]]></phrases>
+		<phrases variable_name="admin_config_desc_clean_urls" group="admin_config"><![CDATA[Turning this on will enable 'friendly URLs' across FSBoard. <strong>Be sure to <a href="<1>">visit this link</a> to ensure they are supported or you may break your message board.</strong>]]></phrases>
 		<phrases variable_name="admin_config_desc_copyright_text" group="admin_config"><![CDATA[Copyright message that appears at the bottom of every page.]]></phrases>
 		<phrases variable_name="admin_config_desc_debug" group="admin_config"><![CDATA[Debug information to show at page footer. (Everyone can see this.)]]></phrases>
 		<phrases variable_name="admin_config_desc_dst_on" group="admin_config"><![CDATA[If your time is out by an hour, it is probably due to daylight savings time.<br />Members can also change this in thier own settings.]]></phrases>
@@ -1531,6 +1536,8 @@ Message board address: {board_url}]]></phrases>
 		<phrases variable_name="admin_change_theme_message" group="admin_main"><![CDATA[You can change the theme used in the admin area here.]]></phrases>
 		<phrases variable_name="admin_database_version" group="admin_main"><![CDATA[Database Type]]></phrases>
 		<phrases variable_name="admin_did_change_theme" group="admin_main"><![CDATA[Admin area theme was switched.]]></phrases>
+		<phrases variable_name="admin_friendly_urls_message" group="admin_main"><![CDATA[If you're reading this message and you followed a link from the configuration area then you can be sure that friendly URLs are supported on your server and you can safely enable them for your message board.]]></phrases>
+		<phrases variable_name="admin_friendly_urls_title" group="admin_main"><![CDATA[Friendly URL Check]]></phrases>
 		<phrases variable_name="admin_fsboard_version" group="admin_main"><![CDATA[FSBoard Version]]></phrases>
 		<phrases variable_name="admin_main_page" group="admin_main"><![CDATA[Main Page]]></phrases>
 		<phrases variable_name="admin_main_page" group="admin_main"><![CDATA[Main Page]]></phrases>

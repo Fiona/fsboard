@@ -405,10 +405,10 @@ END;
                 // *****************
 				// Forums
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_configure_forums'], ROOT."admin/index.php?m=forums");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_add_forum'], ROOT."admin/index.php?m=forums&amp;m2=add");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_moderators'], ROOT."admin/index.php?m=moderators");
-                $return .= $this -> generate_menu_header("forums");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_configure_forums'], ROOT."admin/index.php?m=forums");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_forum'], ROOT."admin/index.php?m=forums&amp;m2=add");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_moderators'], ROOT."admin/index.php?m=moderators");
+                $return .= $this -> generate_menu_header("forums", "*** ");
                 
                 $return .= "</div>";
 
@@ -417,11 +417,11 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_2\">";
 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_new_user'], ROOT."admin/index.php?m=users&amp;m2=add");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_search_users'], ROOT."admin/index.php?m=users&m2=search");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_search_ip'], ROOT."admin/index.php?m=users&m2=ipsearch");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_profile_fields'], ROOT."admin/index.php?m=profilefields");
-                $return .= $this -> generate_menu_header("users");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_new_user'], ROOT."admin/index.php?m=users&amp;m2=add");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_users'], ROOT."admin/index.php?m=users&m2=search");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_ip'], ROOT."admin/index.php?m=users&m2=ipsearch");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_profile_fields'], ROOT."admin/index.php?m=profilefields");
+                $return .= $this -> generate_menu_header("users", "*** ");
 
                 $return .= $this -> generate_menu_move_a_bit();
                 
@@ -429,9 +429,9 @@ END;
                 // *****************
 				// Usergroups
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_user_groups'], ROOT."admin/index.php?m=usergroups");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_promotions'], ROOT."admin/index.php?m=promotions");
-                $return .= $this -> generate_menu_header("usergroups");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_user_groups'], ROOT."admin/index.php?m=usergroups");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_promotions'], ROOT."admin/index.php?m=promotions");
+                $return .= $this -> generate_menu_header("usergroups", "*** ");
 
                 $return .= "</div>";
                                 
@@ -440,20 +440,20 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_3\">";
                 
-                $return .= $this -> generate_menu_entry($lang['admin_menu_titles'], ROOT."admin/index.php?m=titles");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_insignia'], ROOT."admin/index.php?m=insignia");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_reputation'], ROOT."admin/index.php?m=reputations");
-                $return .= $this -> generate_menu_header("titles_insignia_reputation");
+                $return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_titles'], ROOT."admin/index.php?m=titles");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_insignia'], ROOT."admin/index.php?m=insignia");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_reputation'], ROOT."admin/index.php?m=reputations");
+                $return .= $this -> generate_menu_header("titles_insignia_reputation", "*");
 
                 $return .= $this -> generate_menu_move_a_bit();
 
                 // *****************
 				// Titles, insignia, reputations
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_send_mail'], ROOT."admin/index.php?m=mailer");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs", true);
-				$return .= $this -> generate_menu_entry($lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
-                $return .= $this -> generate_menu_header("mailer");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_send_mail'], ROOT."admin/index.php?m=mailer");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs", true);
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
+                $return .= $this -> generate_menu_header("mailer", "*** ");
 
                 $return .= "</div>";
         
@@ -462,30 +462,30 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_4\">";
 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_manage_emoticons'], ROOT."admin/index.php?m=emoticons");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_import_export_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("emoticons");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_emoticons'], ROOT."admin/index.php?m=emoticons");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=importexport");
+                $return .= $this -> generate_menu_header("emoticons", "*** ");
 
                 $return .= $this -> generate_menu_move_a_bit();
 
                 // *****************
                 // Avatars
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_manage_avatars'], ROOT."admin/index.php?m=avatars");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_add_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=add");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_import_export_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("avatars");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_avatars'], ROOT."admin/index.php?m=avatars");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=add");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=importexport");
+                $return .= $this -> generate_menu_header("avatars", "*** ");
 
                 $return .= $this -> generate_menu_move_a_bit();
 
                 // *****************
                 // Post icons
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_manage_post_icons'], ROOT."admin/index.php?m=posticons");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_add_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=add");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_import_export_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("post_icons");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_post_icons'], ROOT."admin/index.php?m=posticons");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=add");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=importexport");
+                $return .= $this -> generate_menu_header("post_icons", "*** ");
                 
                 $return .= "</div>";
 
@@ -494,24 +494,24 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_5\">";
 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_filetypes'], ROOT."admin/index.php?m=attachments&amp;m2=filetypes");
-                $return .= $this -> generate_menu_header("attachments");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_filetypes'], ROOT."admin/index.php?m=attachments&amp;m2=filetypes");
+                $return .= $this -> generate_menu_header("attachments", "*");
 
                 $return .= $this -> generate_menu_move_a_bit();
                 
                 // *****************
                 // BBCode
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
-                $return .= $this -> generate_menu_header("bbcode");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
+                $return .= $this -> generate_menu_header("bbcode", "*** ");
 
                 $return .= $this -> generate_menu_move_a_bit();
                 
                 // *****************
                 // Word filter
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_wordfilter'], ROOT."admin/index.php?m=wordfilter");
-                $return .= $this -> generate_menu_header("wordfilter_title");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_wordfilter'], ROOT."admin/index.php?m=wordfilter");
+                $return .= $this -> generate_menu_header("wordfilter_title", "*** ");
                 
                 $return .= "</div>";
                 
@@ -520,21 +520,21 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_6\">";
                 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_templates'], ROOT."admin/index.php?m=templates");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_export_templates'], ROOT."admin/index.php?m=templates&amp;m2=importexport");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_themes'], ROOT."admin/index.php?m=themes");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_export_themes'], ROOT."admin/index.php?m=themes&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("templates_and_themes");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_templates'], ROOT."admin/index.php?m=templates");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_export_templates'], ROOT."admin/index.php?m=templates&amp;m2=importexport");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_themes'], ROOT."admin/index.php?m=themes");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_export_themes'], ROOT."admin/index.php?m=themes&amp;m2=importexport");
+                $return .= $this -> generate_menu_header("templates_and_themes", "*** ");
                 
                 $return .= $this -> generate_menu_move_a_bit();
                                 
                 // *****************
 				// Languages
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_language_manager'], ROOT."admin/index.php?m=langs");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_search_in_phrases'], ROOT."admin/index.php?m=langs&amp;m2=search");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_language_import'], ROOT."admin/index.php?m=langs&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("languages_and_phrases");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_language_manager'], ROOT."admin/index.php?m=langs");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_in_phrases'], ROOT."admin/index.php?m=langs&amp;m2=search");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_language_import'], ROOT."admin/index.php?m=langs&amp;m2=importexport");
+                $return .= $this -> generate_menu_header("languages_and_phrases", "*** ");
                 
                 $return .= "</div>";
                                 
@@ -543,24 +543,24 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_7\">";
                 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_cache'], ROOT."admin/index.php?m=cache");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_admin_logs'], ROOT."admin/index.php?m=adminlogs");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_email_error_logs'], ROOT."admin/index.php?m=emaillogs&amp;error=1");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
-                $return .= $this -> generate_menu_header("cache_and_logs");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_cache'], ROOT."admin/index.php?m=cache");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_admin_logs'], ROOT."admin/index.php?m=adminlogs");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_error_logs'], ROOT."admin/index.php?m=emaillogs&amp;error=1");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
+                $return .= $this -> generate_menu_header("cache_and_logs", "*** ");
                 
                 $return .= $this -> generate_menu_move_a_bit();
                 
                 // *****************
 				// SQL Tools
                 // *****************
-				$return .= $this -> generate_menu_entry($lang['admin_menu_sql_explorer'], ROOT."admin/index.php?m=sqltools");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_sql_query'], ROOT."admin/index.php?m=sqltools&amp;m2=query");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_sql_backup'], ROOT."admin/index.php?m=sqltools&amp;m2=backup");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_sql_server_status'], ROOT."admin/index.php?m=sqltools&amp;m2=serverstatus");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_sql_system_vars'], ROOT."admin/index.php?m=sqltools&amp;m2=systemvars");
-                $return .= $this -> generate_menu_header("sql_tools");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_explorer'], ROOT."admin/index.php?m=sqltools");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_query'], ROOT."admin/index.php?m=sqltools&amp;m2=query");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_backup'], ROOT."admin/index.php?m=sqltools&amp;m2=backup");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_server_status'], ROOT."admin/index.php?m=sqltools&amp;m2=serverstatus");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_sql_system_vars'], ROOT."admin/index.php?m=sqltools&amp;m2=systemvars");
+                $return .= $this -> generate_menu_header("sql_tools", "*** ");
                 
                 $return .= "</div>";                
 
@@ -569,9 +569,9 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_8\">";
                 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_task_manager'], ROOT."admin/index.php?m=tasks");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_task_logs'], ROOT."admin/index.php?m=tasklogs");
-                $return .= $this -> generate_menu_header("common_tasks");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_task_manager'], ROOT."admin/index.php?m=tasks");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_task_logs'], ROOT."admin/index.php?m=tasklogs");
+                $return .= $this -> generate_menu_header("common_tasks", "*** ");
                 
                 $return .= "</div>";                
 
@@ -581,9 +581,9 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_9\">";
                 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_plugins_manager'], ROOT."admin/index.php?m=plugins");
-				$return .= $this -> generate_menu_entry($lang['admin_menu_import_export_plugins'], ROOT."admin/index.php?m=plugins&amp;m2=importexport");
-                $return .= $this -> generate_menu_header("plugins");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_plugins_manager'], ROOT."admin/index.php?m=plugins");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_plugins'], ROOT."admin/index.php?m=plugins&amp;m2=importexport");
+                $return .= $this -> generate_menu_header("plugins", "*** ");
                 
                 $return .= "</div>";                
                 
@@ -592,8 +592,8 @@ END;
                 // *****************
                 $return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_1\">";
                 
-				$return .= $this -> generate_menu_entry($lang['admin_menu_undelete_tool'], ROOT."admin/index.php?m=undelete");
-                $return .= $this -> generate_menu_header("undelete");
+				$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_undelete_tool'], ROOT."admin/index.php?m=undelete");
+                $return .= $this -> generate_menu_header("undelete", "*** ");
                 
                 $return .= "</div>";                
                 
@@ -605,7 +605,7 @@ END;
         // -----------------------------------------------------------------------------
         
         
-        function generate_menu_header($header_name)
+        function generate_menu_header($header_name, $marker = "")
         {
 
 			global $lang, $user;
@@ -636,7 +636,7 @@ END;
 							  <div class="admin_menu_group_header">
 								<p class="admin_menu_header_text">
 								  <img src="{$image_dir}icons/{$header_name}.png"  class="admin_menu_header_icon" title="{$lang['admin_menu_'.$header_name]}" />
-								  <img id="img_{$this -> nav_group_id}" src="{$image_dir}{$img_name}" class="admin_menu_header_button">&nbsp;{$lang['admin_menu_'.$header_name]}
+								  <img id="img_{$this -> nav_group_id}" src="{$image_dir}{$img_name}" class="admin_menu_header_button">&nbsp;{$marker}{$lang['admin_menu_'.$header_name]}
 								</p>
 							  </div>
 							  <div class="admin_menu_link_group{$extra_class}" id="row_{$this -> nav_group_id}">{$this -> nav_current_entries}</div>
