@@ -144,13 +144,19 @@ class output
 		$this -> page_blocks['error_box'] = $this -> get_error_information();
        
 		// Level 1 Debug = Query amount and Execution time
-		if ($cache -> cache['config']['debug'] >= "1")
+		if(
+			$cache -> cache['config']['debug'] >= "1" &&
+			((defined("ADMIN") && defined("ADMINDEBUG")) || !defined("ADMIN"))
+		)
 			$debug_level_1 = $this -> return_debug_level(1);
 		else
 			$debug_level_1 = "";
 
 		// Level 2 Debug = Query printing
-		if ($cache -> cache['config']['debug'] >= "2")
+		if(
+			$cache -> cache['config']['debug'] >= "2" &&
+			((defined("ADMIN") && defined("ADMINDEBUG")) || !defined("ADMIN"))
+		)
 			$debug_level_2 = $this -> return_debug_level(2);
 		else 
 			$debug_level_2 = "";
