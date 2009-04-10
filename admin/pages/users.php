@@ -267,6 +267,8 @@ function form_users_add_complete($form)
 	if($new_user_id === False)
 		return False;
 
+	log_admin_action("users", "add", "Added new user: ".$form -> form_state['#username']['value']);
+
 	$output -> redirect(l("admin/users/edit/".$new_user_id."/"), $lang['user_added_sucessfully']);
 
 }
@@ -780,7 +782,8 @@ function page_edit_user($user_id)
 				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
 				"data_user_groups" => $groups,
 				"data_languages" => $langs,
-				"data_themes" => $themes
+				"data_themes" => $themes,
+				"data_username" => $user_info['username']
 				),
 			// ----------------
 			// Profile info
@@ -951,7 +954,7 @@ function page_edit_user($user_id)
 				"value" => $user_info['last_active'],
 				"time" => True
 				),
-			"#last_post_date" => array(
+			"#last_post_time" => array(
 				"name" => $lang['edit_user_last_post_date'],
 				"type" => "date",
 				"value" => $user_info['last_post_time'],
@@ -968,6 +971,7 @@ function page_edit_user($user_id)
 	// ------------------
 	include ROOT."admin/common/funcs/profilefields.funcs.php";
 	$fields = profilefields_get_fields();
+	$form -> form_state['meta']['data_custom_fields'] = $fields;
 
 	if(count($fields) > 0)
 	{
@@ -986,6 +990,11 @@ function page_edit_user($user_id)
 				"description" => $f_array['description'],
 			);
 
+			// Set value if we has
+			if(isset($user_info['field_'.$key]))
+				$form -> form_state['#field_'.$key]['value'] = $user_info['field_'.$key];
+
+			// Set size if necessary
 			if($f_array['field_type'] != "yesno" && $f_array['size'])
 				$form -> form_state["#field_".$key]['size'] = $f_array['size'];
 			
@@ -1073,6 +1082,219 @@ function form_users_edit_user_validate($form)
 		$form -> set_error("language", $lang['edit_user_invalid_language']);
 
 }
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing an existing user
+ *
+ * @param object $form
+ */
+function form_users_edit_user_complete($form)
+{
+
+	global $db, $page_matches, $user, $lang, $output;
+	
+	// First grab all the normal user info
+	$user_info = array(
+		"email" 				=> $form -> form_state['#email']['value'],
+		"user_group" 			=> $form -> form_state['#user_group']['value'],
+		"secondary_user_group"	=> $form -> form_state['#user_group_secondary']['value'],
+		"title" 				=> $form -> form_state['#title']['value'],
+		"real_name" 			=> $form -> form_state['#real_name']['value'],
+		"homepage" 				=> $form -> form_state['#homepage']['value'],
+		"yahoo_messenger"	 	=> $form -> form_state['#yahoo_messenger']['value'],
+		"msn_messenger" 		=> $form -> form_state['#msn_messenger']['value'],
+		"icq_messenger" 		=> $form -> form_state['#icq_messenger']['value'],
+		"gtalk_messenger" 		=> $form -> form_state['#gtalk_messenger']['value'],
+		"birthday_day" 			=> $form -> form_state['#birthday']['value']['day'],
+		"birthday_month"	 	=> $form -> form_state['#birthday']['value']['month'],
+		"birthday_year" 		=> $form -> form_state['#birthday']['value']['year'],
+		"signature" 			=> $form -> form_state['#signature']['value'],
+		"posts" 				=> $form -> form_state['#posts']['value'],
+		"language" 				=> $form -> form_state['#language']['value'],
+		"theme" 				=> $form -> form_state['#theme']['value'],
+		"hide_email"			=> $form -> form_state['#hide_email']['value'],
+		"view_sigs"				=> $form -> form_state['#view_sigs']['value'],
+		"view_avatars" 			=> $form -> form_state['#view_avatars']['value'],
+		"view_images"	 		=> $form -> form_state['#view_images']['value'],
+		"email_new_pm"			=> $form -> form_state['#email_new_pm']['value'],
+		"email_from_admin"  	=> $form -> form_state['#email_from_admin']['value'],
+		"time_offset"	 		=> $form -> form_state['#time_offset']['value'],
+		"dst_on" 				=> $form -> form_state['#dst_on']['value'],
+		"registered" 			=> $form -> get_date_timestamp('#registered'),
+		"last_active"	 		=> $form -> get_date_timestamp('#last_active'),
+		"last_post_time"	 	=> $form -> get_date_timestamp('#last_post_time')
+		);
+
+	// Get custom field data
+	if(is_array($form -> form_state['meta']['data_custom_fields']) && count($form -> form_state['meta']['data_custom_fields']) > 0)
+		foreach($form -> form_state['meta']['data_custom_fields'] as $key => $junk)
+			$user_info['field_'.$key] = $form -> form_state['#field_'.$key]['value'];
+
+	// Update the user info
+	$user_info = users_update_user($page_matches['user_id'], $user_info, $form -> form_state['meta']['data_custom_fields']);
+
+	// Log the action
+	log_admin_action("users", "edit", "Edited user: ".$form -> form_state['meta']['data_username']);
+
+	// Finished
+	$output -> redirect(l("admin/users/edit/".$page_matches['user_id']."/"), $lang['user_updated']);
+
+	// Secondary user groups
+/*
+	$secondary_groups = $form -> form_state['#user_group_secondary']['value'];
+	if(is_array($secondary_groups) && count($secondary_groups))
+		$user_info['secondary_user_group'] = implode(",", $secondary_groups);
+	else
+		$user_info['secondary_user_group'] = "";
+*/
+
+/*
+        foreach($_POST['registered'] as $key => $val)
+        	if(!$val)
+        		$_POST['registered'][$key] = 0;
+        
+        foreach($_POST['last_active'] as $key => $val)
+        	if(!$val)
+        		$_POST['last_active'][$key] = 0;
+        
+        foreach($_POST['last_post_time'] as $key => $val)
+        	if(!$val)
+        		$_POST['last_post_time'][$key] = 0;
+        
+        $user_info = array(
+                "email"                 => $_POST['email'],
+                "user_group"            => $_POST['user_group'],
+                "title"                 => $_POST['title'],
+                "real_name"             => $_POST['real_name'],
+                "homepage"              => $_POST['homepage'],
+                "yahoo_messenger"       => $_POST['yahoo_messenger'],
+                "aol_messenger"         => $_POST['aol_messenger'],
+                "msn_messenger"         => $_POST['msn_messenger'],
+                "icq_messenger"         => $_POST['icq_messenger'],
+                "gtalk_messenger"       => $_POST['gtalk_messenger'],                
+                "birthday_day"          => intval($_POST['birthday_day']),
+                "birthday_month"        => intval($_POST['birthday_month']),
+                "birthday_year"         => intval($_POST['birthday_year']),
+                "signature"             => $_POST['signature'],
+                "posts"                 => $_POST['posts'],
+                "language"              => $_POST['language'],
+                "theme"                 => $_POST['theme'],
+                "hide_email"            => $_POST['hide_email'],
+                "view_sigs"             => $_POST['view_sigs'],
+                "view_avatars"          => $_POST['view_avatars'],
+                "view_images"           => $_POST['view_images'],
+                "email_new_pm"          => $_POST['email_new_pm'],
+                "email_from_admin"      => $_POST['email_from_admin'],
+                "time_offset"           => $_POST['time_offset'],
+                "dst_on"                => $_POST['dst_on'],
+                "registered"            => mktime(0, 0, 0, $_POST['registered']['month'], $_POST['registered']['day'], $_POST['registered']['year']),
+                "last_active"           => mktime($_POST['last_active']['hour'], $_POST['last_active']['minute'], 0, $_POST['last_active']['month'], $_POST['last_active']['day'], $_POST['last_active']['year']),
+                "last_post_time"        => mktime($_POST['last_post_time']['hour'], $_POST['last_post_time']['minute'], 0, $_POST['last_post_time']['month'], $_POST['last_post_time']['day'], $_POST['last_post_time']['year'])
+        );
+
+        $user_info['email'] = str_replace( " ", "", $user_info['email']);
+        $user_info['email'] = preg_replace( "#[\;\#\n\r\*\'\"<>&\%\!\(\)\{\}\[\]\?\\/\s]#", "", $user_info['email']);
+
+        // Secondary user groups
+        $second_groups = $_POST['usergroup_secondary'];
+        $second_groups2 = array();
+
+        if(count($second_groups) > 0)
+        {
+                foreach($second_groups as $key => $val)
+                        $second_groups2[] = $key;
+                        
+                $user_info['secondary_user_group'] = implode(",", $second_groups2); 
+        }
+        else
+                $user_info['secondary_user_group'] = "";
+
+        // Custom profile fields
+		$profile_fields_info = array();
+		
+        $db -> basic_select("profile_fields", "id");
+
+		if($db -> num_rows() > 0)
+	        while($p_array = $db -> fetch_array())
+	                $profile_fields_info['field_'.$p_array['id']] = $_POST['field_'.$p_array['id']];
+
+
+        // **************************
+        // Birthday check 
+        // **************************
+        if($user_info['birthday_year'] && $user_info['birthday_month'] && $user_info['birthday_day'])
+        {
+        
+                if($user_info['birthday_year'] < 1901 OR $user_info['birthday_year'] > date('Y'))
+                        $user_info['birthday_year'] = "";
+        
+                if($user_info['birthday_month'] < 10)
+                        $user_info['birthday_month'] = "0".$user_info['birthday_month'];
+        
+                if($user_info['birthday_day'] < 10)
+                        $user_info['birthday_day'] = "0".$user_info['birthday_day'];
+
+        }
+        else
+        {
+                $user_info['birthday_year'] = "";
+                $user_info['birthday_month'] = "";
+                $user_info['birthday_day'] = "";
+        }
+        
+
+        // **************************
+        // Update the profile now!
+        // **************************
+        if(!$db -> basic_update("users", $user_info, "id='".$db_user['id']."'"))        
+        {
+                $output -> add($template_admin -> critical_error($lang['error_updating_user']));
+                page_edit_user($user_info);
+                return;
+        }
+
+        // **************************
+        // and the custom fields
+        // **************************
+        if(count($profile_fields_info) > 0)
+        {
+
+	        // Check the entry exists
+	        $db -> basic_select("profile_fields_data", "member_id", "member_id='".$db_user['id']."'");
+	        
+	        // Insert or update
+	        if($db -> num_rows() == 0)
+	        {
+	                $profile_fields_info['member_id'] = $db_user['id'];
+	                $update_query = $db -> basic_insert("profile_fields_data", $profile_fields_info);
+	        }
+	        else
+	                $update_query = $db -> basic_update("profile_fields_data", $profile_fields_info, "member_id='".$db_user['id']."'");
+	        
+	        // Check it
+	        if(!$update_query)        
+	        {
+	                $output -> add($template_admin -> critical_error($lang['error_updating_user_profile_fields']));
+	                page_edit_user($user_info);
+	                return;
+	        }
+        }
+        
+        // *********************
+        // Log action
+        // *********************
+        log_admin_action("users", "doedit", "Edited user: ".$db_user['username']);
+
+        // *********************
+        // Redirect the user
+        // *********************
+        $output -> redirect(ROOT."admin/index.php?m=users&amp;m2=edit&amp;id=".$db_user['id'], $lang['user_updated']);
+*/
+}
+
 
 /*
 //***********************************************

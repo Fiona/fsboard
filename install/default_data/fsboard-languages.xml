@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="29-03-09 12:09 pm">
+<languages_file fsboard_version="0.1" time="10-04-09 1:59 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2518,6 +2518,7 @@ The groups that come installed with the forum cannot be deleteted.]]></phrases>
 		<phrases variable_name="add_user_form_username" group="admin_users"><![CDATA[User name]]></phrases>
 		<phrases variable_name="add_user_submit" group="admin_users"><![CDATA[Create Account]]></phrases>
 		<phrases variable_name="add_user_title" group="admin_users"><![CDATA[Create New User]]></phrases>
+		<phrases variable_name="breadcrumb_users" group="admin_users"><![CDATA[User Management]]></phrases>
 		<phrases variable_name="breadcrumb_users_add" group="admin_users"><![CDATA[Create New User]]></phrases>
 		<phrases variable_name="breadcrumb_users_delete" group="admin_users"><![CDATA[Delete User]]></phrases>
 		<phrases variable_name="breadcrumb_users_edit" group="admin_users"><![CDATA[Edit User]]></phrases>
