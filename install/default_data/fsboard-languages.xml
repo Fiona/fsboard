@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="10-04-09 10:45 pm">
+<languages_file fsboard_version="0.1" time="10-04-09 11:22 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2603,7 +2603,7 @@ Your new password is: <new_password>
 
 You will need to use this the next time you log on to <board_name>. DO NOT share it with anyone.
 
-If you forgetten where the message board is, you can locate it at: <board_url>
+If you have forgotten where the message board is, you can locate it at: <board_url>
 
 -- 
 This is an automated message. Please do not reply to it.]]></phrases>
@@ -2627,6 +2627,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="error_invalid_email" group="admin_users"><![CDATA[An invalid e-mail has been entered.]]></phrases>
 		<phrases variable_name="error_password_too_long" group="admin_users"><![CDATA[Password must be between 4 and 14 characters long.]]></phrases>
 		<phrases variable_name="error_updating_user" group="admin_users"><![CDATA[There was an error updating this user!]]></phrases>
+		<phrases variable_name="error_updating_user_password" group="admin_users"><![CDATA[There was an error updating this user's password.]]></phrases>
 		<phrases variable_name="error_updating_user_profile_fields" group="admin_users"><![CDATA[There was an error updating the custom profile fields!]]></phrases>
 		<phrases variable_name="error_updating_user_username" group="admin_users"><![CDATA[There was an error updating this user's username.]]></phrases>
 		<phrases variable_name="error_username_exists" group="admin_users"><![CDATA[This username has already been taken.]]></phrases>

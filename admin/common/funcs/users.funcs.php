@@ -481,7 +481,7 @@ function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppres
 function users_update_username($user_id, $current_username, $new_username, $suppress_errors = False)
 {
 	
-	global $db, $lang, $cache;
+	global $db, $lang, $cache, $output;
 
 	$update_result = $db -> basic_update(
 		array(
@@ -515,6 +515,43 @@ function users_update_username($user_id, $current_username, $new_username, $supp
 
 	// Update moderator cache
 	$cache -> update_cache("moderators");
+
+	return True;
+
+}
+
+
+
+/**
+ * Will change a specific users password.
+ *
+ * @var id $user_id ID of the user whose username we're changing
+ * @var string $new_password The desired password. (Raw unhashed password.)
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_update_password($user_id, $new_password, $suppress_errors = False)
+{
+	
+	global $db, $lang, $cache, $output;
+
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "users", 
+			"data" => array("password" => md5($new_password)),
+			"where" => "id = ".(int)$user_id
+			)
+		);
+
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user_password']);
+		return $lang['error_updating_user_password'];
+	}
 
 	return True;
 
