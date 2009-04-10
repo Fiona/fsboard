@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="10-04-09 1:59 pm">
+<languages_file fsboard_version="0.1" time="10-04-09 10:45 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2549,7 +2549,7 @@ All posts will be turned into guest postings, <b>this cannot be undone</b>. <br 
 		<phrases variable_name="edit_password_send_email_description" group="admin_users"><![CDATA[It is not recommened to do this as it sends a raw password through e-mail which could be compromised.]]></phrases>
 		<phrases variable_name="edit_password_submit" group="admin_users"><![CDATA[Reset Password]]></phrases>
 		<phrases variable_name="edit_password_title" group="admin_users"><![CDATA[Edit Password: <1>]]></phrases>
-		<phrases variable_name="edit_username_current" group="admin_users"><![CDATA[Current username]]></phrases>
+		<phrases variable_name="edit_username_current" group="admin_users"><![CDATA[Current username: <1>]]></phrases>
 		<phrases variable_name="edit_username_email_contents" group="admin_users"><![CDATA[E-mail contents]]></phrases>
 		<phrases variable_name="edit_username_enter_new" group="admin_users"><![CDATA[New username]]></phrases>
 		<phrases variable_name="edit_username_send_email" group="admin_users"><![CDATA[Send an e-mail alerting member of change?]]></phrases>
@@ -2609,13 +2609,13 @@ If you forgetten where the message board is, you can locate it at: <board_url>
 This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="email_changed_password_subject" group="admin_users"><![CDATA[Password change notification]]></phrases>
 		<phrases variable_name="email_changed_username" group="admin_users"><![CDATA[<old_name>,
-this is a notice to inform you that an administrator has changed your login name on <board_name>.
+this is a notice to inform you that an administrator has changed your login username on <board_name>.
 
-Your new login name is: <new_name>
+Your new username is: <new_name>
 
-You will need to use this name the next time you log on to <board_name>.
+You will need to use this username the next time you log on to <board_name>.
 
-If you forgetten where the message board is, you can locate it at: <board_url>
+If you have forgotten where the message board is, you can locate it at: <board_url>
 
 -- 
 This is an automated message. Please do not reply to it.]]></phrases>
@@ -2628,6 +2628,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="error_password_too_long" group="admin_users"><![CDATA[Password must be between 4 and 14 characters long.]]></phrases>
 		<phrases variable_name="error_updating_user" group="admin_users"><![CDATA[There was an error updating this user!]]></phrases>
 		<phrases variable_name="error_updating_user_profile_fields" group="admin_users"><![CDATA[There was an error updating the custom profile fields!]]></phrases>
+		<phrases variable_name="error_updating_user_username" group="admin_users"><![CDATA[There was an error updating this user's username.]]></phrases>
 		<phrases variable_name="error_username_exists" group="admin_users"><![CDATA[This username has already been taken.]]></phrases>
 		<phrases variable_name="error_username_is_same" group="admin_users"><![CDATA[The username you have supplied is the same as the current one.]]></phrases>
 		<phrases variable_name="error_username_is_same" group="admin_users"><![CDATA[The user name you have supplied is the same as the current one.]]></phrases>

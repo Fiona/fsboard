@@ -58,6 +58,10 @@ switch($mode)
 		page_edit_user($page_matches['user_id']);
 		break;
 
+	case "username":
+		page_edit_user_username($page_matches['user_id']);
+		break;
+
 	default:
 		page_search_users();
 
@@ -776,8 +780,8 @@ function page_edit_user($user_id)
 				"validation_func" => "form_users_edit_user_validate",
 				"complete_func" => "form_users_edit_user_complete",
 				"description" => "[ <b>".$lang['edit_user_edit_profile']."</b>".
-					" -  <a href=\"".l("admin/users/edit/".$user_id."/username/")."\">".$lang['edit_user_change_username']."</a>".
-					" - <a href=\"".l("admin/users/edit/".$user_id."/password/")."\">".$lang['edit_user_change_password']."</a>".
+					" -  <a href=\"".l("admin/users/username/".$user_id)."\">".$lang['edit_user_change_username']."</a>".
+					" - <a href=\"".l("admin/users/password/".$user_id)."\">".$lang['edit_user_change_password']."</a>".
 					" - <a href=\"".l("admin/users/delete/".$user_id."/")."\">".$lang['edit_user_delete_user']."</a> ]",
 				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
 				"data_user_groups" => $groups,
@@ -1134,7 +1138,10 @@ function form_users_edit_user_complete($form)
 			$user_info['field_'.$key] = $form -> form_state['#field_'.$key]['value'];
 
 	// Update the user info
-	$user_info = users_update_user($page_matches['user_id'], $user_info, $form -> form_state['meta']['data_custom_fields']);
+	$update_result = users_update_user($page_matches['user_id'], $user_info, $form -> form_state['meta']['data_custom_fields']);
+
+	if($update_result === False)
+		return False;
 
 	// Log the action
 	log_admin_action("users", "edit", "Edited user: ".$form -> form_state['meta']['data_username']);
@@ -1595,6 +1602,7 @@ function page_edit_user($user_info = "")
 //***********************************************
 // Guess I'm editing
 //***********************************************
+/*
 function do_edit_user()
 {
 
@@ -1823,10 +1831,82 @@ function do_edit_user()
              
 }
 
+*/
+
+
+/**
+ * Page to edit an existing users username
+ */
+function page_edit_user_username($user_id)
+{
+
+	global $output, $lang, $template_admin;
+
+	// Get the user info
+	$user_info = users_get_user_by_id($user_id);
+
+	if($user_info === False)
+	{
+		$output -> set_error_message($lang['invalid_user_id']);
+		return;
+	}
+
+	// Set up the page
+	$output -> page_title = $output -> replace_number_tags($lang['edit_username_title'], array($user_info['username']));
+	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
+	$output -> add_breadcrumb($lang['breadcrumb_users_edit_name'], l("admin/users/username/".$user_id."/"));
+
+	$form = new form(
+		array(
+			"meta" => array(
+				"name" => "edit_username",
+				"title" => $output -> page_title,
+				"validation_func" => "form_users_edit_username_validate",
+				"complete_func" => "form_users_edit_username_complete",
+				"description" => "[  <a href=\"".l("admin/users/edit/".$user_id)."\">".$lang['edit_user_edit_profile']."</a>".
+					" -  <b>".$lang['edit_user_change_username']."</b>".
+					" - <a href=\"".l("admin/users/password/".$user_id)."\">".$lang['edit_user_change_password']."</a>".
+					" - <a href=\"".l("admin/users/delete/".$user_id."/")."\">".$lang['edit_user_delete_user']."</a> ]",
+				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
+				"data_current_username" => $user_info['username'],
+				"data_user_email" => $user_info['email']
+				),
+
+			"#username" => array(
+				"name" => $lang['edit_username_enter_new'],
+				"description" => $output -> replace_number_tags($lang['edit_username_current'], $user_info['username']),
+				"type" => "text",
+				"value" => $user_info['username'],
+				"required" => True,
+				),
+			"#send_email" => array(
+				"name" => $lang['edit_username_send_email'],
+				"type" => "yesno",
+				"value" => 0
+				),
+			"#email_contents" => array(
+				"name" => $lang['edit_username_email_contents'],
+				"description" => $lang['email_changed_username_description'],
+				"type" => "textarea",
+				"value" => $lang['email_changed_username'],
+				"size" => 12
+				),
+
+			'#submit' => array(
+				"type" => "submit",
+				"value" => $lang['edit_username_submit']
+				)
+			)
+		);
+
+	$output -> add($form -> render());
+
+}
 
 //***********************************************
 // Edit a users username
 //***********************************************
+/*
 function page_change_name($input_info = "")
 {
 
@@ -1900,12 +1980,94 @@ function page_change_name($input_info = "")
                 $form -> end_form()
         );        
 }
+*/
 
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for editing a user's username
+ *
+ * @param object $form
+ */
+function form_users_edit_username_validate($form)
+{
+
+	$error = users_edit_username_verify_username(
+		$form -> form_state['meta']['data_current_username'],
+		$form -> form_state['#username']['value']
+		);
+
+	if($error !== True)
+		$form -> set_error("username", $error);
+
+}
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing a user's username
+ *
+ * @param object $form
+ */
+function form_users_edit_username_complete($form)
+{
+
+	global $page_matches, $cache, $lang, $output;
+
+	$update_result = users_update_username(
+		$page_matches['user_id'],
+		$form -> form_state['meta']['data_current_username'],
+		$form -> form_state['#username']['value']
+		);
+
+	if($update_result !== True)
+		return False;
+
+
+	// If we're sending an e-mail alerting the affected user
+	if($form -> form_state['#send_email']['value'])
+	{
+                
+		// We need to replace certain tokens in the email message.
+		$message = str_replace(
+			array(
+				'<old_name>',
+				'<new_name>',
+				'<board_name>',
+				'<board_url>'
+				),
+			array(
+				$form -> form_state['meta']['data_current_username'],
+				$form -> form_state['#username']['value'],
+				$cache -> cache['config']['board_name'],
+				$cache -> cache['config']['board_url']
+				),
+			 $form -> form_state['#email_contents']['value']
+			);
+
+		// Send the e-mail
+		$mail = new email;
+		$mail -> send_mail($form -> form_state['meta']['data_user_email'], $lang['email_changed_username_subject'], $message);
+        
+	}
+
+	// Log it!
+	log_admin_action(
+		"users",
+		"username", 
+		"Changed member '".$form -> form_state['meta']['data_current_username']."' name to '".$form -> form_state['#username']['value']."'"
+		);
+
+	$output -> redirect(l("admin/users/username/".$page_matches['user_id']."/"), $lang['username_changed_sucessfully']);
+
+}
 
 
 //***********************************************
 // Submit an edit for a users username
 //***********************************************
+/*
 function do_change_name()
 {
 
@@ -2034,6 +2196,7 @@ function do_change_name()
         $output -> redirect(ROOT."admin/index.php?m=users&amp;m2=changename&amp;id=".$user_info['id'], $lang['username_changed_sucessfully']);
         
 }
+*/
 
 
 

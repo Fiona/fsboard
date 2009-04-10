@@ -56,7 +56,7 @@ function users_sanitise_email_address($email)
 
 
 /**
- * Check that a username can be used for a new users.
+ * Does some basic validation on a username. (length and reserved characters)
  *
  * @var string $username The username to check
  * @var bool $suppress_errors Normally this function will output error messages
@@ -65,7 +65,7 @@ function users_sanitise_email_address($email)
  *
  * @return bool|string Either true or a string containing an error.
  */
-function users_add_verify_username($username, $suppress_errors = False)
+function users_verify_username($username, $suppress_errors = False)
 {
 
 	global $db, $output, $lang;
@@ -81,7 +81,7 @@ function users_add_verify_username($username, $suppress_errors = False)
 
 	// Check for reserved characters in username
 	$invalid_chars = array("'", "\"", "<!--", "\\");
-	foreach ($invalid_chars as $char)
+	foreach($invalid_chars as $char)
 	{
 		if(strstr($username, $char))
 		{
@@ -90,6 +90,29 @@ function users_add_verify_username($username, $suppress_errors = False)
 			return $lang['error_username_reserved_chars'];
 		}
 	}
+
+	return True;
+
+}
+
+
+/**
+ * Check that a username can be used for a new users.
+ *
+ * @var string $username The username to check
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_add_verify_username($username, $suppress_errors = False)
+{
+
+	global $db, $output, $lang;
+
+	if(($error = users_verify_username($username, $suppress_errors)) !== True)
+		return $error;
 
 	// Check username has not been taken
 	$db -> basic_select(
@@ -111,6 +134,57 @@ function users_add_verify_username($username, $suppress_errors = False)
 	return True;
 
 }
+
+
+/**
+ * Check that a username can be used if we're planning on changing
+ * a username.
+ *
+ * @var string $current_username Old username to compare to
+ * @var string $new_username The username we're changing to
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_edit_username_verify_username($current_username, $new_username, $suppress_errors = False)
+{
+
+	global $db, $output, $lang;
+
+	if(($error = users_verify_username($new_username, $suppress_errors)) !== True)
+		return $error;
+
+	// Check username is the same
+	if($current_username == $new_username)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_username_is_same']);
+		return $lang['error_username_is_same'];
+	}
+
+	// Check username has not been taken
+	$db -> basic_select(
+		array(
+			"table" => "users",
+			"what" => "username",
+			"where" => "LOWER(username) = '".$db -> escape_string(_strtolower($new_username))."'",
+			"limit" => 1
+			)
+		);
+
+	if($db -> num_rows())
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_username_exists']);
+		return $lang['error_username_exists'];
+	}
+
+	return True;
+
+}
+
 
 
 /**
@@ -386,6 +460,63 @@ function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppres
 		}
 
 	}
+
+	return True;
+
+}
+
+
+/**
+ * Will change a specific users name to something else.
+ *
+ * @var id $user_id ID of the user whose username we're changing
+ * @var string $current_username The current users username
+ * @var string $new_username The username we're changing to
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_update_username($user_id, $current_username, $new_username, $suppress_errors = False)
+{
+	
+	global $db, $lang, $cache;
+
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "users", 
+			"data" => array("username" => $new_username),
+			"where" => "id = ".(int)$user_id
+			)
+		);
+
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user_username']);
+		return $lang['error_updating_user_username'];
+	}
+
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "moderators",
+			"data" => array("username" => $new_username),
+			"where" => "user_id = ".(int)$user_id
+			)
+		);
+	
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user_username']);
+		return $lang['error_updating_user_username'];
+	}
+
+	// Update moderator cache
+	$cache -> update_cache("moderators");
+
+	return True;
 
 }
 
