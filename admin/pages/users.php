@@ -389,9 +389,171 @@ function do_add_user()
 
 
 
+/**
+ * Page for searching for users
+ */
+function page_search_users()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['search_user_title'];
+	$output -> add_breadcrumb($lang['breadcrumb_users_search'], l("admin/users/search/"));
+
+	// Get a list of user groups for the form
+	include ROOT."admin/common/funcs/usergroups.funcs.php";
+	$groups = usergroups_get_groups();
+
+	$dropdown_options = array();
+
+	foreach($groups as $group_id => $group_info)
+		$dropdown_options[(string)$group_id] = $group_info['name'];
+
+
+	// Begin defining search form
+	$form = new form(
+		array(
+			"meta" => array(
+				"name" => "user_search",
+				"title" => $lang['search_user_title'],
+				"description" => $lang['search_user_message'],
+				"extra_title_contents_left" => $output -> help_button("", True).$template_admin -> form_header_icon("users"),
+				"validation_func" => "form_users_search_validate",
+				"complete_func" => "form_users_search_complete"
+				)
+			)
+		);
+
+	// Yeah this is terrible.
+	// The user name search wanted an extra dropdown sitting in there, what 
+	// i'm gonna do is just put put this html in and hopefully it will work
+	// alright - I'm just gonna go for the $_POST data later for this one item.
+	global $template_global_forms;
+
+	$user_search_critera = $template_global_forms -> form_field_dropdown(
+		"#username_search",
+		array(
+			"options" => array(
+				0 => $lang['username_search_contains'],
+				1 => $lang['username_search_exactly'],
+				2 => $lang['username_search_starts'],
+				3 => $lang['username_search_end']
+				),
+			"size" => 0,
+			"value" => (isset($_POST['username_search']) ? $_POST['username_search'] : 0)
+			),
+		$form -> form_state
+		);
+
+	// Finish the form definition
+	$form -> form_state = $form -> form_state + array(
+		"#username" => array(
+			"name" => $lang['search_user_username'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("email", False).$user_search_critera,
+			),
+		"#email" => array(
+			"name" => $lang['search_user_email'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("email", False)
+			),
+		"#usergroup" => array(
+			"name" => $lang['search_user_usergroup'],
+			"type" => "dropdown",
+			"blank_option" => True,
+			"options" => array("-1" => $lang['search_user_usergroup_all']) + $dropdown_options,
+			"extra_field_contents_left" => $output -> help_button("usergroup", False)
+			),
+		"#usergroup_secondary" => array(
+			"name" => $lang['search_user_usergroup_secondary'],
+			"type" => "checkboxes",
+			"options" => $dropdown_options,
+			"extra_field_contents_left" => $output -> help_button("usergroup_secondary", False)
+			),
+		"#title" => array(
+			"name" => $lang['search_user_user_title'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("title", False)
+			),
+		"#signature" => array(
+			"name" => $lang['search_user_signature'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("signature", False)
+			),
+		"#homepage" => array(
+			"name" => $lang['search_user_homepage'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("homepage", False)
+			),
+
+		"search_subtitle_posts" => array(
+			"title" => $lang['search_subtitle_posts'],
+			"type" => "message"
+			),
+		"#posts_g" => array(
+			"name" => $lang['search_user_posts_g'],
+			"type" => "int",
+			"extra_field_contents_left" => $output -> help_button("posts_g", False)
+			),
+		"#posts_l" => array(
+			"name" => $lang['search_user_posts_l'],
+			"type" => "int",
+			"extra_field_contents_left" => $output -> help_button("posts_l", False)
+			),
+
+		"search_subtitle_times" => array(
+			"title" => $lang['search_subtitle_times'],
+			"type" => "message"
+			),
+		"#register_b" => array(
+			"name" => $lang['search_user_register_b'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("register_b", False)
+			),
+		"#register_a" => array(
+			"name" => $lang['search_user_register_a'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("register_a", False)
+			),
+		"#last_active_b" => array(
+			"name" => $lang['search_user_last_active_b'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_active_b", False)
+			),
+		"#last_active_a" => array(
+			"name" => $lang['search_user_last_active_a'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_active_a", False)
+			),
+		"#last_post_a" => array(
+			"name" => $lang['search_user_last_post_a'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_post_a", False)
+			),
+		"#last_post_b" => array(
+			"name" => $lang['search_user_last_post_b'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_post_b", False)
+			)
+		);
+
+	// Custom profile fields
+	users_add_custom_profile_form_fields($form, False);
+
+	$form -> form_state["#submit"] = array(
+			"type" => "submit",
+			"value" => $lang['search_users_submit']
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
 //***********************************************
 // Search for a user form
 //***********************************************
+/*
 function page_search_users($search_info = "")
 {
 
@@ -557,7 +719,7 @@ function page_search_users($search_info = "")
         );
         
 }
-
+*/
 
 
 //***********************************************
@@ -983,80 +1145,10 @@ function page_edit_user($user_id)
 		);
 
 	
-	// ------------------
 	// Custom profile fields
-	// ------------------
-	include ROOT."admin/common/funcs/profilefields.funcs.php";
-	$fields = profilefields_get_fields();
-	$form -> form_state['meta']['data_custom_fields'] = $fields;
+	users_add_custom_profile_form_fields($form, False);
 
-	if(count($fields) > 0)
-	{
-        
-		$form -> form_state['custom_fields_title'] = array(
-			"title" => $lang['edit_user_custom_fields_title'],
-			"type" => "message"
-			);
-
-		// We have some fields, go through them...
-		foreach($fields as $key => $f_array)
-		{
-
-			$form -> form_state["#field_".$key] = array(
-				"name" => $f_array['name'],
-				"description" => $f_array['description'],
-			);
-
-			// Set value if we has
-			if(isset($user_info['field_'.$key]))
-				$form -> form_state['#field_'.$key]['value'] = $user_info['field_'.$key];
-
-			// Set size if necessary
-			if($f_array['field_type'] != "yesno" && $f_array['size'])
-				$form -> form_state["#field_".$key]['size'] = $f_array['size'];
-			
-			// What input?
-			switch($f_array['field_type'])
-			{
-					
-				case "yesno":
-					$form -> form_state["#field_".$key]['type'] = "yesno";
-					break;
-
-				case "textbox":
-					$form -> form_state["#field_".$key]['type'] = "textarea";
-					break;
-
-				case "dropdown":
-					$dropdown_values = explode('|', $f_array['dropdown_values']);
-					$dropdown_text = explode('|', $f_array['dropdown_text']);
-
-					$options = array();
-                                        
-					foreach($dropdown_values as $key2 => $val)
-						$options[trim($val)] = trim($dropdown_text[$key2]);
-
-					$form -> form_state["#field_".$key]['type'] = "dropdown";
-					$form -> form_state["#field_".$key]['options'] = $options;
-					break;
-					
-				case "text":
-				default:
-					$form -> form_state["#field_".$key]['type'] = "text";
-					
-			}
-
-			if($f_array['must_be_filled'])
-				$form -> form_state["#field_".$key]['required'] = True;
-			
-		}
-		
-	}
-
-
-	// ------------------
 	// Submit button
-	// ------------------
 	$form -> form_state['#submit'] = array(
 		"type" => "submit",
 		"value" => $lang['edit_user_submit']

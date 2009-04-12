@@ -234,7 +234,10 @@ class form
 						break;
 
 					case "dropdown":
-						$info['size'] = (!isset($info['size'])) ? 0 : $info['size'];					
+						if(isset($info['blank_option']) && $info['blank_option'])
+							$info['options'] = array("" => " ") + $info['options'];
+
+						$info['size'] = (!isset($info['size'])) ? 0 : $info['size'];
 						$field_html = $template_global_forms -> form_field_dropdown($id, $info, $this -> form_state);
 						break;
 						
