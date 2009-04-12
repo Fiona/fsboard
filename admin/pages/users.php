@@ -66,6 +66,10 @@ switch($mode)
 		page_edit_user_password($page_matches['user_id']);
 		break;
 
+	case "delete":
+		page_delete_user($page_matches['user_id']);
+		break;
+
 	default:
 		page_search_users();
 
@@ -783,10 +787,15 @@ function page_edit_user($user_id)
 				"title" => $output -> page_title,
 				"validation_func" => "form_users_edit_user_validate",
 				"complete_func" => "form_users_edit_user_complete",
-				"description" => "[ <b>".$lang['edit_user_edit_profile']."</b>".
-					" -  <a href=\"".l("admin/users/username/".$user_id."/")."\">".$lang['edit_user_change_username']."</a>".
-					" - <a href=\"".l("admin/users/password/".$user_id."/")."\">".$lang['edit_user_change_password']."</a>".
-					" - <a href=\"".l("admin/users/delete/".$user_id."/")."\">".$lang['edit_user_delete_user']."</a> ]",
+				"admin_sub_menu" => $template_admin -> admin_sub_menu(
+					array(
+						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
+						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
+						),
+					l("admin/users/edit/".$user_id."/")
+					),
 				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
 				"data_user_groups" => $groups,
 				"data_languages" => $langs,
@@ -1867,10 +1876,15 @@ function page_edit_user_username($user_id)
 				"title" => $output -> page_title,
 				"validation_func" => "form_users_edit_username_validate",
 				"complete_func" => "form_users_edit_username_complete",
-				"description" => "[  <a href=\"".l("admin/users/edit/".$user_id."/")."\">".$lang['edit_user_edit_profile']."</a>".
-					" -  <b>".$lang['edit_user_change_username']."</b>".
-					" - <a href=\"".l("admin/users/password/".$user_id."/")."\">".$lang['edit_user_change_password']."</a>".
-					" - <a href=\"".l("admin/users/delete/".$user_id."/")."\">".$lang['edit_user_delete_user']."</a> ]",
+				"admin_sub_menu" => $template_admin -> admin_sub_menu(
+					array(
+						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
+						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
+						),
+					l("admin/users/username/".$user_id."/")
+					),
 				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
 				"data_current_username" => $user_info['username'],
 				"data_user_email" => $user_info['email']
@@ -2233,10 +2247,15 @@ function page_edit_user_password($user_id)
 				"title" => $output -> page_title,
 				"validation_func" => "form_users_edit_password_validate",
 				"complete_func" => "form_users_edit_password_complete",
-				"description" => "[  <a href=\"".l("admin/users/edit/".$user_id."/")."\">".$lang['edit_user_edit_profile']."</a>".
-					" - <a href=\"".l("admin/users/username/".$user_id."/")."\">".$lang['edit_user_change_username']."</a>".
-					" - <b>".$lang['edit_user_change_password']."</b>".
-					" - <a href=\"".l("admin/users/delete/".$user_id."/")."\">".$lang['edit_user_delete_user']."</a> ]",
+				"admin_sub_menu" => $template_admin -> admin_sub_menu(
+					array(
+						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
+						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
+						),
+					l("admin/users/password/".$user_id."/")
+					),
 				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
 				"data_username" => $user_info['username'],
 				"data_user_email" => $user_info['email']
@@ -2537,9 +2556,58 @@ function do_change_password()
 */
 
 
+
+/**
+ * Page to delete an existing user
+ */
+function page_delete_user($user_id)
+{
+
+	global $output, $lang, $template_admin;
+
+	// Get the user info
+	$user_info = users_get_user_by_id($user_id);
+
+	if($user_info === False)
+	{
+		$output -> set_error_message($lang['invalid_user_id']);
+		return;
+	}
+
+	// Set up the page
+	$output -> page_title = $output -> replace_number_tags($lang['delete_user_title'], $user_info['username']);
+	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
+	$output -> add_breadcrumb($lang['breadcrumb_users_delete'], l("admin/users/delete/".$user_id."/"));
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title ,
+				"extra_title_contents_left" => $template_admin -> form_header_icon("users"),
+				"admin_sub_menu" => $template_admin -> admin_sub_menu(
+					array(
+						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
+						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
+						),
+					l("admin/users/delete/".$user_id."/")
+					),
+				"description" => $output -> replace_number_tags($lang['delete_user_message'], $user_info['username']),
+				"callback" => "users_delete_user_complete",
+				"arguments" => array($user_id, $user_info['username']),
+				"confirm_redirect" => l("admin/users/search/"),
+				"cancel_redirect" => l("admin/users/edit/".$user_id."/")
+				)
+			)
+		);
+
+}
+
 //***********************************************
 // Baleetion!
 //***********************************************
+/*
 function page_delete_user()
 {
 
@@ -2598,12 +2666,49 @@ function page_delete_user()
         );
 
 }
+*/
 
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting a user
+ *
+ * @param int $user_id The ID of the user being deleted.
+ */
+function users_delete_user_complete($user_id, $username)
+{
+
+	global $user, $output, $lang;
+
+	// Check to see if we're deleting ourselves. (Can't do this.)
+	if($user_id == $user -> user_id)
+	{
+		$output -> set_error_message($lang['cannot_delete_self']);
+		return False;
+	}
+
+	// Delete the user and check the responce
+	$return = users_delete_user($user_id);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("users", "delete", "Deleted user ".$username);
+
+		return True;
+
+	}
+	else
+		return False;
+
+}
 
 
 //***********************************************
 // Finish baleetion!
 //***********************************************
+/*
 function do_delete_user()
 {
 
@@ -2698,7 +2803,7 @@ function do_delete_user()
         $output -> redirect(ROOT."admin/index.php?m=users&amp;m2=search", $lang['user_deleted_sucessfully']);
 
 }
-
+*/
 
 
 //***********************************************

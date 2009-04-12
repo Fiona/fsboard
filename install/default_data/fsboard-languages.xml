@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="10-04-09 11:22 pm">
+<languages_file fsboard_version="0.1" time="12-04-09 12:45 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2535,8 +2535,7 @@ The groups that come installed with the forum cannot be deleteted.]]></phrases>
 		<phrases variable_name="change_username_error_not_inputted" group="admin_users"><![CDATA[Please enter a username!]]></phrases>
 		<phrases variable_name="change_username_error_not_inputted" group="admin_users"><![CDATA[Please enter a user name!]]></phrases>
 		<phrases variable_name="delete_user_message" group="admin_users"><![CDATA[Are you sure you want to delete this user <b><1></b>? <br />
-All posts will be turned into guest postings, <b>this cannot be undone</b>. <br /><br />
-<div align ="center">[ <a href="<2>admin/index.php?m=users&amp;m2=dodelete&amp;id=<3>">Confirm Delete</a> ]</div>]]></phrases>
+All posts will be turned into guest postings, <b>this cannot be undone</b>. ]]></phrases>
 		<phrases variable_name="delete_user_title" group="admin_users"><![CDATA[Delete User: <1>]]></phrases>
 		<phrases variable_name="edit_password_email_contents" group="admin_users"><![CDATA[E-mail contents]]></phrases>
 		<phrases variable_name="edit_password_email_contents_description" group="admin_users"><![CDATA[<b>&lt;username&gt;</b> - Member's name<br />
@@ -2796,6 +2795,11 @@ To change to a different avatar category, use the category dropdown.]]></phrases
 		<phrases variable_name="bbcode_quote_default" group="global"><![CDATA[Quote:]]></phrases>
 		<phrases variable_name="bbcode_quote_name_posted" group="global"><![CDATA[<1> posted:]]></phrases>
 		<phrases variable_name="board_stats" group="global"><![CDATA[Board Stats]]></phrases>
+		<phrases variable_name="cancel_action" group="global"><![CDATA[Cancel action]]></phrases>
+		<phrases variable_name="confirmation_cancelling_action" group="global"><![CDATA[Cancelling Action]]></phrases>
+		<phrases variable_name="confirmation_cancelling_action" group="global"><![CDATA[Cancelling action.]]></phrases>
+		<phrases variable_name="confirmation_confirming_action" group="global"><![CDATA[Carrying out action.]]></phrases>
+		<phrases variable_name="confirm_action" group="global"><![CDATA[Confirm action]]></phrases>
 		<phrases variable_name="contact_us" group="global"><![CDATA[Contact Us]]></phrases>
 		<phrases variable_name="day" group="global"><![CDATA[Day]]></phrases>
 		<phrases variable_name="debug_level_2" group="global"><![CDATA[Debug Level 2: SQL Queries]]></phrases>

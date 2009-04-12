@@ -292,6 +292,7 @@ class form
 				
 			}
 			
+			// Wrap the form up
 			$this -> final_html .= $template_global_forms -> form_wrapper($this -> form_state, $inner_form_html);
 
 			// If we have something to put after the form

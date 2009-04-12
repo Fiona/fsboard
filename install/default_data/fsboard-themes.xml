@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="10-04-09 1:59 pm">
+<theme_file fsboard_version="0.1" time="12-04-09 12:45 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -575,7 +575,6 @@ div.form_wrapper
           color: #ff3333;
         }
 
-
 /*
 ----------------------
 Generic info pages
@@ -658,6 +657,43 @@ div.error_title
     {
       margin : 0;
       padding : 0 0 0 10px;
+    }
+
+/* Confirmation boxes */
+div.confirm_message_title
+{
+  width : 95%;
+  margin : 0;
+  padding : 0;
+  height : auto;
+}
+  div.confirm_message_title p
+  {
+    padding-left : 14px;
+    padding-top : 4px;
+    height : 25px;
+  }
+div.confirm_message_content
+{
+  width : 95%;
+  margin : 0;
+  padding : 0 0 10px 0;
+  background-color:#DDF3DD;
+}
+  div.confirm_message_content p
+  {
+    padding : 5px;
+    clear : left;
+  }
+  div.confirm_message_content form
+  {
+    padding : 5px;
+    margin : 5px;
+    clear : left;
+  }
+    div.confirm_message_content form input
+    {
+      margin-right : 10px;
     }]]></theme_css>
 	</theme>
 </theme_file>

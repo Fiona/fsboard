@@ -14,13 +14,9 @@ See gpl.txt for a full copy of this license.
  * Admin user functions
  *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Admin
- *
- * @started 01 Jun 2007
- * @edited 01 Jun 2007
  */
 
 
@@ -240,6 +236,11 @@ function users_add_user($username, $password, $email, $usergroup, $suppress_erro
 			"data" => array("user_id" => $user_id)
 			)
 		);
+
+	// Fix statistics data
+	include_once ROOT."admin/common/funcs/stats.funcs.php";
+	stats_update_single_stat("total_members", True);
+	stats_update_single_stat("newest_member", True);
 
 	return $user_id;
 
@@ -461,6 +462,15 @@ function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppres
 
 	}
 
+
+	// We might have to update the newest member if we've updated
+	// the registration date.
+	if(isset($user_info['registered']))
+	{
+		include_once ROOT."admin/common/funcs/stats.funcs.php";
+		stats_update_single_stat("newest_member", True);
+	}
+
 	return True;
 
 }
@@ -483,6 +493,7 @@ function users_update_username($user_id, $current_username, $new_username, $supp
 	
 	global $db, $lang, $cache, $output;
 
+	// Update the main user table
 	$update_result = $db -> basic_update(
 		array(
 			"table" => "users", 
@@ -498,6 +509,7 @@ function users_update_username($user_id, $current_username, $new_username, $supp
 		return $lang['error_updating_user_username'];
 	}
 
+	// Update the moderators table
 	$update_result = $db -> basic_update(
 		array(
 			"table" => "moderators",
@@ -515,6 +527,10 @@ function users_update_username($user_id, $current_username, $new_username, $supp
 
 	// Update moderator cache
 	$cache -> update_cache("moderators");
+
+	// We might need to change the username saved in stats
+	include_once ROOT."admin/common/funcs/stats.funcs.php";
+	stats_update_single_stat("newest_member", True);
 
 	return True;
 
@@ -552,6 +568,67 @@ function users_update_password($user_id, $new_password, $suppress_errors = False
 			$output -> set_error_message($lang['error_updating_user_password']);
 		return $lang['error_updating_user_password'];
 	}
+
+	return True;
+
+}
+
+
+/**
+ * Completely delete a user.
+ *
+ * @var id $user_id ID of the user whose username we're deleting.
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_delete_user($user_id, $suppress_errors = False)
+{
+	
+	global $db, $lang, $cache, $output;
+	
+	// Remove avatar
+	// ....
+        
+	// Convert postings to guest
+	// ....
+        
+	// Remove PM's
+	// ....
+
+	// Remove user info and profile data
+	$db -> basic_delete(
+		array(
+			"table" => "users",
+			"where" => "id = ".(int)$user_id,
+			"limit" => 1
+			)
+		);
+
+	$db -> basic_delete(
+		array(
+			"table" => "profile_fields_data",
+			"where" => "member_id = ".(int)$user_id,
+			"limit" => 1
+			)
+		);
+
+	// Remove moderator info for this user
+	$db -> basic_delete(
+		array(
+			"table" => "moderators",
+			"where" => "user_id = ".(int)$user_id
+			)
+		);
+        
+	$cache -> update_cache("moderators");
+        
+	// Fix statistics data
+	include_once ROOT."admin/common/funcs/stats.funcs.php";
+	stats_update_single_stat("total_members", True);
+	stats_update_single_stat("newest_member", True);
 
 	return True;
 

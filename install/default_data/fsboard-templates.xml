@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="10-04-09 1:59 pm">
+<template_set_file fsboard_version="0.1" time="12-04-09 12:45 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -193,6 +193,24 @@
   </tr>
 </table>]]></template>
 		<template_parameters><![CDATA[$menu, $contents]]></template_parameters>
+		<template name="Action Confirmation Message" class_name="template_global" function_name="confirm_message"><![CDATA[<div class="message_box_title confirm_message_title">
+  <p>
+    {$info['extra_title_contents_left']}
+    {$info['title']}
+    {$info['extra_title_contents_right']}
+  </p>
+</div>
+<div class="message_box_content confirm_message_content">
+  {$info['admin_sub_menu']}
+  <p>
+    {$info['description']}
+  </p>
+  <form action="" method="POST">
+    <input type="submit" name="confirm" value="{$lang['confirm_action']}" />
+    <input type="submit" name="cancel" value="{$lang['cancel_action']}" />
+  </form>
+</div>]]></template>
+		<template_parameters><![CDATA[$info]]></template_parameters>
 		<template name="BBCode : Code box" class_name="template_global" function_name="bbcode_code_box"><![CDATA[<div class="bbcode_code_box"><div class="bbcode_code_name_text">{$code_name}<div><hr /></div></div><span class="bbcode_code_box_inner">{$code_text}</span></div>]]></template>
 		<template_parameters><![CDATA[$code_text, $code_name]]></template_parameters>
 		<template name="BBCode : Quote box close" class_name="template_global" function_name="bbcode_quote_box_close"><![CDATA[</div>]]></template>
@@ -596,6 +614,11 @@
     <IF "isset($form_state['meta']['extra_title_contents_right'])">{$form_state['meta']['extra_title_contents_right']}<ENDIF>
   </p>
 <ENDIF>
+
+<IF "isset($form_state['meta']['admin_sub_menu'])">
+  {$form_state['meta']['admin_sub_menu']}
+<ENDIF>
+
 <IF "isset($form_state['meta']['description'])">
   <p class="form_description">{$form_state['meta']['description']}</p>
 <ENDIF>
