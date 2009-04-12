@@ -599,6 +599,12 @@ function users_delete_user($user_id, $suppress_errors = False)
 	// ....
 
 	// Remove user info and profile data
+	save_undelete_data(
+		"users",
+		"Deleted user ID ".$user_id." (Main data)", 
+		"id = ".(int)$user_id,
+		array("limit" => 1)
+		);
 	$db -> basic_delete(
 		array(
 			"table" => "users",
@@ -607,6 +613,12 @@ function users_delete_user($user_id, $suppress_errors = False)
 			)
 		);
 
+	save_undelete_data(
+		"profile_fields_data",
+		"Deleted user ID ".$user_id." (Custom profile fields data)",
+		"member_id = ".(int)$user_id,
+		array("limit" => 1)
+		);
 	$db -> basic_delete(
 		array(
 			"table" => "profile_fields_data",
@@ -616,6 +628,11 @@ function users_delete_user($user_id, $suppress_errors = False)
 		);
 
 	// Remove moderator info for this user
+	save_undelete_data(
+		"moderators",
+		"Deleted user ID ".$user_id." (Moderator data)", 
+		"user_id = ".(int)$user_id
+		);
 	$db -> basic_delete(
 		array(
 			"table" => "moderators",
@@ -631,6 +648,95 @@ function users_delete_user($user_id, $suppress_errors = False)
 	stats_update_single_stat("newest_member", True);
 
 	return True;
+
+}
+
+
+/**
+ * Helper function - This will take any started $form
+ * object and add custom form fields to it.
+ *
+ * @param $form The form object.
+ * @param $use_cache If False the function will go to the
+ *   database for the custom field information.
+ */
+function users_add_custom_profile_form_fields(&$form, $use_cache = True)
+{
+
+	global $cache, $lang;
+
+	if($use_cache)
+		$fields = $cache -> cache['profile_fields'];
+	else
+	{
+		include ROOT."admin/common/funcs/profilefields.funcs.php";
+		$fields = profilefields_get_fields();
+	}
+
+	$form -> form_state['meta']['data_custom_fields'] = $fields;
+
+	if(count($fields) > 0)
+	{
+        
+		$form -> form_state['custom_fields_title'] = array(
+			"title" => $lang['edit_user_custom_fields_title'],
+			"type" => "message"
+			);
+
+		// We have some fields, go through them...
+		foreach($fields as $key => $f_array)
+		{
+
+			$form -> form_state["#field_".$key] = array(
+				"name" => $f_array['name'],
+				"description" => $f_array['description'],
+			);
+
+			// Set value if we has
+			if(isset($user_info['field_'.$key]))
+				$form -> form_state['#field_'.$key]['value'] = $user_info['field_'.$key];
+
+			// Set size if necessary
+			if($f_array['field_type'] != "yesno" && $f_array['size'])
+				$form -> form_state["#field_".$key]['size'] = $f_array['size'];
+			
+			// What input?
+			switch($f_array['field_type'])
+			{
+					
+				case "yesno":
+					$form -> form_state["#field_".$key]['type'] = "yesno";
+					break;
+
+				case "textbox":
+					$form -> form_state["#field_".$key]['type'] = "textarea";
+					break;
+
+				case "dropdown":
+					$dropdown_values = explode('|', $f_array['dropdown_values']);
+					$dropdown_text = explode('|', $f_array['dropdown_text']);
+
+					$options = array();
+                                        
+					foreach($dropdown_values as $key2 => $val)
+						$options[trim($val)] = trim($dropdown_text[$key2]);
+
+					$form -> form_state["#field_".$key]['type'] = "dropdown";
+					$form -> form_state["#field_".$key]['options'] = $options;
+					break;
+					
+				case "text":
+				default:
+					$form -> form_state["#field_".$key]['type'] = "text";
+					
+			}
+
+			if($f_array['must_be_filled'])
+				$form -> form_state["#field_".$key]['required'] = True;
+			
+		}
+		
+	}
 
 }
 
