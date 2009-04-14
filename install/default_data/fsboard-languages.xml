@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="29-03-09 12:09 pm">
+<languages_file fsboard_version="0.1" time="12-04-09 12:45 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2518,6 +2518,7 @@ The groups that come installed with the forum cannot be deleteted.]]></phrases>
 		<phrases variable_name="add_user_form_username" group="admin_users"><![CDATA[User name]]></phrases>
 		<phrases variable_name="add_user_submit" group="admin_users"><![CDATA[Create Account]]></phrases>
 		<phrases variable_name="add_user_title" group="admin_users"><![CDATA[Create New User]]></phrases>
+		<phrases variable_name="breadcrumb_users" group="admin_users"><![CDATA[User Management]]></phrases>
 		<phrases variable_name="breadcrumb_users_add" group="admin_users"><![CDATA[Create New User]]></phrases>
 		<phrases variable_name="breadcrumb_users_delete" group="admin_users"><![CDATA[Delete User]]></phrases>
 		<phrases variable_name="breadcrumb_users_edit" group="admin_users"><![CDATA[Edit User]]></phrases>
@@ -2534,8 +2535,7 @@ The groups that come installed with the forum cannot be deleteted.]]></phrases>
 		<phrases variable_name="change_username_error_not_inputted" group="admin_users"><![CDATA[Please enter a username!]]></phrases>
 		<phrases variable_name="change_username_error_not_inputted" group="admin_users"><![CDATA[Please enter a user name!]]></phrases>
 		<phrases variable_name="delete_user_message" group="admin_users"><![CDATA[Are you sure you want to delete this user <b><1></b>? <br />
-All posts will be turned into guest postings, <b>this cannot be undone</b>. <br /><br />
-<div align ="center">[ <a href="<2>admin/index.php?m=users&amp;m2=dodelete&amp;id=<3>">Confirm Delete</a> ]</div>]]></phrases>
+All posts will be turned into guest postings, <b>this cannot be undone</b>. ]]></phrases>
 		<phrases variable_name="delete_user_title" group="admin_users"><![CDATA[Delete User: <1>]]></phrases>
 		<phrases variable_name="edit_password_email_contents" group="admin_users"><![CDATA[E-mail contents]]></phrases>
 		<phrases variable_name="edit_password_email_contents_description" group="admin_users"><![CDATA[<b>&lt;username&gt;</b> - Member's name<br />
@@ -2548,7 +2548,7 @@ All posts will be turned into guest postings, <b>this cannot be undone</b>. <br 
 		<phrases variable_name="edit_password_send_email_description" group="admin_users"><![CDATA[It is not recommened to do this as it sends a raw password through e-mail which could be compromised.]]></phrases>
 		<phrases variable_name="edit_password_submit" group="admin_users"><![CDATA[Reset Password]]></phrases>
 		<phrases variable_name="edit_password_title" group="admin_users"><![CDATA[Edit Password: <1>]]></phrases>
-		<phrases variable_name="edit_username_current" group="admin_users"><![CDATA[Current username]]></phrases>
+		<phrases variable_name="edit_username_current" group="admin_users"><![CDATA[Current username: <1>]]></phrases>
 		<phrases variable_name="edit_username_email_contents" group="admin_users"><![CDATA[E-mail contents]]></phrases>
 		<phrases variable_name="edit_username_enter_new" group="admin_users"><![CDATA[New username]]></phrases>
 		<phrases variable_name="edit_username_send_email" group="admin_users"><![CDATA[Send an e-mail alerting member of change?]]></phrases>
@@ -2602,19 +2602,19 @@ Your new password is: <new_password>
 
 You will need to use this the next time you log on to <board_name>. DO NOT share it with anyone.
 
-If you forgetten where the message board is, you can locate it at: <board_url>
+If you have forgotten where the message board is, you can locate it at: <board_url>
 
 -- 
 This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="email_changed_password_subject" group="admin_users"><![CDATA[Password change notification]]></phrases>
 		<phrases variable_name="email_changed_username" group="admin_users"><![CDATA[<old_name>,
-this is a notice to inform you that an administrator has changed your login name on <board_name>.
+this is a notice to inform you that an administrator has changed your login username on <board_name>.
 
-Your new login name is: <new_name>
+Your new username is: <new_name>
 
-You will need to use this name the next time you log on to <board_name>.
+You will need to use this username the next time you log on to <board_name>.
 
-If you forgetten where the message board is, you can locate it at: <board_url>
+If you have forgotten where the message board is, you can locate it at: <board_url>
 
 -- 
 This is an automated message. Please do not reply to it.]]></phrases>
@@ -2626,7 +2626,9 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="error_invalid_email" group="admin_users"><![CDATA[An invalid e-mail has been entered.]]></phrases>
 		<phrases variable_name="error_password_too_long" group="admin_users"><![CDATA[Password must be between 4 and 14 characters long.]]></phrases>
 		<phrases variable_name="error_updating_user" group="admin_users"><![CDATA[There was an error updating this user!]]></phrases>
+		<phrases variable_name="error_updating_user_password" group="admin_users"><![CDATA[There was an error updating this user's password.]]></phrases>
 		<phrases variable_name="error_updating_user_profile_fields" group="admin_users"><![CDATA[There was an error updating the custom profile fields!]]></phrases>
+		<phrases variable_name="error_updating_user_username" group="admin_users"><![CDATA[There was an error updating this user's username.]]></phrases>
 		<phrases variable_name="error_username_exists" group="admin_users"><![CDATA[This username has already been taken.]]></phrases>
 		<phrases variable_name="error_username_is_same" group="admin_users"><![CDATA[The username you have supplied is the same as the current one.]]></phrases>
 		<phrases variable_name="error_username_is_same" group="admin_users"><![CDATA[The user name you have supplied is the same as the current one.]]></phrases>
@@ -2793,6 +2795,11 @@ To change to a different avatar category, use the category dropdown.]]></phrases
 		<phrases variable_name="bbcode_quote_default" group="global"><![CDATA[Quote:]]></phrases>
 		<phrases variable_name="bbcode_quote_name_posted" group="global"><![CDATA[<1> posted:]]></phrases>
 		<phrases variable_name="board_stats" group="global"><![CDATA[Board Stats]]></phrases>
+		<phrases variable_name="cancel_action" group="global"><![CDATA[Cancel action]]></phrases>
+		<phrases variable_name="confirmation_cancelling_action" group="global"><![CDATA[Cancelling Action]]></phrases>
+		<phrases variable_name="confirmation_cancelling_action" group="global"><![CDATA[Cancelling action.]]></phrases>
+		<phrases variable_name="confirmation_confirming_action" group="global"><![CDATA[Carrying out action.]]></phrases>
+		<phrases variable_name="confirm_action" group="global"><![CDATA[Confirm action]]></phrases>
 		<phrases variable_name="contact_us" group="global"><![CDATA[Contact Us]]></phrases>
 		<phrases variable_name="day" group="global"><![CDATA[Day]]></phrases>
 		<phrases variable_name="debug_level_2" group="global"><![CDATA[Debug Level 2: SQL Queries]]></phrases>

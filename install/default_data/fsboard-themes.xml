@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="23-02-09 10:05 pm">
+<theme_file fsboard_version="0.1" time="12-04-09 12:45 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -499,11 +499,11 @@ div.form_wrapper
     border-bottom: 1px solid #bff8bf;
   }
 
-  div.form_wrapper dl
+  div.form_wrapper dl.form_fields
   {
      margin : 0;
   }
-  div.form_wrapper dl div.form_field_wrapper
+  div.form_wrapper dl.form_fields div.form_field_wrapper
   {
     background-color : #ddf3dd;
     float:left;
@@ -511,11 +511,11 @@ div.form_wrapper
     width : 100%;
     padding : 10px 0 10px 0;
   }
-  div.form_wrapper dl div.form_field_wrapper.alt
+  div.form_wrapper dl.form_fields div.form_field_wrapper.alt
   {
     background-color : #ebf3eb;
   }
-    div.form_wrapper dl div.form_field_wrapper dt
+    div.form_wrapper dl.form_fields div.form_field_wrapper dt.form_field_name
     {
       float:left;
       width:300px;
@@ -523,28 +523,57 @@ div.form_wrapper
       border-right : solid 1px #bff8bf;
       margin-right : 15px;
     }
-      div.form_wrapper dl div.form_field_wrapper dt p.form_field_description
+      div.form_wrapper dl.form_fields div.form_field_wrapper dt.form_field_name p.form_field_description
       {
         font-size : 9px;
       }
-    div.form_wrapper dl div.form_field_wrapper dd
+    div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents
     {
       vertical-align:middle;
     }
-      div.form_wrapper dl div.form_field_wrapper dd p.field_error
+      div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents dl.form_checkboxes_list
+      {
+        float:left;
+      }
+        div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents dl.form_checkboxes_list dt
+        {
+          float:left;
+          clear : left;
+          width : 2em;
+          height: 20x;
+        }
+        div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents dl.form_checkboxes_list dd
+        {
+          height: 20px;
+        }
+      div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents dl.form_date
+      {
+        float:left;
+      }
+        div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents dl.form_date dt
+        {
+          float:left;
+          margin:0;
+        }
+        div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents dl.form_date dd
+        {
+          float:left;
+          margin: 0 10px 0 10px;
+        }
+
+      div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents p.field_error
       {
         background-color: #e8a8a8;
         border: 1px solid #e88181;
         margin:5px 30px 5px 275px;
         padding : 10px;
       }
-        div.form_wrapper dl div.form_field_wrapper dd p.field_error span
+        div.form_wrapper dl.form_fields div.form_field_wrapper dd.form_field_contents p.field_error span
         {
           padding : 5px;
           font-size : 9px;
           color: #ff3333;
         }
-
 
 /*
 ----------------------
@@ -628,6 +657,43 @@ div.error_title
     {
       margin : 0;
       padding : 0 0 0 10px;
+    }
+
+/* Confirmation boxes */
+div.confirm_message_title
+{
+  width : 95%;
+  margin : 0;
+  padding : 0;
+  height : auto;
+}
+  div.confirm_message_title p
+  {
+    padding-left : 14px;
+    padding-top : 4px;
+    height : 25px;
+  }
+div.confirm_message_content
+{
+  width : 95%;
+  margin : 0;
+  padding : 0 0 10px 0;
+  background-color:#DDF3DD;
+}
+  div.confirm_message_content p
+  {
+    padding : 5px;
+    clear : left;
+  }
+  div.confirm_message_content form
+  {
+    padding : 5px;
+    margin : 5px;
+    clear : left;
+  }
+    div.confirm_message_content form input
+    {
+      margin-right : 10px;
     }]]></theme_css>
 	</theme>
 </theme_file>

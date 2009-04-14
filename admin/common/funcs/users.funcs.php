@@ -14,13 +14,9 @@ See gpl.txt for a full copy of this license.
  * Admin user functions
  *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Admin
- *
- * @started 01 Jun 2007
- * @edited 01 Jun 2007
  */
 
 
@@ -56,7 +52,7 @@ function users_sanitise_email_address($email)
 
 
 /**
- * Check that a username can be used for a new users.
+ * Does some basic validation on a username. (length and reserved characters)
  *
  * @var string $username The username to check
  * @var bool $suppress_errors Normally this function will output error messages
@@ -65,7 +61,7 @@ function users_sanitise_email_address($email)
  *
  * @return bool|string Either true or a string containing an error.
  */
-function users_add_verify_username($username, $suppress_errors = False)
+function users_verify_username($username, $suppress_errors = False)
 {
 
 	global $db, $output, $lang;
@@ -81,7 +77,7 @@ function users_add_verify_username($username, $suppress_errors = False)
 
 	// Check for reserved characters in username
 	$invalid_chars = array("'", "\"", "<!--", "\\");
-	foreach ($invalid_chars as $char)
+	foreach($invalid_chars as $char)
 	{
 		if(strstr($username, $char))
 		{
@@ -90,6 +86,29 @@ function users_add_verify_username($username, $suppress_errors = False)
 			return $lang['error_username_reserved_chars'];
 		}
 	}
+
+	return True;
+
+}
+
+
+/**
+ * Check that a username can be used for a new users.
+ *
+ * @var string $username The username to check
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_add_verify_username($username, $suppress_errors = False)
+{
+
+	global $db, $output, $lang;
+
+	if(($error = users_verify_username($username, $suppress_errors)) !== True)
+		return $error;
 
 	// Check username has not been taken
 	$db -> basic_select(
@@ -111,6 +130,57 @@ function users_add_verify_username($username, $suppress_errors = False)
 	return True;
 
 }
+
+
+/**
+ * Check that a username can be used if we're planning on changing
+ * a username.
+ *
+ * @var string $current_username Old username to compare to
+ * @var string $new_username The username we're changing to
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_edit_username_verify_username($current_username, $new_username, $suppress_errors = False)
+{
+
+	global $db, $output, $lang;
+
+	if(($error = users_verify_username($new_username, $suppress_errors)) !== True)
+		return $error;
+
+	// Check username is the same
+	if($current_username == $new_username)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_username_is_same']);
+		return $lang['error_username_is_same'];
+	}
+
+	// Check username has not been taken
+	$db -> basic_select(
+		array(
+			"table" => "users",
+			"what" => "username",
+			"where" => "LOWER(username) = '".$db -> escape_string(_strtolower($new_username))."'",
+			"limit" => 1
+			)
+		);
+
+	if($db -> num_rows())
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_username_exists']);
+		return $lang['error_username_exists'];
+	}
+
+	return True;
+
+}
+
 
 
 /**
@@ -166,6 +236,11 @@ function users_add_user($username, $password, $email, $usergroup, $suppress_erro
 			"data" => array("user_id" => $user_id)
 			)
 		);
+
+	// Fix statistics data
+	include_once ROOT."admin/common/funcs/stats.funcs.php";
+	stats_update_single_stat("total_members", True);
+	stats_update_single_stat("newest_member", True);
 
 	return $user_id;
 
@@ -257,6 +332,305 @@ function users_get_user_by_id($user_id)
 		return False;
 
 	return $db -> fetch_array();
+
+}
+
+
+/**
+ * Given a user id and an array of data this will update a user's info in the database.
+ *
+ * @var int $user_id ID for the user we're updating.
+ * @var array $user_info Array of data. Keys are the column names.
+ *		Will also accept custom profile field data. The key for custom fields should be
+ *		field_0 where 0 is the ID of the profile field.
+ * @var array $custom_fields Optional array of info about custom fields. If not set the
+ *		function will find the data out on it's own. (This is to just cut down on a query
+ *		if it's not really necessary.)
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool False on failure.
+ */
+function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppress_errors = False)
+{
+
+	global $db, $output, $lang;
+
+	// Get custom profile field info if we haven't provided
+	if($custom_fields === NULL)
+	{
+		include_once ROOT."admin/common/funcs/profilefields.funcs.php";
+		$custom_fields = profilefields_get_fields();
+	}
+
+	// Sort out any custom field data we have
+	$custom_field_data = array();
+
+	if(is_array($custom_fields) && count($custom_fields) > 0)
+	{
+		foreach($custom_fields as $key => $f_array)
+		{
+			if(isset($user_info['field_'.$key]))
+			{
+				// Store it for later so we can put it in after main info
+				$custom_field_data["field_".$key] = $user_info['field_'.$key];
+				// We have to get rid of them in the main query
+				unset($user_info['field_'.$key]);
+			}
+		}
+	}
+
+	// Secondary groups should be flattened
+	if(isset($user_info['secondary_user_group']) && is_array($user_info['secondary_user_group']))
+		$user_info['secondary_user_group'] = implode(",", $user_info['secondary_user_group']);
+
+	// Check if birthday year is out of acceptable bounds
+	if(isset($user_info['birthday_year']) && ($user_info['birthday_year'] < 1901 || $user_info['birthday_year'] > date('Y')))
+		$user_info['birthday_year'] = "";
+
+	// Need leading 0 on birthday month and day
+	if(isset($user_info['birthday_month']) && $user_info['birthday_month'] < 10)
+		$user_info['birthday_month'] = "0".$user_info['birthday_month'];
+
+	if(isset($user_info['birthday_day']) && $user_info['birthday_day'] < 10)
+		$user_info['birthday_day'] = "0".$user_info['birthday_day'];
+
+	// Update the profile
+	$q = $db -> basic_update(
+		array(
+			"table" => "users",
+			"data" => $user_info,
+			"where" =>  "id = ".(int)$user_id,
+			"limit" => 1
+			)
+		);
+
+	if(!$q)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user']);
+		return False;
+	}
+
+	// Deal with any custom field data we have left
+	if(count($custom_field_data) > 0)
+	{
+
+		// We should get all the current data so we know if we should insert or update
+		$current_custom_fields = array();
+
+		$db -> basic_select(
+			array(
+				"table" => "profile_fields_data",
+				"what" => "`member_id`",
+				"where" => "member_id=".(int)$user_id,
+				"limit" => 1
+				)
+			);
+		
+		// If there's something there update, otherwise insert
+		if($db -> num_rows())
+		{
+			$update_query = $db -> basic_update(
+				array(
+					"table" => "profile_fields_data",
+					"data" => $custom_field_data,
+					"where" => "member_id=".(int)$user_id,
+					"limit" => 1
+					)
+				);
+		}
+		else
+		{
+			$custom_field_data['member_id'] = $user_id;
+			$update_query = $db -> basic_insert(
+				array(
+					"table" => "profile_fields_data",
+					"data" => $custom_field_data
+					)
+				);
+		}
+
+		// Error if something went wrong
+		if(!$update_query)
+		{
+			if(!$suppress_errors)
+				$output -> set_error_message($lang['error_updating_user_profile_fields']);
+			return False;
+		}
+
+	}
+
+
+	// We might have to update the newest member if we've updated
+	// the registration date.
+	if(isset($user_info['registered']))
+	{
+		include_once ROOT."admin/common/funcs/stats.funcs.php";
+		stats_update_single_stat("newest_member", True);
+	}
+
+	return True;
+
+}
+
+
+/**
+ * Will change a specific users name to something else.
+ *
+ * @var id $user_id ID of the user whose username we're changing
+ * @var string $current_username The current users username
+ * @var string $new_username The username we're changing to
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_update_username($user_id, $current_username, $new_username, $suppress_errors = False)
+{
+	
+	global $db, $lang, $cache, $output;
+
+	// Update the main user table
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "users", 
+			"data" => array("username" => $new_username),
+			"where" => "id = ".(int)$user_id
+			)
+		);
+
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user_username']);
+		return $lang['error_updating_user_username'];
+	}
+
+	// Update the moderators table
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "moderators",
+			"data" => array("username" => $new_username),
+			"where" => "user_id = ".(int)$user_id
+			)
+		);
+	
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user_username']);
+		return $lang['error_updating_user_username'];
+	}
+
+	// Update moderator cache
+	$cache -> update_cache("moderators");
+
+	// We might need to change the username saved in stats
+	include_once ROOT."admin/common/funcs/stats.funcs.php";
+	stats_update_single_stat("newest_member", True);
+
+	return True;
+
+}
+
+
+
+/**
+ * Will change a specific users password.
+ *
+ * @var id $user_id ID of the user whose username we're changing
+ * @var string $new_password The desired password. (Raw unhashed password.)
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_update_password($user_id, $new_password, $suppress_errors = False)
+{
+	
+	global $db, $lang, $cache, $output;
+
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "users", 
+			"data" => array("password" => md5($new_password)),
+			"where" => "id = ".(int)$user_id
+			)
+		);
+
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['error_updating_user_password']);
+		return $lang['error_updating_user_password'];
+	}
+
+	return True;
+
+}
+
+
+/**
+ * Completely delete a user.
+ *
+ * @var id $user_id ID of the user whose username we're deleting.
+ * @var bool $suppress_errors Normally this function will output error messages
+ *      using set_error_message. If this is not wanted for whatever reason setting
+ *      this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function users_delete_user($user_id, $suppress_errors = False)
+{
+	
+	global $db, $lang, $cache, $output;
+	
+	// Remove avatar
+	// ....
+        
+	// Convert postings to guest
+	// ....
+        
+	// Remove PM's
+	// ....
+
+	// Remove user info and profile data
+	$db -> basic_delete(
+		array(
+			"table" => "users",
+			"where" => "id = ".(int)$user_id,
+			"limit" => 1
+			)
+		);
+
+	$db -> basic_delete(
+		array(
+			"table" => "profile_fields_data",
+			"where" => "member_id = ".(int)$user_id,
+			"limit" => 1
+			)
+		);
+
+	// Remove moderator info for this user
+	$db -> basic_delete(
+		array(
+			"table" => "moderators",
+			"where" => "user_id = ".(int)$user_id
+			)
+		);
+        
+	$cache -> update_cache("moderators");
+        
+	// Fix statistics data
+	include_once ROOT."admin/common/funcs/stats.funcs.php";
+	stats_update_single_stat("total_members", True);
+	stats_update_single_stat("newest_member", True);
+
+	return True;
 
 }
 

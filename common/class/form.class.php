@@ -292,6 +292,7 @@ class form
 				
 			}
 			
+			// Wrap the form up
 			$this -> final_html .= $template_global_forms -> form_wrapper($this -> form_state, $inner_form_html);
 
 			// If we have something to put after the form
@@ -325,6 +326,42 @@ class form
 		
 	}
 	
+
+	/*
+	 * Helper function to work out a unix timestamp from a date field
+	 * that has already been submitted. (Will get the value from form_state.)
+	 *
+	 * @param string $field_name Name/ID of the date field. Including preceding #.
+	 * @return int Unix timestamp conversion of the current value.
+	 */
+	function get_date_timestamp($field_name)
+	{
+
+		// Looked a bit of a mess without this
+		$vals = array_map("intval", $this -> form_state[$field_name]['value']);
+
+		// If one of the pieces equates to true then we can calculate a time
+		// otherwise we need to return 0 (internally 0 is "never")
+		foreach($vals as $val)
+		{
+
+			if($val)
+			{
+
+				// If it's a time based widget we need to calculate the hour/min too
+				if(isset($this -> form_state[$field_name]['time']))
+					return mktime($vals['hour'], $vals['minute'], 0, $vals['month'], $vals['day'], $vals['year']);
+				else
+					return mktime(0, 0, 0, $vals['month'], $vals['day'], $vals['year']);
+
+			}
+
+			return 0;
+
+		}
+
+	}
+
 }
 
 ?>

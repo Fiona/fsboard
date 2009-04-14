@@ -267,6 +267,37 @@ class template_admin
 			}
 
 
+		/* --------------- */
+		/* Sub menus       */
+		/* --------------- */
+		div.sub_menu
+		{
+			margin: 0;
+			padding: 0 0 0 0%;
+			width: 100%;
+			border-bottom :1px solid #AAE6AA;
+			background-color: #EBF3EB;
+			height : 30px;
+		}
+			div.sub_menu ul
+			{
+				margin: 5px auto;
+				padding: 0 0 0 10px;
+				float: left;
+				width: 95%;
+			}
+				div.sub_menu ul li
+				{
+					margin: 0 20px 0 0;
+					padding: 0;
+					float: left;
+					list-style : none;
+				}
+				div.sub_menu ul li.selected
+				{
+					font-weight : bold;
+				}
+
 
 		/* --------------- */
 		/* Hack to sort    */
@@ -337,6 +368,34 @@ END;
 		return $breadcrumb;
 
 	}
+
+
+	function admin_sub_menu($menu_items, $current)
+	{
+
+		$return = "<div class=\"sub_menu\">";
+        
+		if(count($menu_items) > 0)
+		{
+
+			$return .= "<ul>";
+                        
+			foreach($menu_items as $link => $text)
+				if($current == $link)
+					$return .= "<li class=\"selected\">".$text."</li>";
+				else
+					$return .= "<li><a href=\"".$link."\">".$text."</a></li>";
+			
+			$return .= "</ul>";
+                        
+		}
+     
+		$return .= "</div>";
+
+		return $return;
+
+	}
+
 
 	function form_header_icon($icon_name)
 	{

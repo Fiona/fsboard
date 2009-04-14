@@ -167,7 +167,7 @@ $mode_file_list = array(
 	'users/(?<mode>add)' => array(
 		"page" => "users"
 	),
-	'users/(?<mode>edit)/(?<user_id>[0-9]+)' => array(
+	'users/(?<mode>edit|username|password|delete)/(?<user_id>[0-9]+)' => array(
 		"page" => "users"
 	),
 	
