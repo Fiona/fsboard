@@ -458,7 +458,7 @@ function page_search_users()
 
 	// Yeah this is terrible.
 	// The user name search wanted an extra dropdown sitting in there, what 
-	// i'm gonna do is just put put this html in and hopefully it will work
+	// i'm gonna do is just put put this html in  with the extra_field_contents_left setting and hopefully it will work
 	// alright - I'm just gonna go for the $_POST data later for this one item.
 	global $template_global_forms;
 
@@ -814,12 +814,60 @@ function form_users_search_validate($form)
 function form_users_search_complete($form)
 {
 
-	$user_search = users_search_users($form -> form_state['meta']['search_query']);
+	global $lang, $output;
 
-	var_show($user_search);
+	$results_table = new results_table(
+		array(
+			"db_table" => "users",
+			"db_where" => $form -> form_state['meta']['search_query']['where'],
+			"columns" => array(
+				"username" => array(
+					"db_column" => "username",
+					"name" => $lang['search_results_username']
+					),
+				"email" => array(
+					"db_column" => "email",
+					"name" => $lang['search_results_email']
+					),
+				"posts" => array(
+					"db_column" => "posts",
+					"name" => $lang['search_results_posts']
+					),
+				"last_active" => array(
+					"db_column" => "last_active",
+					"name" => $lang['search_results_last_active']
+					),
+				"registered" => array(
+					"db_column" => "registered",
+					"name" => $lang['search_results_registered']
+					),
+				"actions" => array(
+					"name" => $lang['search_results_registered'],
+					"content_callback" => 'table_users_search_actions_callback'
+					)
+				)
+			)
+		);
+
+	$output -> add($results_table -> render());
 
 }
 
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the user search actions.
+ *
+ * @param object $form
+ */
+function table_users_search_actions_callback($row_data)
+{
+
+	return ('<a href="'.l("admin/users/edit/".$row_data['id']."/").'"> - '.
+			'<a href="'.l("admin/users/delete/".$row_data['id']."/").'">');
+
+}
 
 
 //***********************************************

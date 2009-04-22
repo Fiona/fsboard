@@ -27,7 +27,7 @@ See gpl.txt for a full copy of this license.
 
 
 
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 
@@ -38,13 +38,13 @@ See gpl.txt for a full copy of this license.
 define("ADMINDEBUG", true);
 
 /**
- * If defined, this will give you access to the developer areas in the admin area
+ * If defined, you will have access to the developer areas in the admin area
  */
 define("DEVELOPER", true);
 
 /**
- * If you are having troubles with templates, uncomment this line to load templates from
- * the database, as opposed to including from files.
+ * If you are having troubles with templates, uncomment this line to load
+ * templates from the database, as opposed to including from files.
  * 
  * Warning: This is slow and should only be used for debug or troubleshooting.
  * -- Do not use in a working environment. --
@@ -73,7 +73,8 @@ define("DEVELOPER", true);
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 //***********************************************
@@ -94,11 +95,14 @@ define("USERGROUP_BANNED", 		6);
 // Initialise the array
 $DB_CONFIG = array();
 
-// Check for the files existance, if there's nothing tell the user to install first
+// Check for the config file, if there's nothing tell the user to install first.
 if(!file_exists(ROOT."db_config.php"))
 {
 	header("location: ".ROOT."install/");
-    	die("<p>Cannot find <b>db_config.php</b>! Please install your message board: <a href=\"".ROOT."install/\">Click here.</a></p>");
+	die(
+		"<p>Cannot find <b>db_config.php</b>! Please install your message board:".
+		"<a href=\"".ROOT."install/\">Click here.</a></p>"
+		);
 }
 
 // The file exists, now include it        
@@ -108,12 +112,16 @@ require ROOT.'db_config.php';
 if(!defined('DBCONFIG_PRESENT'))
 {
 	header("location: ".ROOT."install/");
-        die("<p>Cannot find relevant info in <b>db_config.php</b>! Please install your message board: <a href=\"".ROOT."install/\">Click here.</a></p>");
+	die(
+		"<p>Cannot find relevant info in <b>db_config.php</b>!".
+		"Please install your message board:".
+		"<a href=\"".ROOT."install/\">Click here.</a></p>"
+		);
 }
 
 // With info from the config, include the DB class wanted
 $db_file = ROOT . "db/" . $DB_CONFIG['db type'] . "/database.class.php";
-require ($db_file);
+require($db_file);
 
 
 /**
@@ -124,7 +132,14 @@ require ($db_file);
 $db = new database;
 
 // Get a connection
-$db -> connect($DB_CONFIG['host'], $DB_CONFIG['database'], $DB_CONFIG['username'], $DB_CONFIG['password'], $DB_CONFIG['table prefix'], $DB_CONFIG['port']);
+$db -> connect(
+	$DB_CONFIG['host'],
+	$DB_CONFIG['database'],
+	$DB_CONFIG['username'],
+	$DB_CONFIG['password'],
+	$DB_CONFIG['table prefix'],
+	$DB_CONFIG['port']
+	);
 
 
 //***********************************************
@@ -142,22 +157,22 @@ $db -> connect($DB_CONFIG['host'], $DB_CONFIG['database'], $DB_CONFIG['username'
 function magic_quotes_gpc_stripslashes(&$variable)
 {
 
-        if(is_array($variable))
-        {
+	if(is_array($variable))
+	{
+		
+		foreach($variable as $key => $val)
+		{
+			
+			if(is_array($val))
+				$variable[$key] = magic_quotes_gpc_stripslashes($val);
+			else 
+				$variable[$key] = stripslashes($val);
+			
+		}
         
-                foreach($variable as $key => $val)
-                {
-                
-                        if(is_array($val))
-                                $variable[$key] = magic_quotes_gpc_stripslashes($val);
-                        else 
-                                $variable[$key] = stripslashes($val);
-                        
-                }
+	}
         
-        }
-        
-        return $variable;
+	return $variable;
 
 }
 
@@ -214,6 +229,8 @@ require ROOT."common/class/parser.class.php";
 require ROOT."common/plugin_hooks.php";
 // Form system
 require ROOT."common/class/form.class.php";
+// Generic result tables
+require ROOT."common/class/results_table.class.php";
 
 
 
@@ -331,15 +348,25 @@ $theme_array = $db -> fetch_array($grab_theme_row);
  * Definition of the current theme image directory (main)
  */
 if(defined("ADMIN"))
-	define('IMGDIR', $cache -> cache['config']['board_url']."/admin/themes/FSBoard_Green/");
+	define(
+		'IMGDIR',
+		$cache -> cache['config']['board_url']."/admin/themes/FSBoard_Green/"
+		);
 else
-	define('IMGDIR', $cache -> cache['config']['board_url']."/".$theme_array['image_dir']);
+	define(
+		'IMGDIR',
+		$cache -> cache['config']['board_url']."/".$theme_array['image_dir']
+		);
     
 // This string is put into the outputted file
 $stylesheet = $theme_array['css'];
         
 // Replace $imgdir with the right stuff in the stylesheet
-$output -> stylesheet = str_replace('$imgdir', $cache -> cache['config']['board_url']."/".$theme_array['image_dir'], $stylesheet);
+$output -> stylesheet = str_replace(
+	'$imgdir',
+	$cache -> cache['config']['board_url']."/".$theme_array['image_dir'],
+	$stylesheet
+	);
 
 
 // This array is used in some templates

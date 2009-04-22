@@ -488,7 +488,7 @@ class database
 				return false;
 
 			$table = $info['table'];
-			$where = (isset($info['where'])) ? " WHERE ".$info['where'] : "";
+			$where = (isset($info['where']) && $info['where']) ? " WHERE ".$info['where'] : "";
 			$what = (isset($info['what'])) ? $info['what'] : "*";
 			$order_by = (isset($info['order'])) ? " ORDER BY ".$info['order'] : "";
 			$limit = (isset($info['limit'])) ? " LIMIT ".$info['limit'] : "";
