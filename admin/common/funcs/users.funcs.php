@@ -21,20 +21,20 @@ See gpl.txt for a full copy of this license.
 
 
 
-// ----------------------------------------------------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if (!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 
 
 
 /**
- * Sanitise an e-mail address, will preemptively pull special chars out of an address
- * and return back the address.
+ * Sanitise an e-mail address, will preemptively pull special chars out of an
+ * address and return back the address.
  *
  * @var string $email The address to be sanitised.
  *
@@ -43,8 +43,12 @@ if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOAR
 function users_sanitise_email_address($email)
 {
 
-	$email = str_replace( " ", "", $email);
-	$email = preg_replace( "#[\;\#\n\r\*\'\"<>&\%\!\(\)\{\}\[\]\?\\/\s]#", "", $email);
+	$email = str_replace(" ", "", $email);
+	$email = preg_replace(
+		"#[\;\#\n\r\*\'\"<>&\%\!\(\)\{\}\[\]\?\\/\s]#",
+		"",
+		$email
+		);
 
 	return $email;
 
@@ -56,8 +60,8 @@ function users_sanitise_email_address($email)
  *
  * @var string $username The username to check
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
@@ -97,8 +101,8 @@ function users_verify_username($username, $suppress_errors = False)
  *
  * @var string $username The username to check
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
@@ -115,7 +119,8 @@ function users_add_verify_username($username, $suppress_errors = False)
 		array(
 			"table" => "users",
 			"what" => "username",
-			"where" => "LOWER(username) = '".$db -> escape_string(_strtolower($username))."'",
+			"where" => ("LOWER(username) = '".
+						$db -> escape_string(_strtolower($username))."'"),
 			"limit" => 1
 			)
 		);
@@ -139,12 +144,16 @@ function users_add_verify_username($username, $suppress_errors = False)
  * @var string $current_username Old username to compare to
  * @var string $new_username The username we're changing to
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
-function users_edit_username_verify_username($current_username, $new_username, $suppress_errors = False)
+function users_edit_username_verify_username(
+	$current_username,
+	$new_username,
+	$suppress_errors = False
+	)
 {
 
 	global $db, $output, $lang;
@@ -165,7 +174,8 @@ function users_edit_username_verify_username($current_username, $new_username, $
 		array(
 			"table" => "users",
 			"what" => "username",
-			"where" => "LOWER(username) = '".$db -> escape_string(_strtolower($new_username))."'",
+			"where" => ("LOWER(username) = '".
+						$db -> escape_string(_strtolower($new_username))."'"),
 			"limit" => 1
 			)
 		);
@@ -184,20 +194,29 @@ function users_edit_username_verify_username($current_username, $new_username, $
 
 
 /**
- * Add a new user given some needed info. Should have already checked the info using
- * the provided validation function
+ * Add a new user given some needed info. Should have already checked the info
+ * using the provided validation function
  *
  * @var string $username Users desired username to check.
- * @var string $password The password that this user will use to log in. (Unhashed)
+ * @var string $password The password that this user will use to log
+ *   in. (Must be the unhashed value.)
  * @var string $email The e-mail address that will be assigned to this user.
- * @var int $usergroup The ID of the primary group that this user will be a member of.
+ * @var int $usergroup The ID of the primary group that this user will be a
+ *   member of.
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
- * @return bool|int Either False on failure or an int containing the new users ID
+ * @return bool|int Either False on failure or an int containing the new
+ *   users ID
  */
-function users_add_user($username, $password, $email, $usergroup, $suppress_errors = False)
+function users_add_user(
+	$username,
+	$password,
+	$email,
+	$usergroup,
+	$suppress_errors = False
+	)
 {
 
 	global $db, $lang;
@@ -252,8 +271,8 @@ function users_add_user($username, $password, $email, $usergroup, $suppress_erro
  *
  * @var string $password The password to check
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
@@ -280,8 +299,8 @@ function users_verify_password($password, $suppress_errors = False)
  *
  * @var string $email The email address to check
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
@@ -291,7 +310,11 @@ function users_verify_email($email, $suppress_errors = False)
 	global $lang, $output;
 
 	// Check e-mail is valid
-	if(!preg_match( "/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,4}|[0-9]{1,4})(\]?)$/", $email))
+	if(
+		!preg_match(
+			"/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,4}|[0-9]{1,4})(\]?)$/", $email
+			)
+		)
 	{
 		if(!$suppress_errors)
 			$output -> set_error_message($lang['error_invalid_email']);
@@ -308,7 +331,8 @@ function users_verify_email($email, $suppress_errors = False)
  *
  * @var int $user_id User ID for the wanted user
  *
- * @return bool|array Either False on failure or an array containing the users data.
+ * @return bool|array Either False on failure or an array containing the users
+ *   data.
  */
 function users_get_user_by_id($user_id)
 {
@@ -337,22 +361,28 @@ function users_get_user_by_id($user_id)
 
 
 /**
- * Given a user id and an array of data this will update a user's info in the database.
+ * Given a user id and an array of data this will update a user's info in the
+ *   database.
  *
  * @var int $user_id ID for the user we're updating.
  * @var array $user_info Array of data. Keys are the column names.
- *		Will also accept custom profile field data. The key for custom fields should be
- *		field_0 where 0 is the ID of the profile field.
- * @var array $custom_fields Optional array of info about custom fields. If not set the
- *		function will find the data out on it's own. (This is to just cut down on a query
- *		if it's not really necessary.)
+ *	 will also accept custom profile field data. The key for custom fields should
+ *   be in the format 'field_0' where 0 is the ID of the profile field.
+ * @var array $custom_fields Optional array of info about custom fields. If not
+ *   set the function will find the data out on it's own. (This is to just cut
+ *   down on a query if it's not really necessary.)
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool False on failure.
  */
-function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppress_errors = False)
+function users_update_user(
+	$user_id,
+	$user_info,
+	$custom_fields = NULL,
+	$suppress_errors = False
+	)
 {
 
 	global $db, $output, $lang;
@@ -382,11 +412,20 @@ function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppres
 	}
 
 	// Secondary groups should be flattened
-	if(isset($user_info['secondary_user_group']) && is_array($user_info['secondary_user_group']))
-		$user_info['secondary_user_group'] = implode(",", $user_info['secondary_user_group']);
+	if(
+		isset($user_info['secondary_user_group']) &&
+		is_array($user_info['secondary_user_group'])
+		)
+		$user_info['secondary_user_group'] = implode(
+			",", $user_info['secondary_user_group']
+			);
 
 	// Check if birthday year is out of acceptable bounds
-	if(isset($user_info['birthday_year']) && ($user_info['birthday_year'] < 1901 || $user_info['birthday_year'] > date('Y')))
+	if(
+		isset($user_info['birthday_year']) &&
+		($user_info['birthday_year'] < 1901 ||
+		 $user_info['birthday_year'] > date('Y'))
+		)
 		$user_info['birthday_year'] = "";
 
 	// Need leading 0 on birthday month and day
@@ -483,12 +522,17 @@ function users_update_user($user_id, $user_info, $custom_fields = NULL, $suppres
  * @var string $current_username The current users username
  * @var string $new_username The username we're changing to
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
-function users_update_username($user_id, $current_username, $new_username, $suppress_errors = False)
+function users_update_username(
+	$user_id,
+	$current_username,
+	$new_username,
+	$suppress_errors = False
+	)
 {
 	
 	global $db, $lang, $cache, $output;
@@ -544,12 +588,16 @@ function users_update_username($user_id, $current_username, $new_username, $supp
  * @var id $user_id ID of the user whose username we're changing
  * @var string $new_password The desired password. (Raw unhashed password.)
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
-function users_update_password($user_id, $new_password, $suppress_errors = False)
+function users_update_password(
+	$user_id,
+	$new_password,
+	$suppress_errors = False
+	)
 {
 	
 	global $db, $lang, $cache, $output;
@@ -579,8 +627,8 @@ function users_update_password($user_id, $new_password, $suppress_errors = False
  *
  * @var id $user_id ID of the user whose username we're deleting.
  * @var bool $suppress_errors Normally this function will output error messages
- *      using set_error_message. If this is not wanted for whatever reason setting
- *      this to True will stop them appearing.
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
  *
  * @return bool|string Either true or a string containing an error.
  */
@@ -659,8 +707,15 @@ function users_delete_user($user_id, $suppress_errors = False)
  * @param $form The form object.
  * @param $use_cache If False the function will go to the
  *   database for the custom field information.
+ * @param $honour_required If a field is marked as required and
+ *   this is true then the resulting field will check for being
+ *   filled in.
  */
-function users_add_custom_profile_form_fields(&$form, $use_cache = True)
+function users_add_custom_profile_form_fields(
+	&$form,
+	$use_cache = True,
+	$honour_required = True
+	)
 {
 
 	global $cache, $lang;
@@ -731,12 +786,206 @@ function users_add_custom_profile_form_fields(&$form, $use_cache = True)
 					
 			}
 
-			if($f_array['must_be_filled'])
+			if($f_array['must_be_filled'] && $honour_required)
 				$form -> form_state["#field_".$key]['required'] = True;
 			
 		}
 		
 	}
+
+}
+
+
+/**
+ * Takes field values and chucks it all in a handy query
+ * array that is desigined to be passed to users_search_users. In reality
+ * it is really just the info that gets given to $db -> basic_select.
+ *
+ * @param array $search_data Stuff to search by. The following entries are
+ *   valid search fields for bulding the query -
+ *   'username' : Usernames.
+ *   'username_search' : Specify what type of username search to do.
+ *     Setting to '1' specifies an exact match. '2' ends with. '3' begins with.
+ *     Any other value or omitting this searching instead within usernames.
+ *   'email' : E-mail addresses.
+ *   'usergroup' : Primary user groups.
+ *   'usergroup_secondary' : Secondary user groups.
+ *   'title' : User defined titles.
+ *   'signature' : Post signatures.
+ *   'homepage' : Users homepage URL.
+ *   'posts_g' : Users with a post count higher than this number.
+ *   'posts_l' : Users with a post count lower than this number.
+ *   'register_b' : Users with a registration date before this. (UNIX timestamp)
+ *   'register_a' : Users with a registration date after this. (UNIX timestamp)
+ *   'last_active_b' : Users who were active before this date. (UNIX timestamp)
+ *   'last_active_a' : Users who were active after this date. (UNIX timestamp)
+ *   'last_post_b' : Users who posted before this date. (UNIX timestamp)
+ *   'last_post_a' : Users who posted after this date. (UNIX timestamp)
+ * @param array $user_groups All usergroup info, should have been
+ *   got from usergroups_get_groups()
+ * @return array Finished array to be inserted into a query
+ */
+function users_build_user_search_query_array($search_data, $user_groups)
+{
+
+	global $db;
+
+	// The basics of our query array
+	$query_array = array(
+		"what" => "u.*, u.id as user_id",
+		"table" => "users u"
+		);
+
+	// We're going to build up a large where clause, we'll do this
+	// by putting all the elements of the clause into an array and then
+	// just imploding them with AND at the end.
+	$where_clause = array();
+
+	// Username
+	if(isset($search_data['username']) && $search_data['username'])
+	{
+
+		$search_data['username'] = $db -> escape_string($search_data['username']);
+
+		$search_info['username_search'] = (
+			isset($search_info['username_search']) ?
+			$search_info['username_search'] :
+			NULL
+			);
+
+		// Different types of searching by username
+		switch($search_info['username_search'])
+		{
+			// Exact match
+			case "1":
+				$where_clause[] = "u.`username` = '".$search_data['username']."'";
+				break;
+
+			// Ends with
+			case "2":
+				$where_clause[] = "u.`username` LIKE '%".$search_data['username']."'";
+				break;
+
+			// Begins with
+			case "3":
+				$where_clause[] = "u.`username` LIKE '".$search_data['username']."%'";
+				break;
+
+			// Contains
+			default:
+				$where_clause[] = "u.`username` LIKE '%".$search_data['username']."%'";
+		}
+
+	}
+
+
+	// E-mail address
+	if(isset($search_data['email']) && $search_data['email'])
+		$where_clause[] = "u.`email` LIKE '%".
+			$db -> escape_string($search_data['email'])."%'";
+
+	// User group
+	if(
+		isset($search_data['usergroup']) &&
+		$search_data['usergroup'] &&
+		isset($user_groups[$search_data['usergroup']])
+		)
+		$where_clause[] = "u.`user_group` = ".intval($search_data['usergroup']);
+
+	// Secondary user group
+	if(
+		isset($search_data['usergroup_secondary']) &&
+		is_array($search_data['usergroup_secondary']) &&
+		count($search_data['usergroup_secondary'])
+		)
+	{
+		foreach($search_data['usergroup_secondary'] as $group_id)
+			$where_clause[] = ("find_in_set(".
+							   intval($group_id).
+							   ", `secondary_user_group`)");
+	}
+
+	// Title
+	if(isset($search_data['title']) && $search_data['title'])
+		$where_clause[] = ("u.`title` LIKE '%".
+						   $db -> escape_string($search_data['title'])."%'");
+
+	// Signature
+	if(isset($search_data['signature']) && $search_data['signature'])
+		$where_clause[] = ("u.`signature` LIKE '%".
+						   $db -> escape_string($search_data['signature'])."%'");
+	// Homepage
+	if(isset($search_data['homepage']) && $search_data['homepage'])
+		$where_clause[] = ("u.`homepage` LIKE '%".
+						   $db -> escape_string($search_data['homepage'])."%'");
+
+	// Posts
+	if(isset($search_data['posts_g']) && $search_data['posts_g'])
+		$where_clause[] = "u.`posts` > ".intval($search_data['posts_g']);
+
+	if(isset($search_data['posts_l']) && $search_data['posts_l'])
+		$where_clause[] = "u.`posts` < ".intval($search_data['posts_l']);
+
+	// Registration date
+	if(isset($search_data['register_b']) && $search_data['register_b'])
+		$where_clause[] = "u.`registered` < ".intval($search_data['register_b']);
+
+	if(isset($search_data['register_a']) && $search_data['register_a'])
+		$where_clause[] = "u.`registered` > ".intval($search_data['register_a']);
+
+	// Last active date
+	if(isset($search_data['last_active_b']) && $search_data['last_active_b'])
+		$where_clause[] = "u.`last_active` < ".intval($search_data['last_active_b']);
+
+	if(isset($search_data['last_active_a']) && $search_data['last_active_a'])
+		$where_clause[] = "u.`last_active` > ".intval($search_data['last_active_a']);
+
+	// Last post date
+	if(isset($search_data['last_post_b']) && $search_data['last_post_b'])
+		$where_clause[] = "u.`last_post_time` < ".intval($search_data['last_post_b']);
+
+	if(isset($search_data['last_post_a']) && $search_data['last_post_a'])
+		$where_clause[] = "u.`last_post_time` > ".intval($search_data['last_post_a']);
+
+	// Save our built where clause
+	$query_array['where'] = implode(" AND ", $where_clause);
+
+	return $query_array;
+
+}
+
+
+/**
+ * Will search for users given the query data to use.
+ *
+ * @var array $query_array Array to pass to $db -> basic_select for the query.
+ *   Designed to have come from users_build_user_search_query_array.
+ * @var bool $suppress_errors Normally this function will output error messages
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
+ *
+ * @return array|string Either an array of users or a string containing an error
+ */
+function users_search_users($query_array, $suppress_errors = False)
+{
+
+	global $db, $lang, $output;
+
+	$q = $db -> basic_select($query_array);
+
+	if(!$q)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['invalid_search']);
+		return $lang['invalid_search'];
+	}
+
+	$users = array();
+
+	while($u = $db -> fetch_array($q))
+		$users[$u['id']] = $u;
+
+	return $users;
 
 }
 
@@ -749,6 +998,7 @@ function users_add_custom_profile_form_fields(&$form, $use_cache = True)
  * @param array $extra Any other entries that need putting into the string.
  * @return string Finished string to be inserted into a query
  */
+/*
 function create_user_search_string($search_info, $extra = "")
 {
 
@@ -873,3 +1123,4 @@ function create_user_search_string($search_info, $extra = "")
         return $query_string;
         
 }
+*/

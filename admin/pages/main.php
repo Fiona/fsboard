@@ -98,17 +98,22 @@ function page_main()
 	);
 
 
+	// This form will offload itself to the users search
 	$form = new form(array(
         "meta" => array(
 			"name" => "user_search",
         	"title" => $lang['admin_quick_user_moderation'],
-			"complete_func" => "form_user_search"	
+			"path" => l("admin/users/search/")
         ),
         
         "#username" => array(
         	"type" => "text",
         	"name" => $lang['admin_quick_user_moderation'],
         	"required" => True
+        ),
+        "#username_search" => array(
+        	"type" => "hidden",
+        	"value" => "0"
         ),
 
 		"#submit" => array(

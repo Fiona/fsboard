@@ -282,16 +282,24 @@ class form
 						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
 						$field_html = $template_global_forms -> form_field_file($id, $info, $this -> form_state);
 						break;
+
+					case "hidden":
+						$field_html = $template_global_forms -> form_field_hidden($id, $info, $this -> form_state);
+						break;
 						
 					case "text":
 					default:
 						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
 						$field_html = $template_global_forms -> form_field_text($id, $info, $this -> form_state);
 				}
-					
-				$inner_form_html .= $template_global_forms -> form_field_wrapper($field_html, $num, $id, $info, $this -> form_state);
-	
-				$num++;
+				
+				if($info['type'] == "hidden")
+					$inner_form_html .= $field_html;
+				else
+				{
+					$inner_form_html .= $template_global_forms -> form_field_wrapper($field_html, $num, $id, $info, $this -> form_state);
+					$num++;
+				}
 				
 			}
 			

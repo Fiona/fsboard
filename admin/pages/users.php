@@ -22,12 +22,13 @@ See gpl.txt for a full copy of this license.
 
 
 
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if (!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 // Is this a dagger I see before me? NO!
@@ -169,7 +170,10 @@ function page_add_user()
 	global $output, $lang, $db, $template_admin;
 
 	$output -> page_title = $lang['add_user_title'];
-	$output -> add_breadcrumb($lang['breadcrumb_users_add'], l("admin/users/add/"));
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_add'],
+		l("admin/users/add/")
+		);
 
 	// Get a list of user groups for the form
 	include ROOT."admin/common/funcs/usergroups.funcs.php";
@@ -186,7 +190,10 @@ function page_add_user()
 			"meta" => array(
 				"name" => "user_add",
 				"title" => $lang['add_user_title'],
-				"extra_title_contents_left" => $output -> help_button("", True).$template_admin -> form_header_icon("users"),
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("users")
+					),
 				"validation_func" => "form_users_add_validate",
 				"complete_func" => "form_users_add_complete"
 				),
@@ -240,17 +247,28 @@ function form_users_add_validate($form)
    
 	global $db, $lang, $page_matches;
 
-	$form -> form_state['#email']['value'] = users_sanitise_email_address($form -> form_state['#email']['value']);
+	$form -> form_state['#email']['value'] = users_sanitise_email_address(
+		$form -> form_state['#email']['value']
+		);
 
-	$error = users_add_verify_username($form -> form_state['#username']['value'], True);
+	$error = users_add_verify_username(
+		$form -> form_state['#username']['value'],
+		True
+		);
 	if($error !== True)
 		$form -> set_error("username", $error);
 
-	$error = users_verify_password($form -> form_state['#password']['value'], True);
+	$error = users_verify_password(
+		$form -> form_state['#password']['value'],
+		True
+		);
 	if($error !== True)
 		$form -> set_error("password", $error);
 
-	$error = users_verify_email($form -> form_state['#email']['value'], True);
+	$error = users_verify_email(
+		$form -> form_state['#email']['value'],
+		True
+		);
 	if($error !== True)
 		$form -> set_error("email", $error);
 
@@ -279,9 +297,16 @@ function form_users_add_complete($form)
 	if($new_user_id === False)
 		return False;
 
-	log_admin_action("users", "add", "Added new user: ".$form -> form_state['#username']['value']);
+	log_admin_action(
+		"users",
+		"add",
+		"Added new user: ".$form -> form_state['#username']['value']
+		);
 
-	$output -> redirect(l("admin/users/edit/".$new_user_id."/"), $lang['user_added_sucessfully']);
+	$output -> redirect(
+		l("admin/users/edit/".$new_user_id."/"),
+		$lang['user_added_sucessfully']
+		);
 
 }
 
@@ -398,7 +423,10 @@ function page_search_users()
 	global $output, $lang, $db, $template_admin;
 
 	$output -> page_title = $lang['search_user_title'];
-	$output -> add_breadcrumb($lang['breadcrumb_users_search'], l("admin/users/search/"));
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_search'],
+		l("admin/users/search/")
+		);
 
 	// Get a list of user groups for the form
 	include ROOT."admin/common/funcs/usergroups.funcs.php";
@@ -417,9 +445,13 @@ function page_search_users()
 				"name" => "user_search",
 				"title" => $lang['search_user_title'],
 				"description" => $lang['search_user_message'],
-				"extra_title_contents_left" => $output -> help_button("", True).$template_admin -> form_header_icon("users"),
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("users")
+					),
 				"validation_func" => "form_users_search_validate",
-				"complete_func" => "form_users_search_complete"
+				"complete_func" => "form_users_search_complete",
+				"data_user_groups" => $groups
 				)
 			)
 		);
@@ -431,7 +463,7 @@ function page_search_users()
 	global $template_global_forms;
 
 	$user_search_critera = $template_global_forms -> form_field_dropdown(
-		"#username_search",
+		"username_search",
 		array(
 			"options" => array(
 				0 => $lang['username_search_contains'],
@@ -450,7 +482,10 @@ function page_search_users()
 		"#username" => array(
 			"name" => $lang['search_user_username'],
 			"type" => "text",
-			"extra_field_contents_left" => $output -> help_button("email", False).$user_search_critera,
+			"extra_field_contents_left" => (
+				$output -> help_button("email", False).
+				$user_search_critera
+				),
 			),
 		"#email" => array(
 			"name" => $lang['search_user_email'],
@@ -461,14 +496,18 @@ function page_search_users()
 			"name" => $lang['search_user_usergroup'],
 			"type" => "dropdown",
 			"blank_option" => True,
-			"options" => array("-1" => $lang['search_user_usergroup_all']) + $dropdown_options,
+			"options" => (array("-1" => $lang['search_user_usergroup_all'])
+						  + $dropdown_options),
 			"extra_field_contents_left" => $output -> help_button("usergroup", False)
 			),
 		"#usergroup_secondary" => array(
 			"name" => $lang['search_user_usergroup_secondary'],
 			"type" => "checkboxes",
 			"options" => $dropdown_options,
-			"extra_field_contents_left" => $output -> help_button("usergroup_secondary", False)
+			"extra_field_contents_left" => $output -> help_button(
+				"usergroup_secondary",
+				False
+				)
 			),
 		"#title" => array(
 			"name" => $lang['search_user_user_title'],
@@ -538,7 +577,7 @@ function page_search_users()
 		);
 
 	// Custom profile fields
-	users_add_custom_profile_form_fields($form, False);
+	users_add_custom_profile_form_fields($form, False, False);
 
 	$form -> form_state["#submit"] = array(
 			"type" => "submit",
@@ -721,10 +760,72 @@ function page_search_users($search_info = "")
 }
 */
 
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for searching for users
+ *
+ * @param object $form
+ */
+function form_users_search_validate($form)
+{
+   
+	global $lang;
+
+	$search_data = array(
+		"username" => $form -> form_state['#username']['value'],
+		"username_search" => (int)$_POST['username_search'],
+		"email" => $form -> form_state['#email']['value'],
+		"usergroup" => $form -> form_state['#usergroup']['value'],
+		"usergroup_secondary" => $form -> form_state['#usergroup_secondary']['value'],
+		"title" => $form -> form_state['#title']['value'],
+		"signature" => $form -> form_state['#signature']['value'],
+		"homepage" => $form -> form_state['#homepage']['value'],
+		"posts_g" => $form -> form_state['#posts_g']['value'],
+		"posts_l" => $form -> form_state['#posts_l']['value'],
+		"register_b" => $form -> get_date_timestamp('#register_b'),
+		"register_a" => $form -> get_date_timestamp('#register_a'),
+		"last_active_b" => $form -> get_date_timestamp('#last_active_b'),
+		"last_active_a" => $form -> get_date_timestamp('#last_active_a'),
+		"last_post_b" => $form -> get_date_timestamp('#last_post_b'),
+		"last_post_a" => $form -> get_date_timestamp('#last_post_a')
+		);
+
+	$query_array = users_build_user_search_query_array(
+		$search_data,
+		$form -> form_state['meta']['data_user_groups']
+		);
+
+	if(!is_array($query_array))
+		$form -> set_error(NULL, $lang['invalid_search']);
+
+	$form -> form_state['meta']['search_query'] = $query_array;
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for searching for users
+ *
+ * @param object $form
+ */
+function form_users_search_complete($form)
+{
+
+	$user_search = users_search_users($form -> form_state['meta']['search_query']);
+
+	var_show($user_search);
+
+}
+
+
 
 //***********************************************
 // Lollerskates
 //***********************************************
+/*
 function do_search_users($search_info = "")
 {
 
@@ -845,7 +946,7 @@ function do_search_users($search_info = "")
         $output -> add($table -> end_table());
                 
 }
-
+*/
 
 
 
@@ -939,8 +1040,14 @@ function page_edit_user($user_id)
 
 
 	// Set up the page
-	$output -> page_title = $output -> replace_number_tags($lang['edit_user_title'], array($user_info['username']));
-	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
+	$output -> page_title = $output -> replace_number_tags(
+		$lang['edit_user_title'],
+		array($user_info['username'])
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_edit'],
+		l("admin/users/edit/".$user_id."/")
+		);
 
 	$form = new form(
 		array(
@@ -952,8 +1059,10 @@ function page_edit_user($user_id)
 				"admin_sub_menu" => $template_admin -> admin_sub_menu(
 					array(
 						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
-						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
-						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/username/".$user_id."/") =>
+							$lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") =>
+							$lang['edit_user_change_password'],
 						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
 						),
 					l("admin/users/edit/".$user_id."/")
@@ -1172,22 +1281,39 @@ function form_users_edit_user_validate($form)
 	global $db, $page_matches, $user, $lang;
 	
 	// Cannot edit your own primary user group
-	if($user -> user_id == $page_matches['user_id'] && $user -> info['user_group'] != $form -> form_state['#user_group']['value'])
+	if(
+		$user -> user_id == $page_matches['user_id'] &&
+		$user -> info['user_group'] != $form -> form_state['#user_group']['value']
+		)
 		$form -> set_error("user_group", $lang['cant_edit_own_group']);        
 
 	// Check email is alright
-	$form -> form_state['#email']['value'] = users_sanitise_email_address($form -> form_state['#email']['value']);
+	$form -> form_state['#email']['value'] = users_sanitise_email_address(
+		$form -> form_state['#email']['value']
+		);
 
 	$error = users_verify_email($form -> form_state['#email']['value'], True);
 	if($error !== True)
 		$form -> set_error("email", $error);
 
 	// Check theme
-	if($form -> form_state['#theme']['value'] != -1 && !array_key_exists($form -> form_state['#theme']['value'], $form -> form_state['meta']['data_themes']))
+	if(
+		$form -> form_state['#theme']['value'] != -1 &&
+		!array_key_exists(
+			$form -> form_state['#theme']['value'],
+			$form -> form_state['meta']['data_themes']
+			)
+		)
 		$form -> set_error("theme", $lang['edit_user_invalid_theme']);
 
 	// Check language
-	if($form -> form_state['#language']['value'] != -1 && !array_key_exists($form -> form_state['#language']['value'], $form -> form_state['meta']['data_languages']))
+	if(
+		$form -> form_state['#language']['value'] != -1 &&
+		!array_key_exists(
+			$form -> form_state['#language']['value'],
+			$form -> form_state['meta']['data_languages']
+			)
+		)
 		$form -> set_error("language", $lang['edit_user_invalid_language']);
 
 }
@@ -1209,7 +1335,7 @@ function form_users_edit_user_complete($form)
 	$user_info = array(
 		"email" 				=> $form -> form_state['#email']['value'],
 		"user_group" 			=> $form -> form_state['#user_group']['value'],
-		"secondary_user_group"	=> $form -> form_state['#user_group_secondary']['value'],
+		"secondary_user_group"  => $form -> form_state['#user_group_secondary']['value'],
 		"title" 				=> $form -> form_state['#title']['value'],
 		"real_name" 			=> $form -> form_state['#real_name']['value'],
 		"homepage" 				=> $form -> form_state['#homepage']['value'],
@@ -1238,21 +1364,35 @@ function form_users_edit_user_complete($form)
 		);
 
 	// Get custom field data
-	if(is_array($form -> form_state['meta']['data_custom_fields']) && count($form -> form_state['meta']['data_custom_fields']) > 0)
+	if(
+		is_array($form -> form_state['meta']['data_custom_fields']) &&
+		count($form -> form_state['meta']['data_custom_fields']) > 0
+		)
 		foreach($form -> form_state['meta']['data_custom_fields'] as $key => $junk)
 			$user_info['field_'.$key] = $form -> form_state['#field_'.$key]['value'];
 
 	// Update the user info
-	$update_result = users_update_user($page_matches['user_id'], $user_info, $form -> form_state['meta']['data_custom_fields']);
+	$update_result = users_update_user(
+		$page_matches['user_id'],
+		$user_info,
+		$form -> form_state['meta']['data_custom_fields']
+		);
 
 	if($update_result === False)
 		return False;
 
 	// Log the action
-	log_admin_action("users", "edit", "Edited user: ".$form -> form_state['meta']['data_username']);
+	log_admin_action(
+		"users",
+		"edit",
+		"Edited user: ".$form -> form_state['meta']['data_username']
+		);
 
 	// Finished
-	$output -> redirect(l("admin/users/edit/".$page_matches['user_id']."/"), $lang['user_updated']);
+	$output -> redirect(
+		l("admin/users/edit/".$page_matches['user_id']."/"),
+		$lang['user_updated']
+		);
 
 	// Secondary user groups
 /*
@@ -1957,9 +2097,18 @@ function page_edit_user_username($user_id)
 	}
 
 	// Set up the page
-	$output -> page_title = $output -> replace_number_tags($lang['edit_username_title'], array($user_info['username']));
-	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
-	$output -> add_breadcrumb($lang['breadcrumb_users_edit_name'], l("admin/users/username/".$user_id."/"));
+	$output -> page_title = $output -> replace_number_tags(
+		$lang['edit_username_title'],
+		array($user_info['username'])
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_edit'],
+		l("admin/users/edit/".$user_id."/")
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_edit_name'],
+		l("admin/users/username/".$user_id."/")
+		);
 
 	$form = new form(
 		array(
@@ -1971,8 +2120,10 @@ function page_edit_user_username($user_id)
 				"admin_sub_menu" => $template_admin -> admin_sub_menu(
 					array(
 						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
-						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
-						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/username/".$user_id."/") =>
+							$lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") =>
+							$lang['edit_user_change_password'],
 						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
 						),
 					l("admin/users/username/".$user_id."/")
@@ -1984,7 +2135,10 @@ function page_edit_user_username($user_id)
 
 			"#username" => array(
 				"name" => $lang['edit_username_enter_new'],
-				"description" => $output -> replace_number_tags($lang['edit_username_current'], $user_info['username']),
+				"description" => $output -> replace_number_tags(
+					$lang['edit_username_current'],
+					$user_info['username']
+					),
 				"type" => "text",
 				"value" => $user_info['username'],
 				"required" => True,
@@ -2158,7 +2312,11 @@ function form_users_edit_username_complete($form)
 
 		// Send the e-mail
 		$mail = new email;
-		$mail -> send_mail($form -> form_state['meta']['data_user_email'], $lang['email_changed_username_subject'], $message);
+		$mail -> send_mail(
+			$form -> form_state['meta']['data_user_email'],
+			$lang['email_changed_username_subject'],
+			$message
+			);
         
 	}
 
@@ -2166,10 +2324,15 @@ function form_users_edit_username_complete($form)
 	log_admin_action(
 		"users",
 		"username", 
-		"Changed member '".$form -> form_state['meta']['data_current_username']."' name to '".$form -> form_state['#username']['value']."'"
+		("Changed member '".
+			 $form -> form_state['meta']['data_current_username'].
+			 "' name to '".$form -> form_state['#username']['value']."'")
 		);
 
-	$output -> redirect(l("admin/users/username/".$page_matches['user_id']."/"), $lang['username_changed_sucessfully']);
+	$output -> redirect(
+		l("admin/users/username/".$page_matches['user_id']."/"),
+		$lang['username_changed_sucessfully']
+		);
 
 }
 
@@ -2328,9 +2491,18 @@ function page_edit_user_password($user_id)
 	}
 
 	// Set up the page
-	$output -> page_title = $output -> replace_number_tags($lang['edit_password_title'], array($user_info['username']));
-	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
-	$output -> add_breadcrumb($lang['breadcrumb_users_edit_password'], l("admin/users/password/".$user_id."/"));
+	$output -> page_title = $output -> replace_number_tags(
+		$lang['edit_password_title'],
+		array($user_info['username'])
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_edit'],
+		l("admin/users/edit/".$user_id."/")
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_edit_password'],
+		l("admin/users/password/".$user_id."/")
+		);
 
 	$form = new form(
 		array(
@@ -2342,8 +2514,10 @@ function page_edit_user_password($user_id)
 				"admin_sub_menu" => $template_admin -> admin_sub_menu(
 					array(
 						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
-						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
-						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/username/".$user_id."/") =>
+							$lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") => 
+							$lang['edit_user_change_password'],
 						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
 						),
 					l("admin/users/password/".$user_id."/")
@@ -2530,7 +2704,11 @@ function form_users_edit_password_complete($form)
 
 		// Send the e-mail
 		$mail = new email;
-		$mail -> send_mail($form -> form_state['meta']['data_user_email'], $lang['email_changed_password_subject'], $message);
+		$mail -> send_mail(
+			$form -> form_state['meta']['data_user_email'],
+			$lang['email_changed_password_subject'],
+			$message
+			);
         
 	}
 
@@ -2541,7 +2719,10 @@ function form_users_edit_password_complete($form)
 		"Changed password for '".$form -> form_state['meta']['data_username']."'"
 		);
 
-	$output -> redirect(l("admin/users/password/".$page_matches['user_id']."/"), $lang['password_changed_sucessfully']);
+	$output -> redirect(
+		l("admin/users/password/".$page_matches['user_id']."/"),
+		$lang['password_changed_sucessfully']
+		);
 
 }
 
@@ -2667,9 +2848,18 @@ function page_delete_user($user_id)
 	}
 
 	// Set up the page
-	$output -> page_title = $output -> replace_number_tags($lang['delete_user_title'], $user_info['username']);
-	$output -> add_breadcrumb($lang['breadcrumb_users_edit'], l("admin/users/edit/".$user_id."/"));
-	$output -> add_breadcrumb($lang['breadcrumb_users_delete'], l("admin/users/delete/".$user_id."/"));
+	$output -> page_title = $output -> replace_number_tags(
+		$lang['delete_user_title'],
+		$user_info['username']
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_edit'],
+		l("admin/users/edit/".$user_id."/")
+		);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_delete'],
+		l("admin/users/delete/".$user_id."/")
+		);
 
 	$output -> add(
 		$output -> confirmation_page(
@@ -2679,13 +2869,18 @@ function page_delete_user($user_id)
 				"admin_sub_menu" => $template_admin -> admin_sub_menu(
 					array(
 						l("admin/users/edit/".$user_id."/") => $lang['edit_user_edit_profile'],
-						l("admin/users/username/".$user_id."/") => $lang['edit_user_change_username'],
-						l("admin/users/password/".$user_id."/") => $lang['edit_user_change_password'],
+						l("admin/users/username/".$user_id."/") =>
+							$lang['edit_user_change_username'],
+						l("admin/users/password/".$user_id."/") =>
+							$lang['edit_user_change_password'],
 						l("admin/users/delete/".$user_id."/") => $lang['edit_user_delete_user']
 						),
 					l("admin/users/delete/".$user_id."/")
 					),
-				"description" => $output -> replace_number_tags($lang['delete_user_message'], $user_info['username']),
+				"description" => $output -> replace_number_tags(
+					$lang['delete_user_message'],
+					$user_info['username']
+					),
 				"callback" => "users_delete_user_complete",
 				"arguments" => array($user_id, $user_info['username']),
 				"confirm_redirect" => l("admin/users/search/"),
