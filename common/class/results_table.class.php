@@ -176,7 +176,7 @@ class results_table
 			$this -> total_items = count($data);
 			$this -> save_total_pages();
 			$this -> save_current_page();
-			$data = $thiis -> settings['data'];
+			$data = $this -> settings['data'];
 		}
 		// Otherwise we've got an empty table
 		else
