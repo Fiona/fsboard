@@ -47,7 +47,7 @@ class results_table
 	 * var array
 	 */
 	var $settings = array(
-		"items_per_page" => 1
+		"items_per_page" => 50
 		);
 
 
