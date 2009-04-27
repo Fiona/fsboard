@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="23-04-09 9:53 pm">
+<languages_file fsboard_version="0.1" time="27-04-09 8:02 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2302,6 +2302,7 @@ Hitting the help button <img src="<3>/admin/themes/FSBoard_Green/help.png" /> wh
 		<phrases variable_name="template_group_name_template_control_panel" group="admin_templates"><![CDATA[User Control Panel]]></phrases>
 		<phrases variable_name="template_group_name_template_global" group="admin_templates"><![CDATA[Global site-wide templates]]></phrases>
 		<phrases variable_name="template_group_name_template_global_forms" group="admin_templates"><![CDATA[Global forms]]></phrases>
+		<phrases variable_name="template_group_name_template_global_results_table" group="admin_templates"><![CDATA[Global results table]]></phrases>
 		<phrases variable_name="template_group_name_template_view_profile" group="admin_templates"><![CDATA[User Profile View]]></phrases>
 		<phrases variable_name="template_list_message" group="admin_templates"><![CDATA[Edit individual templates here by expanding the groups and hitting the edit button. It is recommended you backup your templates before making drastic changes to them.]]></phrases>
 		<phrases variable_name="template_list_title" group="admin_templates"><![CDATA[Template list for:]]></phrases>
@@ -2664,6 +2665,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="search_subtitle_times" group="admin_users"><![CDATA[Time Criteria]]></phrases>
 		<phrases variable_name="search_users_delete" group="admin_users"><![CDATA[Remove User]]></phrases>
 		<phrases variable_name="search_users_edit" group="admin_users"><![CDATA[Edit User]]></phrases>
+		<phrases variable_name="search_users_ip_info" group="admin_users"><![CDATA[IP Information]]></phrases>
 		<phrases variable_name="search_users_submit" group="admin_users"><![CDATA[Conduct Search]]></phrases>
 		<phrases variable_name="search_users_view" group="admin_users"><![CDATA[View Profile]]></phrases>
 		<phrases variable_name="search_user_email" group="admin_users"><![CDATA[E-Mail contains]]></phrases>
@@ -2832,6 +2834,10 @@ If you are sure that you should be able to view this page, please ensure that yo
 		<phrases variable_name="not_logged_in" group="global"><![CDATA[You are not logged in.]]></phrases>
 		<phrases variable_name="november" group="global"><![CDATA[November]]></phrases>
 		<phrases variable_name="october" group="global"><![CDATA[October]]></phrases>
+		<phrases variable_name="pagination_first_page" group="global"><![CDATA[&laquo;&laquo; First Page]]></phrases>
+		<phrases variable_name="pagination_last_page" group="global"><![CDATA[Last Page &raquo;&raquo;]]></phrases>
+		<phrases variable_name="pagination_next_page" group="global"><![CDATA[Next &raquo;]]></phrases>
+		<phrases variable_name="pagination_previous_page" group="global"><![CDATA[&laquo; Prev]]></phrases>
 		<phrases variable_name="powered_by" group="global"><![CDATA[Powered by]]></phrases>
 		<phrases variable_name="profile_settings" group="global"><![CDATA[Control Panel]]></phrases>
 		<phrases variable_name="quicklogin_form_error" group="global"><![CDATA[You must fill in all the values!]]></phrases>

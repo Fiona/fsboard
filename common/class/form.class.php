@@ -165,7 +165,7 @@ class form
 					if(isset($this -> form_state['meta']['redirect']) && is_array($this -> form_state['meta']['redirect']))
 					{
 						global $output;
-						$output -> redirect($this -> form_state['meta']['redirect']['url'], $this -> form_state['meta']['redirect']['message']);						
+						$output -> redirect($this -> form_state['meta']['redirect']['url'], $this -> form_state['meta']['redirect']['message']);
 						return $ret;
 					}
 
@@ -176,6 +176,10 @@ class form
 			}
 			
 		}
+
+		// Last minute check to force the builder not to create the form
+		if(isset($this -> form_state['meta']['halt_form_render']) && $this -> form_state['meta']['halt_form_render'])
+			$reshow_form = False;
 		
 		# ---------------------------
 		# Creating the form HTML

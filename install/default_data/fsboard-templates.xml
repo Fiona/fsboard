@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="23-04-09 9:52 pm">
+<template_set_file fsboard_version="0.1" time="27-04-09 8:02 am">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -634,6 +634,43 @@
 
 </div>]]></template>
 		<template_parameters><![CDATA[$form_state, $form_contents]]></template_parameters>
+		<template name="Pagination links" class_name="template_global_results_table" function_name="pagination"><![CDATA[<div class="pagination">
+<IF "$first_link !== NULL">
+  <a href="{$first_link}" class="first_link">{$lang['pagination_first_page']}</a>
+<ENDIF>
+<IF "$previous_link !== NULL">
+  <a href="{$previous_link}" class="previous_link">{$lang['pagination_previous_page']}</a>
+<ENDIF>
+<FOR "$a = 1; $a <= $total_pages; $a++">
+  <a href="?page={$a}"<IF "$current_page == $a"> class="current"<ENDIF>>{$a}</a>
+<ENDFOR>
+<IF "$next_link !== NULL">
+  <a href="{$next_link}" class="next_link">{$lang['pagination_next_page']}</a>
+<ENDIF>
+<IF "$last_link !== NULL">
+  <a href="{$last_link}" class="last_link">{$lang['pagination_last_page']}</a>
+<ENDIF>
+</div>]]></template>
+		<template_parameters><![CDATA[$total_pages, $current_page, $previous_link, $next_link, $first_link, $last_link]]></template_parameters>
+		<template name="Results table column header" class_name="template_global_results_table" function_name="table_column_header"><![CDATA[<tr class="results_table_header">
+  <FOREACH "$column_data as $col_id => $col_data">
+    <th class="results_table_header_cell results_table_header_cell_{$col_id}">{$col_data['name']}</th>
+  <ENDFOREACH>
+</tr>]]></template>
+		<template_parameters><![CDATA[$table_settings, $column_data]]></template_parameters>
+		<template name="Results table row" class_name="template_global_results_table" function_name="table_row"><![CDATA[<tr class="results_table_row <IF "($row_count_num % 2) == 0"> alt<ENDIF>">
+  <FOREACH "$column_data as $col_id => $col_data">
+    <td class="results_table_cell results_table_cell_{$col_id}">{$col_data}</td>
+  <ENDFOREACH>
+</tr>]]></template>
+		<template_parameters><![CDATA[$table_settings, $column_data, $row_count_num]]></template_parameters>
+		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[<table class="results_table">
+  <IF "isset($table_settings['title'])"><caption>{$table_settings['title']}</caption><ENDIF>
+  {$header_html}
+  {$rows_html}
+</table>
+{$pagination_html}]]></template>
+		<template_parameters><![CDATA[$table_settings, $header_html, $rows_html, $pagination_html]]></template_parameters>
 		<template name="Custom profile field" class_name="template_view_profile" function_name="profile_view_custom"><![CDATA[<table class="global_table profile_view_table">
   <tr>
     <td>

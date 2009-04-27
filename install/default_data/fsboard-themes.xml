@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="23-04-09 9:53 pm">
+<theme_file fsboard_version="0.1" time="27-04-09 8:02 am">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -574,6 +574,83 @@ div.form_wrapper
           font-size : 9px;
           color: #ff3333;
         }
+
+
+/*
+----------------------
+Result tables
+----------------------
+*/
+table.results_table
+{
+  width : 95%;
+  margin : 0 auto 10px auto;
+  clear : left;
+  float:left;  
+  border-collapse: collapse;
+}
+  table.results_table caption
+  {
+    background-image: url('$imgdir/top_header_bar.gif');
+    background-repeat: repeat-x;
+    background-position: top;
+    border-bottom: 1px solid #aae6aa;
+    background-color: #ecffec;
+    height: 31px;
+    padding-left : 15px;
+    padding-top : 5px;
+    font-weight: bold;
+    text-align : left;
+  }
+  table.results_table th
+  {
+    background-color:#DDF3DD;
+    border:1px solid #BFF8BF;
+    padding:3px;
+    text-align : left;
+  }
+  table.results_table tbody tr.results_table_row td
+  {
+    background-color:#DDF3DD;
+    border:1px solid #BFF8BF;
+    padding : 2px;
+  }
+    table.results_table tbody tr.alt td
+    {
+      background-color:#EBF3EB;
+    }
+
+/*
+----------------------
+Pagination
+----------------------
+*/
+div.pagination
+{
+  width : 95%;
+  margin : 0 auto 10px auto;
+  clear : left;
+  float:left;  
+  border-collapse: collapse;
+  text-align : right;
+}
+  div.pagination a
+  {
+    border:1px solid #BFF8BF;
+    padding : 2px;
+    background-color:#EBF3EB;
+    margin : 4px;
+    width : 10px;
+    height : 10px;
+    text-decoration : none;
+    font-weight: bold;
+    font-size : 15px;
+  }
+    div.pagination a.current
+    {
+      border:1px dotted #BFF8BF;
+      background-color:#DDF3DD;
+    }
 
 /*
 ----------------------

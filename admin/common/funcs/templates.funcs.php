@@ -199,6 +199,8 @@ function return_function_call($template_array)
                 '#\<IF \"(.*?)\"\>#e',
                 '#\<ELSE\>#e',
                 '#\<ENDIF\>#e',
+                '#\<FOR \"(.*?)\"\>#e',
+                '#\<ENDFOR\>#e',
                 '#\<FOREACH \"(.*?)\"\>#e',
                 '#\<ENDFOREACH\>#e',
                 '#\<URL \"(.*?)\"\>#e',
@@ -209,6 +211,8 @@ function return_function_call($template_array)
                 'handle_opening_if(\'$1\')',
                 'handle_else()',
                 'handle_closing_if()',
+                'handle_opening_for(\'$1\')',
+                'handle_closing_for()',
                 'handle_opening_foreach(\'$1\')',
                 'handle_closing_foreach()',
                 'handle_url(\'$1\')',
@@ -282,8 +286,40 @@ $return_this .= <<<END
 }
 
 
+
 //***********************************************
-// Similary for foreach
+// Similary for for
+//***********************************************
+function handle_opening_for($parameters)
+{
+
+        return
+'
+END;
+// For loop!
+for('.$parameters.')
+{
+$return_this .= <<<END
+';
+
+}
+
+function handle_closing_for()
+{
+
+        return
+'
+END;
+}
+// End for loop!
+$return_this .= <<<END
+';
+
+}
+
+
+//***********************************************
+// Foreach loops
 //***********************************************
 function handle_opening_foreach($parameters)
 {
@@ -291,7 +327,7 @@ function handle_opening_foreach($parameters)
         return
 '
 END;
-// Foreach statement!
+// Foreach loop!
 foreach('.$parameters.')
 {
 $return_this .= <<<END
@@ -306,7 +342,7 @@ function handle_closing_foreach()
 '
 END;
 }
-// End foreach statement!
+// End foreach loop!
 $return_this .= <<<END
 ';
 
