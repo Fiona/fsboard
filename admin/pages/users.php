@@ -814,35 +814,40 @@ function form_users_search_validate($form)
 function form_users_search_complete($form)
 {
 
-	global $lang, $output;
+	global $lang, $output, $cache, $template_admin;
 
+	// Define the table
 	$results_table = new results_table(
 		array(
-			"db_table" => "users",
+			"title" => $template_admin -> form_header_icon("users").$lang['search_user_title'],
+			"db_table" => "users u",
 			"db_where" => $form -> form_state['meta']['search_query']['where'],
+			"db_extra_what" => array("`username`", "`ip_address`"),
 			"columns" => array(
 				"username" => array(
-					"db_column" => "username",
-					"name" => $lang['search_results_username']
+					"name" => $lang['search_results_username'],
+					"content_callback" => 'table_users_search_username_callback'
 					),
 				"email" => array(
-					"db_column" => "email",
-					"name" => $lang['search_results_email']
+					"name" => $lang['search_results_email'],
+					"db_column" => "email"
 					),
 				"posts" => array(
-					"db_column" => "posts",
-					"name" => $lang['search_results_posts']
+					"name" => $lang['search_results_posts'],
+					"db_column" => "posts"
 					),
 				"last_active" => array(
+					"name" => $lang['search_results_last_active'],
 					"db_column" => "last_active",
-					"name" => $lang['search_results_last_active']
+					"date_format" => $cache -> cache['config']['format_date']
 					),
 				"registered" => array(
+					"name" => $lang['search_results_registered'],
 					"db_column" => "registered",
-					"name" => $lang['search_results_registered']
+					"date_format" => $cache -> cache['config']['format_date']
 					),
 				"actions" => array(
-					"name" => $lang['search_results_registered'],
+					"name" => $lang['search_results_actions'],
 					"content_callback" => 'table_users_search_actions_callback'
 					)
 				)
@@ -851,7 +856,42 @@ function form_users_search_complete($form)
 
 	$output -> add($results_table -> render());
 
+	// Stop search form displaying
+	$form -> form_state['meta']['halt_form_render'] = True;
+
 }
+
+/*
+  array("<a href=\"".ROOT."index.php?m=u&amp;id=".$user_array['user_id']."\" title=\"".$lang['search_users_view']."\">".$user_array['username']."</a>
+  <br /><font class=\"small_text\">".$user_array['ip_address']." (<a href=\"index.php?m=users&amp;m2=doipsearch&amp;user_id=".$user_array['user_id']."\">IP info</a>)</font>"
+  , "20%"),
+  array("<a href=\"mailto:".$user_array['email']."\">".$user_array['email']."</a>", "25%"),
+  array($user_array['posts'], "5%"),
+  array(return_formatted_date("dS M Y H:i", $user_array['last_active']), "20%"),
+  array(return_formatted_date("dS M Y", $user_array['registered']), "20%"),
+*/
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the user name to inject a link in.
+ *
+ * @param object $form
+ */
+function table_users_search_username_callback($row_data)
+{
+
+	global $lang;
+
+	return (
+		'<a href="'.l("admin/users/edit/".$row_data['id']."/").'" '.
+		'title="'.$lang['search_users_view'].'">'.$row_data['username'].'</a>'.
+		'<br /><p class=\"results_table_small_text\">'.$row_data['ip_address'].
+		' (<a href="'.l("admin/users/ipsearch/user/".$row_data['id']."/").'">'.$lang['search_users_ip_info'].'</a>)</p>'
+		);
+
+}
+
 
 
 /**
@@ -864,11 +904,18 @@ function form_users_search_complete($form)
 function table_users_search_actions_callback($row_data)
 {
 
-	return ('<a href="'.l("admin/users/edit/".$row_data['id']."/").'"> - '.
-			'<a href="'.l("admin/users/delete/".$row_data['id']."/").'">');
+	global $lang;
+
+	return (
+		'<a href="'.l("admin/users/edit/".$row_data['id']."/").'">'.
+		$lang['search_users_edit'].
+		'</a> - '.
+		'<a href="'.l("admin/users/delete/".$row_data['id']."/").'">'.
+		$lang['search_users_delete'].
+		'</a>'
+		);
 
 }
-
 
 //***********************************************
 // Lollerskates
