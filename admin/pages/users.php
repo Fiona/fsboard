@@ -442,6 +442,7 @@ function page_search_users()
 	$form = new form(
 		array(
 			"meta" => array(
+				"method" => "GET",
 				"name" => "user_search",
 				"title" => $lang['search_user_title'],
 				"description" => $lang['search_user_message'],
@@ -774,7 +775,7 @@ function form_users_search_validate($form)
 
 	$search_data = array(
 		"username" => $form -> form_state['#username']['value'],
-		"username_search" => (int)$_POST['username_search'],
+		"username_search" => (int)$_GET['username_search'],
 		"email" => $form -> form_state['#email']['value'],
 		"usergroup" => $form -> form_state['#usergroup']['value'],
 		"usergroup_secondary" => $form -> form_state['#usergroup_secondary']['value'],
@@ -815,6 +816,13 @@ function form_users_search_complete($form)
 {
 
 	global $lang, $output, $cache, $template_admin;
+
+	// If we've got to the page via some other means
+	// like the "back to results" link we check here
+	// by checking for this optional item and simply
+	// show the form again
+	if(!isset($_GET['submit']))
+		return;
 
 	// Define the table
 	$results_table = new results_table(
