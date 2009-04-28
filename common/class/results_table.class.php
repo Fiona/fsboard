@@ -47,7 +47,8 @@ class results_table
 	 * var array
 	 */
 	var $settings = array(
-		"items_per_page" => 20
+		"items_per_page" => 20,
+		"extra_url" => ""
 		);
 
 
@@ -245,16 +246,18 @@ class results_table
 		$first_link = NULL;
 		$last_link = NULL;
 
+		$extra_url = ($this -> settings['extra_url'] ? $this -> settings['extra_url']."&" : "");
+
 		if($this -> current_page > 1)
 		{
-			$prev_link = "?page=".($this -> current_page-1);
-			$first_link = "?page=1";
+			$prev_link = "?".$extra_url."page=".($this -> current_page-1);
+			$first_link = "?".$extra_url."page=1";
 		}
 
 		if($this -> total_pages > 1 && $this -> current_page < $this -> total_pages)
 		{
-			$next_link = "?page=".($this -> current_page+1);
-			$last_link = "?page=".($this -> total_pages);
+			$next_link = "?".$extra_url."page=".($this -> current_page+1);
+			$last_link = "?".$extra_url."page=".($this -> total_pages);
 		}
 
 		$pagination_html = $template_global_results_table -> pagination(
@@ -263,7 +266,8 @@ class results_table
 			$prev_link,
 			$next_link,
 			$first_link,
-			$last_link
+			$last_link,
+			$extra_url
 			);
 
 		// Finished processing data, give back the finished table
@@ -286,7 +290,7 @@ class results_table
 	function save_current_page()
 	{
 
-		if(isset($_GET['page']) && is_int($_GET['page']) && $_GET['page'] > 0)
+		if(isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0)
 			$cur_page = intval($_GET['page']);
 		else
 			$cur_page = 1;

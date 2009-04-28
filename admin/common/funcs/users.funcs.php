@@ -991,6 +991,67 @@ function users_search_users($query_array, $suppress_errors = False)
 
 
 /**
+ * The user search form in the admin uses GET for search and the results page is
+ * paginated, as a result all these GET parameters have to be passed over again.
+ * This is a function designed to only be used in the admin, it will generate
+ * the extra parameters appended to the URLs when you use pagination.
+ *
+ * @return string The built parameters.
+ */
+function users_build_user_search_url()
+{
+
+	$params = array(
+		"username_search" => $_GET['username_search'],
+		"username" => $_GET['username'],
+		"email" => $_GET['email'],
+		"usergroup" => $_GET['usergroup'],
+		"title" => $_GET['title'],
+		"signature" => $_GET['signature'],
+		"homepage" => $_GET['homepage'],
+		"posts_g" => $_GET['posts_g'],
+		"posts_l" => $_GET['posts_l'],
+
+		"register_b[day]" => $_GET['register_b']['day'],
+		"register_b[month]" => $_GET['register_b']['month'],
+		"register_b[year]" => $_GET['register_b']['year'],
+
+		"register_a[day]" => $_GET['register_a']['day'],
+		"register_a[month]" => $_GET['register_a']['month'],
+		"register_a[year]" => $_GET['register_a']['year'],
+
+		"last_active_b[day]" => $_GET['last_active_b']['day'],
+		"last_active_b[month]" => $_GET['last_active_b']['month'],
+		"last_active_b[year]" => $_GET['last_active_b']['year'],
+
+		"last_active_a[day]" => $_GET['last_active_a']['day'],
+		"last_active_a[month]" => $_GET['last_active_a']['month'],
+		"last_active_a[year]" => $_GET['last_active_a']['year'],
+
+		"last_post_a[day]" => $_GET['last_post_a']['day'],
+		"last_post_a[month]" => $_GET['last_post_a']['month'],
+		"last_post_a[year]" => $_GET['last_post_a']['year'],
+
+		"last_post_b[day]" => $_GET['last_post_b']['day'],
+		"last_post_b[month]" => $_GET['last_post_b']['month'],
+		"last_post_b[year]" => $_GET['last_post_b']['year'],
+
+		"submit" => $_GET['submit'],
+		"form_user_search" => $_GET['form_user_search']
+		);
+
+	$params = array_map("urlencode", $params);
+	$params_second_pass = array();
+	
+	foreach($params as $param_name => $value)
+		$params_second_pass[] = $param_name."=".$value;
+
+	return implode("&", $params_second_pass);
+
+}
+
+
+/**
  * Takes field values and chucks it all in a handy query
  * string for use when searching for users.
  *

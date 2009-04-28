@@ -827,10 +827,16 @@ function form_users_search_complete($form)
 	// Define the table
 	$results_table = new results_table(
 		array(
+			"items_per_page" => 50,
+
 			"title" => $template_admin -> form_header_icon("users").$lang['search_user_title'],
+
 			"db_table" => "users u",
 			"db_where" => $form -> form_state['meta']['search_query']['where'],
 			"db_extra_what" => array("`username`", "`ip_address`"),
+
+			"extra_url" => users_build_user_search_url(),
+
 			"columns" => array(
 				"username" => array(
 					"name" => $lang['search_results_username'],
@@ -869,15 +875,6 @@ function form_users_search_complete($form)
 
 }
 
-/*
-  array("<a href=\"".ROOT."index.php?m=u&amp;id=".$user_array['user_id']."\" title=\"".$lang['search_users_view']."\">".$user_array['username']."</a>
-  <br /><font class=\"small_text\">".$user_array['ip_address']." (<a href=\"index.php?m=users&amp;m2=doipsearch&amp;user_id=".$user_array['user_id']."\">IP info</a>)</font>"
-  , "20%"),
-  array("<a href=\"mailto:".$user_array['email']."\">".$user_array['email']."</a>", "25%"),
-  array($user_array['posts'], "5%"),
-  array(return_formatted_date("dS M Y H:i", $user_array['last_active']), "20%"),
-  array(return_formatted_date("dS M Y", $user_array['registered']), "20%"),
-*/
 
 /**
  * RESULTS TABLE FUNCTION
