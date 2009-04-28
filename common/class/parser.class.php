@@ -114,6 +114,8 @@ class parser
         // Make urls clickable  
         $text = $this -> handle_urls($text);
                 
+		// TODO: Word filter
+
 		// Do BBCode parse
         if($this -> do_bbcode)
             $text = $this -> do_bbcode_parse($text);

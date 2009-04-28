@@ -840,11 +840,12 @@ function form_users_search_complete($form)
 			"columns" => array(
 				"username" => array(
 					"name" => $lang['search_results_username'],
-					"content_callback" => 'table_users_search_username_callback'
+					"content_callback" => 'table_users_search_username_callback',
 					),
 				"email" => array(
 					"name" => $lang['search_results_email'],
-					"db_column" => "email"
+					"db_column" => "email",
+					"sanitise" => True
 					),
 				"posts" => array(
 					"name" => $lang['search_results_posts'],
@@ -890,7 +891,7 @@ function table_users_search_username_callback($row_data)
 
 	return (
 		'<a href="'.l("admin/users/edit/".$row_data['id']."/").'" '.
-		'title="'.$lang['search_users_view'].'">'.$row_data['username'].'</a>'.
+		'title="'.$lang['search_users_view'].'">'.sanitise_user_input($row_data['username']).'</a>'.
 		'<br /><p class=\"results_table_small_text\">'.$row_data['ip_address'].
 		' (<a href="'.l("admin/users/ipsearch/user/".$row_data['id']."/").'">'.$lang['search_users_ip_info'].'</a>)</p>'
 		);
@@ -1142,7 +1143,7 @@ function page_edit_user($user_id)
 	// Set up the page
 	$output -> page_title = $output -> replace_number_tags(
 		$lang['edit_user_title'],
-		array($user_info['username'])
+		array(sanitise_user_input($user_info['username']))
 		);
 	$output -> add_breadcrumb(
 		$lang['breadcrumb_users_edit'],
@@ -1485,7 +1486,7 @@ function form_users_edit_user_complete($form)
 	log_admin_action(
 		"users",
 		"edit",
-		"Edited user: ".$form -> form_state['meta']['data_username']
+		"Edited user: ".sanitise_user_input($form -> form_state['meta']['data_username'])
 		);
 
 	// Finished
@@ -2199,7 +2200,7 @@ function page_edit_user_username($user_id)
 	// Set up the page
 	$output -> page_title = $output -> replace_number_tags(
 		$lang['edit_username_title'],
-		array($user_info['username'])
+		array(sanitise_user_input($user_info['username']))
 		);
 	$output -> add_breadcrumb(
 		$lang['breadcrumb_users_edit'],
@@ -2237,7 +2238,7 @@ function page_edit_user_username($user_id)
 				"name" => $lang['edit_username_enter_new'],
 				"description" => $output -> replace_number_tags(
 					$lang['edit_username_current'],
-					$user_info['username']
+					sanitise_user_input($user_info['username'])
 					),
 				"type" => "text",
 				"value" => $user_info['username'],
@@ -2425,7 +2426,7 @@ function form_users_edit_username_complete($form)
 		"users",
 		"username", 
 		("Changed member '".
-			 $form -> form_state['meta']['data_current_username'].
+		 	sanitise_user_input($form -> form_state['meta']['data_current_username']).
 			 "' name to '".$form -> form_state['#username']['value']."'")
 		);
 
@@ -2593,7 +2594,7 @@ function page_edit_user_password($user_id)
 	// Set up the page
 	$output -> page_title = $output -> replace_number_tags(
 		$lang['edit_password_title'],
-		array($user_info['username'])
+		array(sanitise_user_input($user_info['username']))
 		);
 	$output -> add_breadcrumb(
 		$lang['breadcrumb_users_edit'],
@@ -2816,7 +2817,7 @@ function form_users_edit_password_complete($form)
 	log_admin_action(
 		"users",
 		"password", 
-		"Changed password for '".$form -> form_state['meta']['data_username']."'"
+		"Changed password for '".sanitise_user_input($form -> form_state['meta']['data_username'])."'"
 		);
 
 	$output -> redirect(
@@ -2950,7 +2951,7 @@ function page_delete_user($user_id)
 	// Set up the page
 	$output -> page_title = $output -> replace_number_tags(
 		$lang['delete_user_title'],
-		$user_info['username']
+		sanitise_user_input($user_info['username'])
 		);
 	$output -> add_breadcrumb(
 		$lang['breadcrumb_users_edit'],
@@ -2979,7 +2980,7 @@ function page_delete_user($user_id)
 					),
 				"description" => $output -> replace_number_tags(
 					$lang['delete_user_message'],
-					$user_info['username']
+					sanitise_user_input($user_info['username'])
 					),
 				"callback" => "users_delete_user_complete",
 				"arguments" => array($user_id, $user_info['username']),
@@ -3081,7 +3082,7 @@ function users_delete_user_complete($user_id, $username)
 	{
 
         // Log it
-        log_admin_action("users", "delete", "Deleted user ".$username);
+        log_admin_action("users", "delete", "Deleted user ".sanitise_user_input($username));
 
 		return True;
 

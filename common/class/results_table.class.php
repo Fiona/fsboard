@@ -229,6 +229,10 @@ class results_table
 						$columns[$col_id]
 						);
 
+				// If we want it sanitised
+				if(isset($col_info['sanitise']) && $col_info['sanitise'])
+					$columns[$col_id] = sanitise_user_input($columns[$col_id]);
+
 			}
 
 			$rows_html .= $template_global_results_table -> table_row(

@@ -311,6 +311,26 @@ function img($path)
 		
 }
 
+
+/**
+ * Takes something (anything) that has been input by the user and
+ * sanitises it. It escapes HTML and runs the word filter on it.
+ *
+ * @param $input The input that will be escaped.
+ * @return string
+ */
+function sanitise_user_input($input)
+{
+
+	$input = htmlentities($input);
+
+	// TODO: Word filter
+
+	return $input;
+
+}
+
+
 /**
  * Return the current IP being used to browse the script.
  * 
