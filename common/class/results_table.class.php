@@ -31,11 +31,10 @@ if (!defined("FSBOARD"))
 
 
 /**
- * This is the results table class. It's designed to provide
- * a completely painless and easy as hell method of displaying
- * tabular data, especially that from a database along with providing
- * stuff like pagination and searching for free.
- * It's mostly used in the admin area as it's pretty much a bunch of CRUD
+ * This is the results table class. It's designed to provide a completely
+ * painless and easy as hell method of displaying tabular data, especially that
+ * from a database along with providing stuff like pagination and searching for
+ * free. It's mostly used in the admin area as it's pretty much a bunch of CRUD
  * pages. 
  */
 class results_table
@@ -75,6 +74,13 @@ class results_table
 	 */
 	var $current_page = 0;
 
+
+	/**
+	 * The amount of numbers we will have either side of the selected one
+	 *
+	 * var int
+	 */
+	var $padding_amount = 2;
 
 	/**
 	 * Constructor, saves the settings.
@@ -244,24 +250,131 @@ class results_table
 		}
 
 
-		// Grab correct pagination links
-		$prev_link = NULL;
-		$next_link = NULL;
-		$first_link = NULL;
-		$last_link = NULL;
+		// Grab correct pagination urls
+		$prev_link = "";
+		$next_link = "";
+		$first_link = "";
+		$last_link = "";
 
-		$extra_url = ($this -> settings['extra_url'] ? $this -> settings['extra_url']."&" : "");
+		$extra_url = (
+			$this -> settings['extra_url'] ?
+			$this -> settings['extra_url']."&" :
+			""
+			);
 
 		if($this -> current_page > 1)
 		{
-			$prev_link = "?".$extra_url."page=".($this -> current_page-1);
+			$prev_link = "?".$extra_url."page=".($this -> current_page - 1);
 			$first_link = "?".$extra_url."page=1";
 		}
 
 		if($this -> total_pages > 1 && $this -> current_page < $this -> total_pages)
 		{
-			$next_link = "?".$extra_url."page=".($this -> current_page+1);
+			$next_link = "?".$extra_url."page=".($this -> current_page + 1);
 			$last_link = "?".$extra_url."page=".($this -> total_pages);
+		}
+
+		// We build the individual numbers here
+		$number_links = array();
+
+		
+		// Normally just show enough links
+		if($this -> total_pages < (($this -> padding_amount * 2)+1))
+			for($a = 1; $a <= $this -> total_pages; $a++)
+				$number_links[] = $template_global_results_table -> pagination_number_link(
+					$extra_url, $a, $this -> current_page
+					);
+		// When we have more than normal we have to split it up and show 
+		// only the necessary ones
+		else
+		{
+
+			// Left hand side
+			// Is the current page still connected to the first items we can happily show
+			// the first few without any splititng
+			if($this -> current_page <= ($this -> padding_amount * 2))
+			{
+				
+				//Create a link for all the first numbers
+				for($a = 1; $a < $this -> current_page; $a++)
+					$number_links[] = $template_global_results_table -> pagination_number_link(
+						$extra_url, $a, $this -> current_page
+						);
+
+			}
+			// When the current page is not connected to the left have side links we
+			// must create the first few items and the ones on the very left of the
+			// centre link
+			else
+			{
+
+				// Show the first numbers 
+				for($a = 1; $a <= $this -> padding_amount; $a++)
+					$number_links[] = $template_global_results_table -> pagination_number_link(
+						$extra_url, $a, $this -> current_page
+						);
+				
+				// Ellipsis splitter
+				$number_links[] = $template_global_results_table -> pagination_splitter();
+
+				// Show the numbers directly to the left of the centre link
+				for(
+					$a = ($this -> current_page - $this -> padding_amount);
+					$a < $this -> current_page;
+					$a++
+					)
+					$number_links[] = $template_global_results_table -> pagination_number_link(
+						$extra_url, $a, $this -> current_page
+						);
+
+			}
+
+			// This is the current page link
+			$number_links[] = $template_global_results_table -> pagination_number_link(
+				$extra_url, $this -> current_page, $this -> current_page
+				);
+
+			// Right hand side
+			// If the current page connected to the last items we show them unsplit like
+			// the left side does
+			if($this -> current_page >=
+			   ($this -> total_pages - ($this -> padding_amount * 2)))
+			{
+				
+				// Create a link for all the last numbers
+				for($a = ($this -> current_page + 1); $a <= $this -> total_pages; $a++)
+					$number_links[] = $template_global_results_table -> pagination_number_link(
+						$extra_url, $a, $this -> current_page
+						);
+
+			}
+			// When not connected to the end we need to show the surrounding links and
+			// the splitter
+			else
+			{
+
+				// Show the numbers direct to the right of the centre link
+				$start = ($this -> current_page + 1);
+				for($a = $start; $a < ($start + $this -> padding_amount); $a++)
+					$number_links[] = $template_global_results_table -> pagination_number_link(
+						$extra_url, $a, $this -> current_page
+						);
+				
+				// Ellipsis splitter
+				$number_links[] = $template_global_results_table -> pagination_splitter();
+
+				// Show the end numbers
+				for(
+					$a = (($this -> total_pages - $this -> padding_amount) + 1);
+					$a <= $this -> total_pages;
+					$a++
+					)
+					$number_links[] = $template_global_results_table -> pagination_number_link(
+						$extra_url, $a, $this -> current_page
+						);
+
+			}
+
 		}
 
 		$pagination_html = $template_global_results_table -> pagination(
@@ -271,6 +384,7 @@ class results_table
 			$next_link,
 			$first_link,
 			$last_link,
+			$number_links,
 			$extra_url
 			);
 

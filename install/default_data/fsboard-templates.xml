@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="28-04-09 10:53 pm">
+<template_set_file fsboard_version="0.1" time="01-05-09 9:44 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -635,23 +635,19 @@
 </div>]]></template>
 		<template_parameters><![CDATA[$form_state, $form_contents]]></template_parameters>
 		<template name="Pagination links" class_name="template_global_results_table" function_name="pagination"><![CDATA[<div class="pagination">
-<IF "$first_link !== NULL">
-  <a href="{$first_link}" class="first_link">{$lang['pagination_first_page']}</a>
-<ENDIF>
-<IF "$previous_link !== NULL">
-  <a href="{$previous_link}" class="previous_link">{$lang['pagination_previous_page']}</a>
-<ENDIF>
-<FOR "$a = 1; $a <= $total_pages; $a++">
-  <a href="?{$extra_url}page={$a}"<IF "$current_page == $a"> class="current"<ENDIF>>{$a}</a>
-<ENDFOR>
-<IF "$next_link !== NULL">
-  <a href="{$next_link}" class="next_link">{$lang['pagination_next_page']}</a>
-<ENDIF>
-<IF "$last_link !== NULL">
-  <a href="{$last_link}" class="last_link">{$lang['pagination_last_page']}</a>
-<ENDIF>
+  <a href="{$first_link}" class="first_link<IF "$first_link === ''"> disabled<ENDIF>">{$lang['pagination_first_page']}</a>
+  <a href="{$previous_link}" class="previous_link<IF "$previous_link === ''"> disabled<ENDIF>">{$lang['pagination_previous_page']}</a>
+<FOREACH "$number_links as $link">
+  {$link}
+<ENDFOREACH>
+  <a href="{$next_link}" class="next_link<IF "$next_link === ''"> disabled<ENDIF>">{$lang['pagination_next_page']}</a>
+  <a href="{$last_link}" class="last_link<IF "$last_link === ''"> disabled<ENDIF>">{$lang['pagination_last_page']}</a>
 </div>]]></template>
-		<template_parameters><![CDATA[$total_pages, $current_page, $previous_link, $next_link, $first_link, $last_link, $extra_url]]></template_parameters>
+		<template_parameters><![CDATA[$total_pages, $current_page, $previous_link, $next_link, $first_link, $last_link, $number_links, $extra_url]]></template_parameters>
+		<template name="Pagination number link" class_name="template_global_results_table" function_name="pagination_number_link"><![CDATA[<a href="?{$url}page={$page_num}"<IF "$current_page == $page_num"> class="current"<ENDIF>>{$page_num}</a>]]></template>
+		<template_parameters><![CDATA[$url, $page_num, $current_page]]></template_parameters>
+		<template name="Pagination number splitter" class_name="template_global_results_table" function_name="pagination_splitter"><![CDATA[&hellip;]]></template>
+		<template_parameters><![CDATA[]]></template_parameters>
 		<template name="Results table column header" class_name="template_global_results_table" function_name="table_column_header"><![CDATA[<tr class="results_table_header">
   <FOREACH "$column_data as $col_id => $col_data">
     <th class="results_table_header_cell results_table_header_cell_{$col_id}">{$col_data['name']}</th>
@@ -664,7 +660,8 @@
   <ENDFOREACH>
 </tr>]]></template>
 		<template_parameters><![CDATA[$table_settings, $column_data, $row_count_num]]></template_parameters>
-		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[<table class="results_table">
+		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[{$pagination_html}
+<table class="results_table">
   <IF "isset($table_settings['title'])"><caption>{$table_settings['title']}</caption><ENDIF>
   {$header_html}
   {$rows_html}
