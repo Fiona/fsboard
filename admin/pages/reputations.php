@@ -47,7 +47,7 @@ if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOAR
 //***********************************************
 // include.. include this... oh please include this
 //***********************************************
-load_language_group("admin_reptutations");
+load_language_group("admin_reputations");
 
 
 $output -> add_breadcrumb($lang['breadcrumb_reputations'], "index.php?m=reputations");
