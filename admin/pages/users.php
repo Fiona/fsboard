@@ -837,29 +837,36 @@ function form_users_search_complete($form)
 
 			"extra_url" => users_build_user_search_url(),
 
+			"default_sort" => "username",
+
 			"columns" => array(
 				"username" => array(
 					"name" => $lang['search_results_username'],
 					"content_callback" => 'table_users_search_username_callback',
+					"sortable" => True
 					),
 				"email" => array(
 					"name" => $lang['search_results_email'],
 					"db_column" => "email",
-					"sanitise" => True
+					"sanitise" => True,
+					"sortable" => True
 					),
 				"posts" => array(
 					"name" => $lang['search_results_posts'],
-					"db_column" => "posts"
+					"db_column" => "posts",
+					"sortable" => True
 					),
 				"last_active" => array(
 					"name" => $lang['search_results_last_active'],
 					"db_column" => "last_active",
-					"date_format" => $cache -> cache['config']['format_date']
+					"date_format" => $cache -> cache['config']['format_date'],
+					"sortable" => True
 					),
 				"registered" => array(
 					"name" => $lang['search_results_registered'],
 					"db_column" => "registered",
-					"date_format" => $cache -> cache['config']['format_date']
+					"date_format" => $cache -> cache['config']['format_date'],
+					"sortable" => True
 					),
 				"actions" => array(
 					"name" => $lang['search_results_actions'],
