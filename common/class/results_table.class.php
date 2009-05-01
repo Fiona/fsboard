@@ -49,7 +49,7 @@ class results_table
 		"items_per_page" => 20,
 		"extra_url" => "",
 		"default_sort" => "id",
-		"default_sort_direction" => "ASC"
+		"default_sort_direction" => "asc"
 		);
 
 
@@ -298,7 +298,7 @@ class results_table
 				"&sort_dir=".$this -> sort_column_direction."&"
 				);
 		}
-
+		
 		if($this -> current_page > 1)
 		{
 			$prev_link = "?".$extra_url."page=".($this -> current_page - 1);
