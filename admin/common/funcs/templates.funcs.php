@@ -198,6 +198,7 @@ function return_function_call($template_array)
         $find = array(
                 '#\<IF \"(.*?)\"\>#e',
                 '#\<ELSE\>#e',
+                '#\<ELSEIF \"(.*?)\"\>#e',
                 '#\<ENDIF\>#e',
                 '#\<FOR \"(.*?)\"\>#e',
                 '#\<ENDFOR\>#e',
@@ -210,6 +211,7 @@ function return_function_call($template_array)
         $replace = array(
                 'handle_opening_if(\'$1\')',
                 'handle_else()',
+                'handle_else_if(\'$1\')',
                 'handle_closing_if()',
                 'handle_opening_for(\'$1\')',
                 'handle_closing_for()',
@@ -266,6 +268,20 @@ function handle_else()
 END;
 }
 else
+{
+$return_this .= <<<END
+';
+
+}
+
+function handle_else_if($parameters)
+{
+
+        return
+'
+END;
+}
+elseif('.$parameters.')
 {
 $return_this .= <<<END
 ';
