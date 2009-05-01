@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="27-04-09 8:02 am">
+<theme_file fsboard_version="0.1" time="01-05-09 11:15 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -609,6 +609,15 @@ table.results_table
     padding:3px;
     text-align : left;
   }
+    table.results_table th a img
+    {
+      border :0;
+      text-decoration : none;
+    }
+    table.results_table th a:link img
+    {
+      text-decoration : none;
+    }
   table.results_table tbody tr.results_table_row td
   {
     background-color:#DDF3DD;
@@ -649,7 +658,13 @@ div.pagination
     div.pagination a.current
     {
       border:1px dotted #BFF8BF;
-      background-color:#DDF3DD;
+      background-color:#a3e9a3;
+    }
+    div.pagination a.disabled
+    {
+      border:1px solid #d2d2d2;
+      background-color:#e8e8e8;
+      color:#d2d2d2;
     }
 
 /*

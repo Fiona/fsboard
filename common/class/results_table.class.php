@@ -47,7 +47,9 @@ class results_table
 	 */
 	var $settings = array(
 		"items_per_page" => 20,
-		"extra_url" => ""
+		"extra_url" => "",
+		"default_sort" => "id",
+		"default_sort_direction" => "ASC"
 		);
 
 
@@ -74,6 +76,22 @@ class results_table
 	 */
 	var $current_page = 0;
 
+	
+	/**
+	 * Current column we're sorting by
+	 *
+	 * var string
+	 */
+	var $sort_column_selected = NULL;
+
+
+	/**
+	 * Current direction we're sorting by (either asc, desc)
+	 *
+	 * var string
+	 */
+	var $sort_column_direction = NULL;
+
 
 	/**
 	 * The amount of numbers we will have either side of the selected one
@@ -81,6 +99,7 @@ class results_table
 	 * var int
 	 */
 	var $padding_amount = 2;
+
 
 	/**
 	 * Constructor, saves the settings.
@@ -108,6 +127,13 @@ class results_table
 	{
 
 		global $db, $template_global_results_table;
+
+		// This url forms the basis of all numerical and column links
+		$extra_url = (
+			(isset($this -> settings['extra_url']) && $this -> settings['extra_url']) ?
+			$this -> settings['extra_url']."&" :
+			""
+			);
 
 		/*
 		 * First we need to work out what data we're dealing with
@@ -141,6 +167,12 @@ class results_table
 			$this -> save_total_pages();
 			$this -> save_current_page();
 
+			// What are we sorting by at the mo
+			$this -> save_sorting_settings();
+
+//	var $sort_column_selected = NULL;
+//	var $sort_column_direction = NULL;
+
 			$data = array();
 
 			if($this -> total_items > 0)
@@ -169,6 +201,9 @@ class results_table
 							$this -> settings['db_where'] :
 							""
 							),
+						"order" => $this -> sort_column_selected,
+						"direction" => strtoupper($this -> sort_column_direction),
+
 						"limit" => (
 							(max($this -> current_page-1,0) * $this -> settings['items_per_page']).
 							", ".$this -> settings['items_per_page']
@@ -256,11 +291,13 @@ class results_table
 		$first_link = "";
 		$last_link = "";
 
-		$extra_url = (
-			$this -> settings['extra_url'] ?
-			$this -> settings['extra_url']."&" :
-			""
-			);
+		if(isset($_GET['sort_col']))
+		{
+			$extra_url .= (
+				"sort_col=".$this -> sort_column_selected.
+				"&sort_dir=".$this -> sort_column_direction."&"
+				);
+		}
 
 		if($this -> current_page > 1)
 		{
@@ -393,7 +430,10 @@ class results_table
 			$this -> settings,
 			$template_global_results_table -> table_column_header(
 				$this -> settings,
-				$this -> settings['columns']
+				$this -> settings['columns'],
+				$extra_url."page=".$this -> current_page,
+				$this -> sort_column_selected,
+				$this -> sort_column_direction
 				),
 			$rows_html,
 			$pagination_html
@@ -432,5 +472,45 @@ class results_table
 			);
 
 	}
+
+
+	/**
+	 * Work out what we're currently sorting by
+	 */
+	function save_sorting_settings()
+	{
+
+		// If we've got a selected column check that we can actually use it
+		if(
+			isset($_GET['sort_col']) &&
+			isset($this -> settings['columns'][$_GET['sort_col']]) &&
+			isset($this -> settings['columns'][$_GET['sort_col']]['sortable']) &&
+			$this -> settings['columns'][$_GET['sort_col']]['sortable']
+			)
+		{
+
+			$this -> sort_column_selected = $_GET['sort_col'];
+
+		}
+		// Go for the default
+		else
+			$this -> sort_column_selected = $this -> settings['default_sort'];
+
+		// Get the direction we want
+		if(
+			isset($_GET['sort_dir']) &&
+			in_array($_GET['sort_dir'], array("asc", "desc"))
+			)
+		{
+
+			$this -> sort_column_direction = $_GET['sort_dir'];
+
+		}
+		// Go for the default
+		else
+			$this -> sort_column_direction = $this -> settings['default_sort_direction'];
+
+	}
+
 
 }
