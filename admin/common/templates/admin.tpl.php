@@ -477,7 +477,7 @@ END;
 		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_2\">";
 
 		$return .= $this -> generate_menu_entry($lang['admin_menu_new_user'], l("admin/users/add/"));
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_users'], l("admin/users/search/"));
+		$return .= $this -> generate_menu_entry($lang['admin_menu_search_users'], l("admin/users/search/"));
 		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_search_ip'], l("admin/users/ipsearch/"));
 		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_profile_fields'], l("admin/profile_fields/"));
 		$return .= $this -> generate_menu_header("users", "*** ");
