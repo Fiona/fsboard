@@ -437,6 +437,9 @@ function page_search_users()
 	foreach($groups as $group_id => $group_info)
 		$dropdown_options[(string)$group_id] = $group_info['name'];
 
+	// Get all the custom profile fields
+	include ROOT."admin/common/funcs/profilefields.funcs.php";
+	$custom_profile_fields = profilefields_get_fields();
 
 	// Begin defining search form
 	$form = new form(
@@ -452,7 +455,8 @@ function page_search_users()
 					),
 				"validation_func" => "form_users_search_validate",
 				"complete_func" => "form_users_search_complete",
-				"data_user_groups" => $groups
+				"data_user_groups" => $groups,
+				"data_custom_profile_fields" => $custom_profile_fields
 				)
 			)
 		);
@@ -577,7 +581,7 @@ function page_search_users()
 		);
 
 	// Custom profile fields
-	users_add_custom_profile_form_fields($form, False, False);
+	users_add_custom_profile_form_fields($form, False, False, True, $custom_profile_fields);
 
 	$form -> form_state["#submit"] = array(
 			"type" => "submit",
@@ -772,6 +776,7 @@ function form_users_search_validate($form)
    
 	global $lang;
 
+	// Gather together all the data for building the query
 	$search_data = array(
 		"username" => $form -> form_state['#username']['value'],
 		"username_search" => (int)$_GET['username_search'],
@@ -791,14 +796,22 @@ function form_users_search_validate($form)
 		"last_post_a" => $form -> get_date_timestamp('#last_post_a')
 		);
 
+	// Get the custom fields
+	foreach($form -> form_state['meta']['data_custom_profile_fields'] as $field_id => $field_info)
+		$search_data["field_".$field_id] = $form -> form_state['#field_'.$field_id]['value'];
+
+	// Build the query
 	$query_array = users_build_user_search_query_array(
 		$search_data,
-		$form -> form_state['meta']['data_user_groups']
+		$form -> form_state['meta']['data_user_groups'],
+		$form -> form_state['meta']['data_custom_profile_fields']
 		);
 
+	// Something went wrong
 	if(!is_array($query_array))
 		$form -> set_error(NULL, $lang['invalid_search']);
 
+	// Pass it to the form so the completion function can search on it
 	$form -> form_state['meta']['search_query'] = $query_array;
 
 }
@@ -834,7 +847,13 @@ function form_users_search_complete($form)
 			"db_where" => $form -> form_state['meta']['search_query']['where'],
 			"db_extra_what" => array("`username`", "`ip_address`"),
 
-			"extra_url" => users_build_user_search_url(),
+			"db_extra_settings" => array(
+				"join" => "profile_fields_data p",
+				"join_type" => "LEFT",
+				"join_on" => "p.member_id = u.id"
+				),
+
+			"extra_url" => users_build_user_search_url($form -> form_state['meta']['data_custom_profile_fields']),
 
 			"default_sort" => "username",
 

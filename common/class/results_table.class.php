@@ -149,8 +149,8 @@ class results_table
 				"id"
 				);
 
-			$db -> basic_select(
-				array(
+
+			$database_info = array(
 					"table" => $this -> settings['db_table'],
 					"what" => "COUNT(`".$id."`) as `row_count`",
 					"where" => (
@@ -158,8 +158,12 @@ class results_table
 						$this -> settings['db_where'] :
 						""
 						)
-					)
 				);
+
+			if(isset($this -> settings['db_extra_settings']))
+				$database_info = ($database_info + $this -> settings['db_extra_settings']);
+
+			$db -> basic_select($database_info);
 
 			$this -> total_items = $db -> result();
 			
@@ -189,24 +193,27 @@ class results_table
 					);
 
 				// Select the final data
-				$db -> basic_select(
-					array(
-						"table" => $this -> settings['db_table'],
-						"what" => implode(", ", array_merge($what, $extra_what)),
-						"where" => (
-							isset($this -> settings['db_where']) ?
-							$this -> settings['db_where'] :
-							""
-							),
-						"order" => $this -> sort_column_selected,
-						"direction" => strtoupper($this -> sort_column_direction),
-
-						"limit" => (
-							(max($this -> current_page-1,0) * $this -> settings['items_per_page']).
-							", ".$this -> settings['items_per_page']
-							)
+				$database_info = array(
+					"table" => $this -> settings['db_table'],
+					"what" => implode(", ", array_merge($what, $extra_what)),
+					"where" => (
+						isset($this -> settings['db_where']) ?
+						$this -> settings['db_where'] :
+						""
+						),
+					"order" => $this -> sort_column_selected,
+					"direction" => strtoupper($this -> sort_column_direction),
+					
+					"limit" => (
+						(max($this -> current_page-1,0) * $this -> settings['items_per_page']).
+						", ".$this -> settings['items_per_page']
 						)
 					);
+
+				if(isset($this -> settings['db_extra_settings']))
+					$database_info = ($database_info + $this -> settings['db_extra_settings']);
+
+				$db -> basic_select($database_info);
 
 				if($db -> num_rows())
 					while($row = $db -> fetch_array())
