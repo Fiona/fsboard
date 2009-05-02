@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="01-05-09 11:15 pm">
+<theme_file fsboard_version="0.1" time="02-05-09 9:50 am">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -624,6 +624,45 @@ table.results_table
     border:1px solid #BFF8BF;
     padding : 2px;
   }
+  table.results_table tbody tr.results_table_row td.results_table_cell_align_left
+  {
+    text-align : left;
+  }
+  table.results_table tbody tr.results_table_row td.results_table_cell_align_center
+  {
+    text-align : center;
+  }
+  table.results_table tbody tr.results_table_row td.results_table_cell_align_right
+  {
+    text-align : right;
+  }
+    table.results_table tbody tr.results_table_row td p.action_button
+    {
+      margin-right : 5px;
+      float : left;
+    }
+    table.results_table tbody tr.results_table_row td.results_table_cell_align_right p.action_button
+    {
+      float : right;
+    }
+      table.results_table tbody tr.results_table_row td p.action_button a
+      {
+        text-decoration : none;
+        background : #8ee78e;
+        display : block;
+        border:1px dotted #b3e7b3;
+        padding:3px;
+      }
+      table.results_table tbody tr.results_table_row td p.action_button a:hover
+      {
+        background : #cce7cc;
+      }
+      table.results_table tbody tr.results_table_row td p.action_button img
+      {
+        vertical-align : middle;
+        margin-right : 2px;
+        border : 0;
+      }
     table.results_table tbody tr.alt td
     {
       background-color:#EBF3EB;

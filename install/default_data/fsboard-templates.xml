@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="01-05-09 11:15 pm">
+<template_set_file fsboard_version="0.1" time="02-05-09 9:50 am">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -634,6 +634,8 @@
 
 </div>]]></template>
 		<template_parameters><![CDATA[$form_state, $form_contents]]></template_parameters>
+		<template name="Action button" class_name="template_global_results_table" function_name="action_button"><![CDATA[<p class="action_button"><a href="{$url}"><img src="{$GLOBAL_OTHER['imgdir']}button-{$type}.png" alt="{$title}">{$title}</a></p>]]></template>
+		<template_parameters><![CDATA[$type, $title, $url]]></template_parameters>
 		<template name="Pagination links" class_name="template_global_results_table" function_name="pagination"><![CDATA[<div class="pagination">
   <a href="{$first_link}" class="first_link<IF "$first_link === ''"> disabled<ENDIF>">{$lang['pagination_first_page']}</a>
   <a href="{$previous_link}" class="previous_link<IF "$previous_link === ''"> disabled<ENDIF>">{$lang['pagination_previous_page']}</a>
@@ -652,7 +654,7 @@
   <FOREACH "$column_data as $col_id => $col_data">
     <th class="results_table_header_cell results_table_header_cell_{$col_id}">
       <IF "isset($col_data['sortable']) && $col_data['sortable']"><a href="?{$url}&sort_col={$col_id}&sort_dir=<IF "$current_sort_col == $col_id && $current_sort_dir == 'asc'">desc<ELSEIF "$current_sort_col == $col_id && $current_sort_dir == 'desc'">asc<ELSE>asc<ENDIF>"><ENDIF>
-      {$col_data['name']}<IF "isset($col_data['sortable']) && $col_data['sortable']"></a><ENDIF>
+      <IF "isset($col_data['name'])">{$col_data['name']}<ELSE>&nbsp;<ENDIF><IF "isset($col_data['sortable']) && $col_data['sortable']"></a><ENDIF>
       <IF "$current_sort_col == $col_id && $current_sort_dir == 'asc'"> <img src="{$GLOBAL_OTHER['imgdir']}ascending.png"><ELSEIF "$current_sort_col == $col_id"> <img src="{$GLOBAL_OTHER['imgdir']}descending.png"><ENDIF>
     </th>
   <ENDFOREACH>
@@ -660,7 +662,7 @@
 		<template_parameters><![CDATA[$table_settings, $column_data, $url, $current_sort_col, $current_sort_dir]]></template_parameters>
 		<template name="Results table row" class_name="template_global_results_table" function_name="table_row"><![CDATA[<tr class="results_table_row <IF "($row_count_num % 2) == 0"> alt<ENDIF>">
   <FOREACH "$column_data as $col_id => $col_data">
-    <td class="results_table_cell results_table_cell_{$col_id}">{$col_data}</td>
+    <td class="results_table_cell results_table_cell_{$col_id} results_table_cell_align_{$table_settings['columns'][$col_id]['align']}">{$col_data}</td>
   <ENDFOREACH>
 </tr>]]></template>
 		<template_parameters><![CDATA[$table_settings, $column_data, $row_count_num]]></template_parameters>
