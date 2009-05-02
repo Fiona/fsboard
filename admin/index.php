@@ -170,6 +170,19 @@ $mode_file_list = array(
 	'users/(?<mode>edit|username|password|delete)/(?<user_id>[0-9]+)' => array(
 		"page" => "users"
 	),
+
+	// ----------------
+	// Custom profile fields
+	// ----------------
+	'profile_fields' => array(
+		"page" => "profile_fields"
+	),
+	'profile_fields/(?<mode>add)' => array(
+		"page" => "profile_fields"
+	),
+	'profile_fields/(?<mode>edit|delete)/(?<field_id>[0-9]+)' => array(
+		"page" => "profile_fields"
+	),
 	
 /*	
 	// ----------------
@@ -225,7 +238,6 @@ $mode_file_list = array(
                                 'forums'        => 'forums.php',
                                 'usergroups'    => 'usergroups.php',
                                 'moderators'    => 'moderators.php',
-                                'profilefields' => 'profilefields.php',
                                 'tasks'         => 'tasks.php',
                                 'tasklogs'      => 'tasks_logs.php',
                                 'bbcode'        => 'bbcode.php',

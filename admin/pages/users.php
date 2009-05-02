@@ -564,7 +564,7 @@ function table_users_search_username_callback($row_data)
 	return (
 		'<a href="'.l("admin/users/edit/".$row_data['id']."/").'" '.
 		'title="'.$lang['search_users_view'].'">'.sanitise_user_input($row_data['username']).'</a>'.
-		'<br /><p class=\"results_table_small_text\">'.$row_data['ip_address'].
+		'<br /><p class="results_table_small_text">'.$row_data['ip_address'].
 		' (<a href="'.l("admin/users/ipsearch/user/".$row_data['id']."/").'">'.$lang['search_users_ip_info'].'</a>)</p>'
 		);
 

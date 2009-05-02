@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="02-05-09 11:07 am">
+<template_set_file fsboard_version="0.1" time="02-05-09 3:17 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -487,7 +487,7 @@
   <dt class="form_field_name">
     <IF "isset($info['extra_title_contents_left'])">{$info['extra_title_contents_left']}<ENDIF>
     <label for="{$form_state['meta']['name']}_{$id}">{$info['name']}</label>
-<IF "isset($info['description'])">
+<IF "isset($info['description']) && $info['description'] !== NULL">
     <p class="form_field_description">{$info['description']}</p>
 <ENDIF>
     <IF "isset($info['extra_title_contents_right'])">{$info['extra_title_contents_right']}<ENDIF>
@@ -650,7 +650,8 @@
 		<template_parameters><![CDATA[$url, $page_num, $current_page]]></template_parameters>
 		<template name="Pagination number splitter" class_name="template_global_results_table" function_name="pagination_splitter"><![CDATA[&hellip;]]></template>
 		<template_parameters><![CDATA[]]></template_parameters>
-		<template name="Results table column header" class_name="template_global_results_table" function_name="table_column_header"><![CDATA[<tr class="results_table_header">
+		<template name="Results table column header" class_name="template_global_results_table" function_name="table_column_header"><![CDATA[<IF "isset($table_settings['description'])"><tr class="results_table_description"><td colspan="{$column_count}">{$table_settings['description']}</td></tr><ENDIF>
+<tr class="results_table_header">
   <FOREACH "$column_data as $col_id => $col_data">
     <th class="results_table_header_cell results_table_header_cell_{$col_id}">
       <IF "isset($col_data['sortable']) && $col_data['sortable']"><a href="?{$url}&sort_col={$col_id}&sort_dir=<IF "$current_sort_col == $col_id && $current_sort_dir == 'asc'">desc<ELSEIF "$current_sort_col == $col_id && $current_sort_dir == 'desc'">asc<ELSE>asc<ENDIF>"><ENDIF>
@@ -659,7 +660,7 @@
     </th>
   <ENDFOREACH>
 </tr>]]></template>
-		<template_parameters><![CDATA[$table_settings, $column_data, $url, $current_sort_col, $current_sort_dir]]></template_parameters>
+		<template_parameters><![CDATA[$table_settings, $column_data, $url, $current_sort_col, $current_sort_dir, $column_count]]></template_parameters>
 		<template name="Results table no results message" class_name="template_global_results_table" function_name="no_results_message"><![CDATA[<p class="results_table_no_results">{$message}</p>]]></template>
 		<template_parameters><![CDATA[$message]]></template_parameters>
 		<template name="Results table row" class_name="template_global_results_table" function_name="table_row"><![CDATA[<tr class="results_table_row <IF "($row_count_num % 2) == 0"> alt<ENDIF>">
@@ -671,7 +672,7 @@
 		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[<IF "isset($table_settings['back_url'])"><p class="results_table_back_button"><a href="{$table_settings['back_url']}">{$table_settings['back_text']}</a></p><ENDIF>
 {$pagination_html}
 <table class="results_table">
-  <IF "isset($table_settings['title'])"><caption>{$table_settings['title']}</caption><ENDIF>
+  <IF "isset($table_settings['title'])"><caption>{$table_settings['title_extra']}{$table_settings['title']}</caption><ENDIF>
   {$header_html}
   {$rows_html}
 </table>

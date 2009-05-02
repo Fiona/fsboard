@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="02-05-09 11:07 am">
+<languages_file fsboard_version="0.1" time="02-05-09 3:18 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2645,7 +2645,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="search_ip_by_name_desc" group="admin_users"><![CDATA[Search will take partial username]]></phrases>
 		<phrases variable_name="search_ip_hostname" group="admin_users"><![CDATA[Hostname]]></phrases>
 		<phrases variable_name="search_ip_no_hostname" group="admin_users"><![CDATA[Could not retrieve hostname for this address.]]></phrases>
-		<phrases variable_name="search_ip_no_input" group="admin_users"><![CDATA[Nothing was inputted]]></phrases>
+		<phrases variable_name="search_ip_no_input" group="admin_users"><![CDATA[Please enter something to search by.]]></phrases>
 		<phrases variable_name="search_ip_results_ip_posts_title" group="admin_users"><![CDATA[Users with posts using this IP]]></phrases>
 		<phrases variable_name="search_ip_results_ip_reg_none" group="admin_users"><![CDATA[No users were found]]></phrases>
 		<phrases variable_name="search_ip_results_ip_reg_title" group="admin_users"><![CDATA[Users with this IP when registered]]></phrases>

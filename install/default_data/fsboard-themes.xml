@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="02-05-09 11:07 am">
+<theme_file fsboard_version="0.1" time="02-05-09 3:17 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -619,6 +619,13 @@ table.results_table
     font-weight: bold;
     text-align : left;
   }
+  table.results_table tr.results_table_description td
+  {
+    background-color:#DDF3DD;
+    border:1px solid #BFF8BF;
+    padding:10px;
+  }
+
   table.results_table th
   {
     background-color:#DDF3DD;
@@ -656,33 +663,50 @@ table.results_table
       font-weight : bold;
       padding : 10px;
     }
-    table.results_table tbody tr.results_table_row td p.action_button
+    table.results_table tbody tr.results_table_row td p.results_table_small_text
+    {
+      font-size:9px;
+    }
+    table.results_table tbody p.action_button
     {
       margin-right : 5px;
       float : left;
     }
-    table.results_table tbody tr.results_table_row td.results_table_cell_align_right p.action_button
+    table.results_table tbody tr.results_table_row td.results_table_cell_align_right p.action_button, table.results_table caption p.action_button
     {
       float : right;
     }
-      table.results_table tbody tr.results_table_row td p.action_button a
+    table.results_table caption p.action_button
+    {
+      margin : 2px 5px 0 0;
+      font-weight : normal;
+    }
+      table.results_table p.action_button a
       {
         text-decoration : none;
         background : #8ee78e;
-        display : block;
         border:1px dotted #b3e7b3;
         padding:3px;
       }
-      table.results_table tbody tr.results_table_row td p.action_button a:hover
+      table.results_table p.action_button a:hover
       {
         background : #cce7cc;
       }
-      table.results_table tbody tr.results_table_row td p.action_button img
+      table.results_table caption p.action_button a
       {
-        vertical-align : middle;
+        background : #cce7cc;
+      }
+      table.results_table caption p.action_button a:hover
+      {
+        background : #d2e7d2;
+      }
+      table.results_table p.action_button img
+      {
+        vertical-align : bottom;
         margin-right : 2px;
         border : 0;
       }
+
     table.results_table tbody tr.alt td
     {
       background-color:#EBF3EB;

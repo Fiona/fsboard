@@ -202,7 +202,7 @@ class results_table
 						$this -> settings['db_where'] :
 						""
 						),
-					"order" => $this -> sort_column_selected,
+					"order" => "`".$this -> sort_column_selected."`",
 					"direction" => strtoupper($this -> sort_column_direction),
 					
 					"limit" => (
@@ -457,16 +457,29 @@ class results_table
 		else
 			$pagination_html = "";
 
+		// Table header
+		if(isset($this -> settings['title_button']))
+			$this -> settings['title_extra'] = $template_global_results_table -> action_button(
+				$this -> settings['title_button']['type'],
+				$this -> settings['title_button']['text'],
+				$this -> settings['title_button']['url']
+				);
+		else
+			$this -> settings['title_extra'] = "";
+
+		$table_header =	$template_global_results_table -> table_column_header(
+			$this -> settings,
+			$this -> settings['columns'],
+			$extra_url."page=".$this -> current_page,
+			$this -> sort_column_selected,
+			$this -> sort_column_direction,
+			count($this -> settings['columns'])
+			);
+
 		// Finished processing data, give back the finished table
 		return $template_global_results_table -> table_wrapper(
 			$this -> settings,
-			$template_global_results_table -> table_column_header(
-				$this -> settings,
-				$this -> settings['columns'],
-				$extra_url."page=".$this -> current_page,
-				$this -> sort_column_selected,
-				$this -> sort_column_direction
-				),
+			$table_header,
 			$rows_html,
 			$pagination_html
 			);

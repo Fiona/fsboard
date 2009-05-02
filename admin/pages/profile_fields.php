@@ -2,90 +2,183 @@
 /* 
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
 FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       Custom Profile Fileds   *
-*       Started by Fiona        *
-*       15th Feb 2006           *
-*********************************
-*       Last edit by Fiona      *
-*       16th Feb 2006           *
-*********************************
-
 */
 
+/**
+ * Admin area - Custom profile fields
+ * 
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Admin
+ */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if (!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// Tanze, tanze, tanze, tanze zum tod....
-//***********************************************
+// Words
 load_language_group("admin_profilefields");
 
 
-$output -> add_breadcrumb($lang['breadcrumb_profilefields'], "index.php?m=profilefields");
+// General page functions
+//include ROOT."admin/common/funcs/profilefields.funcs.php";
 
-$secondary_mode = $_GET['m2'];
 
-switch($secondary_mode)
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_profilefields'], l("admin/profile_fields/"));
+
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
+{
+	case "add":
+		page_add_profile_fields();
+		break;
+
+	case "edit":
+		page_edit_profile_fields($page_matches['field_id']);
+		break;
+
+	case "delete":
+		page_delete_profile_fields($page_matches['field_id']);
+		break;
+
+	default:
+		page_view_profile_fields();
+}
+
+
+/**
+ * Main view of all profile fields
+ */
+function page_view_profile_fields()
 {
 
-        case "add":
-                page_add_edit_field(true);
-                break;
+	global $lang, $output, $template_admin;
 
-        case "doadd":
-                do_add_field();
-                break;
-                
-        case "edit":
-                page_add_edit_field();
-                break;
+	// Define the table
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("users").$lang['fields_main_title'],
+			"description" => $lang['fields_main_message'],
+			"no_results_message" => $lang['no_fields'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['add_field_button'],
+				"url" => l("admin/profile_fields/add/")
+				),
 
-        case "doedit":
-                do_edit_field();
-                break;
-                
-        case "delete":
-                do_delete_field();
-                break;
- 
-        default:
-                page_main();
-                
+			"db_table" => "profile_fields",
+			"default_sort" => "order",
+
+			"db_extra_what" => array("`name`", "`description`", "`id`"),
+
+			"columns" => array(
+				"name" => array(
+					"name" => $lang['fields_main_name'],
+					"content_callback" => 'table_view_fields_name_callback',
+					"sortable" => True
+					),
+				"id" => array(
+					"name" => $lang['fields_main_database_name'],
+					"content_callback" => 'table_view_fields_id_callback',
+					"sortable" => True
+					),
+				"order" => array(
+					"name" => $lang['fields_main_order'],
+					"db_column" => "order",
+					"sortable" => True
+					),
+				"actions" => array(
+					"content_callback" => 'table_view_fields_actions_callback'
+					)
+				)
+			)
+		);
+
+	$output -> add($results_table -> render());
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the profile view name.
+ *
+ * @param object $form
+ */
+function table_view_fields_name_callback($row_data)
+{
+	return (
+		$row_data['name'].
+		'<br /><p class="results_table_small_text">'.
+		$row_data['description'].
+		'</p>'
+		);
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the profile view id.
+ *
+ * @param object $form
+ */
+function table_view_fields_id_callback($row_data)
+{
+	return "field_".$row_data['id'];
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the profile view actions.
+ *
+ * @param object $form
+ */
+function table_view_fields_actions_callback($row_data)
+{
+
+	global $lang, $template_global_results_table;
+
+	return (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['fields_main_edit'],
+			l("admin/profile_fields/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['fields_main_delete'],
+			l("admin/profile_fields/delete/".$row_data['id']."/")
+			)
+		);
+
 }
 
 
 //***********************************************
 // Main view, you know the dillyo.
 //***********************************************
+/*
 function page_main()
 {
 
@@ -169,12 +262,179 @@ function page_main()
         );
         
 }
+*/
 
 
+
+/**
+ * Page to create a new profile field
+ */
+function page_add_profile_fields()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['add_field_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_profilefields_add'],
+		l("admin/profile_fields/add/")
+		);
+
+	$form = new form(
+		form_add_edit_profile_fields("add")
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * Page to edit an existing profile field
+ */
+function page_edit_profile_fields($field_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['edit_field_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_profilefields_edit'],
+		l("admin/profile_fields/edit/".$field_id."/")
+		);
+
+	$form = new form(
+		form_add_edit_profile_fields("edit")
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing profile fields
+ *
+ * @param string $type The type of request. "add" or "edit".
+ */
+function form_add_edit_profile_fields($type)
+{
+
+	global $lang, $output, $template_admin;
+
+	if($type == "add")
+	{
+		$title = $lang['add_field_title'];
+		$description = $lang['add_field_message'];
+		$submit = $lang['add_field_submit'];
+	}
+	elseif($type == "edit")
+	{
+		$title = $lang['edit_field_title'];
+		$description = NULL;
+		$submit = $lang['edit_field_submit'];
+	}
+
+	$form_data = array(
+			"meta" => array(
+				"name" => "profile_field_".$type,
+				"title" => $title,
+				"description" => $description,
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("users")
+					),
+//				"validation_func" => "form_users_add_validate",
+//				"complete_func" => "form_users_add_complete"
+				),
+			"#name" => array(
+				"name" => $lang['add_field_name'],
+				"type" => "text",
+				"required" => True
+				),
+			"#description" => array(
+				"name" => $lang['add_field_description'],
+				"type" => "text"
+				),
+			"#field_type" => array(
+				"name" => $lang['add_field_field_type'],
+				"type" => "dropdown",
+				"options" => array(
+					"text" => $lang['field_type_text'],
+					"textbox" => $lang['field_type_textbox'],
+					"yesno" => $lang['field_type_yesno'],
+					"dropdown" => $lang['field_type_dropdown'],
+					)
+				),
+			"#size" => array(
+				"name" => $lang['add_field_size'],
+				"description" => $lang['add_field_size_desc'],
+				"type" => "int"
+				),
+			"#max_length" => array(
+				"name" => $lang['add_field_max_length'],
+				"type" => "int"
+				),
+			"#order" => array(
+				"name" => $lang['add_field_order'],
+				"description" => $lang['add_field_order_desc'],
+				"type" => "int"
+				),
+			"#dropdown_values" => array(
+				"name" => $lang['add_field_dropdown_values'],
+				"description" => $lang['add_field_dropdown_values_desc'],
+				"type" => "textarea"
+				),
+			"#dropdown_text" => array(
+				"name" => $lang['add_field_dropdown_text'],
+				"description" => $lang['add_field_dropdown_text_desc'],
+				"type" => "textarea"
+				),
+			"#show_on_reg" => array(
+				"name" => $lang['add_field_show_on_reg'],
+				"type" => "yesno"
+				),
+			"#user_can_edit" => array(
+				"name" => $lang['add_field_user_can_edit'],
+				"description" => $lang['add_field_user_can_edit_desc'],
+				"type" => "yesno"
+				),
+			"#is_private" => array(
+				"name" => $lang['add_field_is_private'],
+				"description" => $lang['add_field_is_private_desc'],
+				"type" => "yesno"
+				),
+			"#admin_only_field" => array(
+				"name" => $lang['add_field_admin_only_field'],
+				"description" => $lang['add_field_admin_only_field_desc'],
+				"type" => "yesno"
+				),
+			"#must_be_filled" => array(
+				"name" => $lang['add_field_must_be_filled'],
+				"description" => $lang['add_field_must_be_filled_desc'],
+				"type" => "yesno"
+				),
+			"#topic_html" => array(
+				"name" => $lang['add_field_topic_html'],
+				"description" => $lang['add_field_topic_html_desc'],
+				"type" => "textarea"
+				),
+			"#submit" => array(
+				"type" => "submit",
+				"value" => $submit
+				)
+		);
+
+	return $form_data;
+
+}
 
 //***********************************************
 // Form for adding or editing a profile field
 //***********************************************
+/*
 function page_add_edit_field($adding = false, $field_info = "")
 {
 
@@ -370,6 +630,7 @@ function page_add_edit_field($adding = false, $field_info = "")
         );
                 
 }
+*/
 
 
 //***********************************************
