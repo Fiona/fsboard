@@ -869,7 +869,6 @@ function form_users_search_complete($form)
 					"sortable" => True
 					),
 				"actions" => array(
-					"name" => $lang['search_results_actions'],
 					"content_callback" => 'table_users_search_actions_callback'
 					)
 				)
@@ -917,15 +916,19 @@ function table_users_search_username_callback($row_data)
 function table_users_search_actions_callback($row_data)
 {
 
-	global $lang;
+	global $lang, $template_global_results_table;
 
 	return (
-		'<a href="'.l("admin/users/edit/".$row_data['id']."/").'">'.
-		$lang['search_users_edit'].
-		'</a> - '.
-		'<a href="'.l("admin/users/delete/".$row_data['id']."/").'">'.
-		$lang['search_users_delete'].
-		'</a>'
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['search_users_edit'],
+			l("admin/users/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['search_users_delete'],
+			l("admin/users/delete/".$row_data['id']."/")
+			)
 		);
 
 }
