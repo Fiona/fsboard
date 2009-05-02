@@ -856,6 +856,9 @@ function form_users_search_complete($form)
 
 			"extra_url" => users_build_user_search_url($form -> form_state['meta']['data_custom_profile_fields']),
 
+			"back_url" => "?".users_build_user_search_url($form -> form_state['meta']['data_custom_profile_fields'], True),
+			"back_text" => $lang['users_search_back_button'],
+
 			"default_sort" => "username",
 
 			"columns" => array(

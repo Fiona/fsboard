@@ -832,8 +832,8 @@ function users_add_custom_profile_form_fields(
  *   'last_post_a' : Users who posted after this date. (UNIX timestamp)
  * @param array $user_groups All usergroup info, should have been
  *   got from usergroups_get_groups()
- * @param array $custom_profile_fields The custom profile field data, should have been
- *   got from profilefields_get_fields()
+ * @param array $custom_profile_fields The custom profile field data, should
+ *   have been got from profilefields_get_fields()
  * @return array Finished array to be inserted into a query
  */
 function users_build_user_search_query_array($search_data, $user_groups, $custom_profile_fields)
@@ -1013,9 +1013,12 @@ function users_search_users($query_array, $suppress_errors = False)
  * This is a function designed to only be used in the admin, it will generate
  * the extra parameters appended to the URLs when you use pagination.
  *
+ * @param array $custom_profile_fields Custom profile fields.
+ * @param bool $back_button If we're getting the url for the back button we
+ *   should set this to true.
  * @return string The built parameters.
  */
-function users_build_user_search_url($custom_profile_fields)
+function users_build_user_search_url($custom_profile_fields, $back_button = False)
 {
 
 	// Get all the usual params
@@ -1053,10 +1056,11 @@ function users_build_user_search_url($custom_profile_fields)
 		"last_post_b[day]" => $_GET['last_post_b']['day'],
 		"last_post_b[month]" => $_GET['last_post_b']['month'],
 		"last_post_b[year]" => $_GET['last_post_b']['year'],
-
-		"submit" => $_GET['submit'],
 		"form_user_search" => $_GET['form_user_search']
 		);
+
+	if(!$back_button)
+		$params['submit'] = $_GET['submit'];
 
 	// Get the custom profile fields
 	foreach($custom_profile_fields as $field_id => $field_info)

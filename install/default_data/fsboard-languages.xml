@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="02-05-09 9:54 am">
+<languages_file fsboard_version="0.1" time="02-05-09 11:07 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2693,6 +2693,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="username_search_end" group="admin_users"><![CDATA[Ends with]]></phrases>
 		<phrases variable_name="username_search_exactly" group="admin_users"><![CDATA[Is exactly]]></phrases>
 		<phrases variable_name="username_search_starts" group="admin_users"><![CDATA[Starts with]]></phrases>
+		<phrases variable_name="users_search_back_button" group="admin_users"><![CDATA[Change search]]></phrases>
 		<phrases variable_name="user_added_sucessfully" group="admin_users"><![CDATA[User account added successfully!]]></phrases>
 		<phrases variable_name="user_deleted_sucessfully" group="admin_users"><![CDATA[User account was deleted sucessfully!]]></phrases>
 		<phrases variable_name="user_updated" group="admin_users"><![CDATA[Member account was edited sucessfully!]]></phrases>

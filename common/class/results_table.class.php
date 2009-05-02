@@ -441,16 +441,21 @@ class results_table
 
 		}
 
-		$pagination_html = $template_global_results_table -> pagination(
-			$this -> total_pages,
-			$this -> current_page,
-			$prev_link,
-			$next_link,
-			$first_link,
-			$last_link,
-			$number_links,
-			$extra_url
-			);
+		if($this -> total_pages > 1)
+		{
+			$pagination_html = $template_global_results_table -> pagination(
+				$this -> total_pages,
+				$this -> current_page,
+				$prev_link,
+				$next_link,
+				$first_link,
+				$last_link,
+				$number_links,
+				$extra_url
+				);
+		}
+		else
+			$pagination_html = "";
 
 		// Finished processing data, give back the finished table
 		return $template_global_results_table -> table_wrapper(

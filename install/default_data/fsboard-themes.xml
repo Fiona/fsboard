@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="02-05-09 10:33 am">
+<theme_file fsboard_version="0.1" time="02-05-09 11:07 am">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -581,6 +581,23 @@ div.form_wrapper
 Result tables
 ----------------------
 */
+p.results_table_back_button 
+{
+  float : left;
+  margin-bottom : 10px;
+}
+  p.results_table_back_button a
+  {
+    border:1px solid #BFF8BF;
+    padding : 2px;
+    background-color:#EBF3EB;
+    margin : 4px;
+    height : 10px;
+    text-decoration : none;
+    font-weight: bold;
+    font-size : 15px;
+  }
+
 table.results_table
 {
   width : 95%;
@@ -609,14 +626,11 @@ table.results_table
     padding:3px;
     text-align : left;
   }
-    table.results_table th a img
+    table.results_table th img
     {
       border :0;
       text-decoration : none;
-    }
-    table.results_table th a:link img
-    {
-      text-decoration : none;
+      vertical-align : middle;
     }
   table.results_table tbody tr.results_table_row td
   {
@@ -682,9 +696,7 @@ Pagination
 div.pagination
 {
   width : 95%;
-  margin : 0 auto 10px auto;
-  clear : left;
-  float:left;  
+  margin : 0 3px 10px;
   border-collapse: collapse;
   text-align : right;
 }

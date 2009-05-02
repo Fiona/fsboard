@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="02-05-09 10:33 am">
+<template_set_file fsboard_version="0.1" time="02-05-09 11:07 am">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -668,12 +668,14 @@
   <ENDFOREACH>
 </tr>]]></template>
 		<template_parameters><![CDATA[$table_settings, $column_data, $row_count_num, $global_colspan = NULL]]></template_parameters>
-		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[{$pagination_html}
+		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[<IF "isset($table_settings['back_url'])"><p class="results_table_back_button"><a href="{$table_settings['back_url']}">{$table_settings['back_text']}</a></p><ENDIF>
+{$pagination_html}
 <table class="results_table">
   <IF "isset($table_settings['title'])"><caption>{$table_settings['title']}</caption><ENDIF>
   {$header_html}
   {$rows_html}
 </table>
+<IF "isset($table_settings['back_url'])"><p class="results_table_back_button"><a href="{$table_settings['back_url']}">{$table_settings['back_text']}</a></p><ENDIF>
 {$pagination_html}]]></template>
 		<template_parameters><![CDATA[$table_settings, $header_html, $rows_html, $pagination_html]]></template_parameters>
 		<template name="Custom profile field" class_name="template_view_profile" function_name="profile_view_custom"><![CDATA[<table class="global_table profile_view_table">
