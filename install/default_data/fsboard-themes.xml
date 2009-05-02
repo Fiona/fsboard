@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="02-05-09 3:17 pm">
+<theme_file fsboard_version="0.1" time="02-05-09 11:37 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -669,6 +669,8 @@ table.results_table
     }
     table.results_table tbody p.action_button
     {
+      height : 25px;
+      margin-top : 8px;
       margin-right : 5px;
       float : left;
     }

@@ -183,76 +183,42 @@ $mode_file_list = array(
 	'profile_fields/(?<mode>edit|delete)/(?<field_id>[0-9]+)' => array(
 		"page" => "profile_fields"
 	),
-	
-/*	
-	// ----------------
-	// Login and lost password
-	// ----------------
-	'login(/(?<mode>logout|lost_password|lost_password_step_2))?' => array("page" => "login", "cache" => array()),
-	'login/(?<mode>lost_password_step_2)/(?<user_id>[0-9]+)/(?<activate_code>[a-zA-Z0-9]+)' => array(
-		"page" => "login",
-		"cache" => array()
-	),
-	
-	
-	// ----------------
-	// Registration and activation
-	// ----------------
-	'register(/(?<mode>activate))?' => array(
-		"page" => "register",
-		"cache" => array("profile_fields")
-	),
-	'register/(?<mode>activate)/(?<user_id>[0-9]+)/(?<activate_code>[a-zA-Z0-9]+)' => array(
-		"page" => "register",
-		"cache" => array("profile_fields")
-	),
-
-	
-	// ----------------
-	// Profile and control panel sections
-	// ----------------
-	'profile' => array(
-		"page" => "view_profile",
-		"cache" => array("profile_fields", "avatars", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
-	),
-	'control' => array(
-		"page" => "control_panel",
-		"cache" => array("profile_fields", "avatars", "small_image_cats", "small_image_cats_perms", "user_titles", "custom_bbcode", "emoticons")
-	)
-*/
 
 
-                                'help'			=> 'help.php',
-                                'phpinfo'       => 'main.php',
-                                'ieconfig'      => 'ieconfig.php',
-                                'templates'     => 'templates.php',
-                                'ietemplates'   => 'ietemplates.php',
-                                'themes'        => 'themes.php',
-                                'iethemes'      => 'iethemes.php',
-                                'cache'         => 'cache.php',
-                                'emaillogs'     => 'email_logs.php',
-                                'adminlogs'     => 'admin_logs.php',
-                                'sqltools'      => 'sqltools.php',
-                                'langs'         => 'languages.php',
-                                'ielangs'       => 'ielanguages.php',
-                                'forums'        => 'forums.php',
-                                'usergroups'    => 'usergroups.php',
-                                'moderators'    => 'moderators.php',
-                                'tasks'         => 'tasks.php',
-                                'tasklogs'      => 'tasks_logs.php',
-                                'bbcode'        => 'bbcode.php',
-                                'attachments'   => 'attachments.php',
-                                'emoticons'     => 'smallimages.php',
-                                'avatars'       => 'smallimages.php',
-                                'posticons'     => 'smallimages.php',
-                                'titles'		=> 'titles.php',
-                                'insignia'		=> 'insignia.php',
-                                'reputations'   => 'reputations.php',
-                                'wordfilter'    => 'wordfilter.php',
-                                'promotions'	=> 'promotions.php',
-                                'mailer'		=> 'mailer.php',
-                                'plugins'		=> 'plugins.php',
-                                'undelete'		=> 'undelete.php'
+	// --------------------
+	// Waiting to be refactored pages
+	// --------------------
+	'help'			=> 'help.php',
+	'phpinfo'       => 'main.php',
+	'ieconfig'      => 'ieconfig.php',
+	'templates'     => 'templates.php',
+	'ietemplates'   => 'ietemplates.php',
+	'themes'        => 'themes.php',
+	'iethemes'      => 'iethemes.php',
+	'cache'         => 'cache.php',
+	'emaillogs'     => 'email_logs.php',
+	'adminlogs'     => 'admin_logs.php',
+	'sqltools'      => 'sqltools.php',
+	'langs'         => 'languages.php',
+	'ielangs'       => 'ielanguages.php',
+	'forums'        => 'forums.php',
+	'usergroups'    => 'usergroups.php',
+	'moderators'    => 'moderators.php',
+	'tasks'         => 'tasks.php',
+	'tasklogs'      => 'tasks_logs.php',
+	'bbcode'        => 'bbcode.php',
+	'attachments'   => 'attachments.php',
+	'emoticons'     => 'smallimages.php',
+	'avatars'       => 'smallimages.php',
+	'posticons'     => 'smallimages.php',
+	'titles'		=> 'titles.php',
+	'insignia'		=> 'insignia.php',
+	'reputations'   => 'reputations.php',
+	'wordfilter'    => 'wordfilter.php',
+	'promotions'	=> 'promotions.php',
+	'mailer'		=> 'mailer.php',
+	'plugins'		=> 'plugins.php',
+	'undelete'		=> 'undelete.php'
 
 );
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="02-05-09 3:18 pm">
+<languages_file fsboard_version="0.1" time="02-05-09 11:37 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1704,7 +1704,11 @@ Hitting the help button <img src="<3>/admin/themes/FSBoard_Green/help.png" /> wh
 		<phrases variable_name="add_field_user_can_edit_desc" group="admin_profilefields"><![CDATA[If set to no, only admins and super moderators can edit it.]]></phrases>
 		<phrases variable_name="breadcrumb_profilefields" group="admin_profilefields"><![CDATA[Custom Profile Fields]]></phrases>
 		<phrases variable_name="breadcrumb_profilefields_add" group="admin_profilefields"><![CDATA[Add Profile Field]]></phrases>
+		<phrases variable_name="breadcrumb_profilefields_delete" group="admin_profilefields"><![CDATA[Delete Profile Field]]></phrases>
 		<phrases variable_name="breadcrumb_profilefields_edit" group="admin_profilefields"><![CDATA[Edit Profile Field]]></phrases>
+		<phrases variable_name="delete_field_title" group="admin_profilefields"><![CDATA[Delete Profile Field]]></phrases>
+		<phrases variable_name="delete_profile_field_message" group="admin_profilefields"><![CDATA[Are you sure you want to delete the custom profile field <b><1></b>? <br />
+All user profile data associated with this field will be lost, <b>this cannot be undone</b>.]]></phrases>
 		<phrases variable_name="edit_field_submit" group="admin_profilefields"><![CDATA[Submit Changes]]></phrases>
 		<phrases variable_name="edit_field_title" group="admin_profilefields"><![CDATA[Edit Custom Profile Field]]></phrases>
 		<phrases variable_name="error_editing_field" group="admin_profilefields"><![CDATA[There was an error editing this field.]]></phrases>

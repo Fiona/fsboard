@@ -479,8 +479,8 @@ END;
 		$return .= $this -> generate_menu_entry($lang['admin_menu_new_user'], l("admin/users/add/"));
 		$return .= $this -> generate_menu_entry($lang['admin_menu_search_users'], l("admin/users/search/"));
 		$return .= $this -> generate_menu_entry($lang['admin_menu_search_ip'], l("admin/users/ipsearch/"));
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_profile_fields'], l("admin/profile_fields/"));
-		$return .= $this -> generate_menu_header("users", "*** ");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_profile_fields'], l("admin/profile_fields/"));
+		$return .= $this -> generate_menu_header("users");
 
 		$return .= $this -> generate_menu_move_a_bit();
 				

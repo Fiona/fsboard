@@ -693,6 +693,52 @@ class database
         
 	}
 
+
+	/**
+	 * Will add us a column
+	 * Is very nice
+	 */
+	function add_column($table_name, $col_name, $col_type, $default = "NULL")
+	{
+		
+		return $this -> query("ALTER TABLE `".$this -> table_prefix.$table_name."` ADD `".$col_name."` ".$col_type." default ".$default.";");
+		
+	}
+	
+
+	/**
+	 * Will change a column's type
+	 */
+	function alter_column_type($table_name, $col_name, $col_type)
+	{
+		
+		return $this -> query("ALTER TABLE `".$this -> table_prefix.$table_name."` MODIFY `".$col_name."` ".$col_type);
+		
+	}
+				
+				
+	/**
+	 * Will delete a column
+	 */
+	function remove_column($table_name, $col_name)
+	{
+		
+		return $this -> query("ALTER TABLE `".$this -> table_prefix.$table_name."` DROP `".$col_name."`");
+		
+	}
+
+
+	/**
+	 * Will rename a column
+	 */
+	function rename_column($table_name, $old_col, $new_col, $col_type)
+	{
+
+		return $this -> query("ALTER TABLE `".$this -> table_prefix.$table_name."` CHANGE COLUMN `".$old_col."` `".$new_col."` ".$col_type.";");
+		
+	}
+
+
 	// -------------------------------------
 	// Queries for something and returns the number of rows
 	// -------------------------------------

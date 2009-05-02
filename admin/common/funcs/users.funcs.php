@@ -385,8 +385,8 @@ function users_update_user(
 	// Get custom profile field info if we haven't provided
 	if($custom_fields === NULL)
 	{
-		include_once ROOT."admin/common/funcs/profilefields.funcs.php";
-		$custom_fields = profilefields_get_fields();
+		include_once ROOT."admin/common/funcs/profile_fields.funcs.php";
+		$custom_fields = profile_fields_get_fields();
 	}
 
 	// Sort out any custom field data we have
@@ -722,8 +722,8 @@ function users_add_custom_profile_form_fields(
 			$fields = $cache -> cache['profile_fields'];
 		else
 		{
-			include ROOT."admin/common/funcs/profilefields.funcs.php";
-			$fields = profilefields_get_fields();
+			include ROOT."admin/common/funcs/profile_fields.funcs.php";
+			$fields = profile_fields_get_fields();
 		}
 	}
 
@@ -1058,7 +1058,12 @@ function users_build_user_search_url($custom_profile_fields, $back_button = Fals
 
 	// Get the custom profile fields
 	foreach($custom_profile_fields as $field_id => $field_info)
-		$params['field_'.$field_id] = $_GET['field_'.$field_id];
+	{
+		if(isset($_GET['field_'.$field_id]))
+			$params['field_'.$field_id] = $_GET['field_'.$field_id];
+		else
+			$params['field_'.$field_id] = "";
+	}
 
 	// Escape and put them all together into a query string
 	$params = array_map("urlencode", $params);

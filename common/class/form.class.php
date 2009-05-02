@@ -176,6 +176,26 @@ class form
 			}
 			
 		}
+		// Initial data is used for edit forms and is what we give to the form at first.
+		// If we've given some to the form then we need to set it to the values.
+		elseif(isset($this -> form_state['meta']['initial_data']))
+		{
+
+			foreach($this -> form_state as $id => $info)
+			{
+				
+				if($id[0] != "#")
+					continue;
+
+				$id = substr($id, 1);
+
+				if(isset($this -> form_state['meta']['initial_data'][$id]))
+					$this -> form_state["#".$id]['value'] = $this -> form_state['meta']['initial_data'][$id];
+
+			}
+
+		}
+
 
 		// Last minute check to force the builder not to create the form
 		if(isset($this -> form_state['meta']['halt_form_render']) && $this -> form_state['meta']['halt_form_render'])

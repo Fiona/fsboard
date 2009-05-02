@@ -253,8 +253,8 @@ function page_search_users()
 		$dropdown_options[(string)$group_id] = $group_info['name'];
 
 	// Get all the custom profile fields
-	include ROOT."admin/common/funcs/profilefields.funcs.php";
-	$custom_profile_fields = profilefields_get_fields();
+	include ROOT."admin/common/funcs/profile_fields.funcs.php";
+	$custom_profile_fields = profile_fields_get_fields();
 
 	// Begin defining search form
 	$form = new form(
