@@ -170,9 +170,6 @@ class results_table
 			// What are we sorting by at the mo
 			$this -> save_sorting_settings();
 
-//	var $sort_column_selected = NULL;
-//	var $sort_column_direction = NULL;
-
 			$data = array();
 
 			if($this -> total_items > 0)
@@ -249,10 +246,12 @@ class results_table
 			foreach($this -> settings['columns'] as $col_id => $col_info)
 			{
 
+				// If it's a database column we get the relevant data
 				if(isset($col_info['db_column']))
 				{
 					$columns[$col_id] = $row_data_array[$col_info['db_column']];
 				}
+				// Or if we're calling a function to get the data
 				elseif(isset($col_info['content_callback']))
 				{
 					$columns[$col_id] = call_user_func(
@@ -260,6 +259,7 @@ class results_table
 						$row_data_array
 						);
 				}
+				// Otherwise there's nothing in it
 				else
 					$columns[$col_id] = "";
 
@@ -273,6 +273,10 @@ class results_table
 				// If we want it sanitised
 				if(isset($col_info['sanitise']) && $col_info['sanitise'])
 					$columns[$col_id] = sanitise_user_input($columns[$col_id]);
+
+				// Alignment of contents
+				if(!isset($col_info['align']))
+					$this -> settings['columns'][$col_id]['align'] = "left";
 
 			}
 
