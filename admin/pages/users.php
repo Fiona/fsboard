@@ -71,6 +71,10 @@ switch($mode)
 		page_delete_user($page_matches['user_id']);
 		break;
 
+	case "ipsearch":
+		page_ipsearch_users();
+		break;
+
 	default:
 		page_search_users();
 
@@ -3226,9 +3230,60 @@ function do_delete_user()
 */
 
 
+/**
+ * Search users by IP address
+ */
+function page_ipsearch_users()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['search_ip_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_users_ipsearch'],
+		l("admin/users/ipsearch/")
+		);
+
+	// Search form
+	$form = new form(
+		array(
+			"meta" => array(
+				"method" => "GET",
+				"name" => "users_ipsearch",
+				"title" => $lang['search_ip_title'],
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("users")
+					),
+				"validation_func" => "form_users_ipsearch_validate",
+				"complete_func" => "form_users_ipsearch_complete"
+				),
+			"#by_ip" => array(
+				"name" => $lang['search_ip_by_ip'],
+				"type" => "text",
+				"extra_field_contents_left" => $output -> help_button("by_ip", False)
+				),
+			"#by_username" => array(
+				"name" => $lang['search_ip_by_name'],
+				"type" => "text",
+				"extra_field_contents_left" => $output -> help_button("by_name", False)
+				),
+			"#submit" => array(
+				"type" => "submit",
+				"value" => $lang['submit_search_ip']
+				)
+			)
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
 //***********************************************
 // Search for a user by IP, the form
 //***********************************************
+/*
 function page_search_ip($search_info = "")
 {
 
@@ -3254,12 +3309,164 @@ function page_search_ip($search_info = "")
 
 
 }
+*/
 
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for searching user IP addresses
+ *
+ * @param object $form
+ */
+function form_users_ipsearch_validate($form)
+{
+
+	global $lang;
+
+	// Check if both inputs are empty
+	if(!$form -> form_state['#by_ip']['value'] && !$form -> form_state['#by_username']['value'])
+	{
+		$form -> set_error(NULL, $lang['search_ip_no_input']);
+		return False;
+	}
+
+}
+
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for searching user IP addresses
+ *
+ * @param object $form
+ */
+function form_users_ipsearch_complete($form)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// If we've got to the page via some other means  like the "change search" link
+	// we check here by checking for this optional item and simply show the form
+	// again
+	if(!isset($_GET['submit']))
+		return;
+
+	// If we're searching by IP address
+	if($form -> form_state['#by_ip']['value'])
+	{
+
+		// Define the table
+		$results_table = new results_table(
+			array(
+			"items_per_page" => 15,
+
+			"title" => (
+				$template_admin -> form_header_icon("users").
+				$lang['search_ip_results_ip_reg_title']
+				),
+			"no_results_message" => $lang['search_ip_results_ip_reg_none'],
+
+			"db_table" => "users",
+			"db_where" => (
+				"ip_address LIKE '%".
+				$db -> escape_string($form -> form_state['#by_ip']['value']).
+				"%'"
+				),
+			"db_extra_what" => array("`username`", "`ip_address`"),
+
+			"extra_url" => (
+				"by_ip=".urlencode($form -> form_state['#by_ip']['value']).
+				"&by_username=".urlencode($form -> form_state['#by_username']['value']).
+				"&form_users_ipsearch=".urlencode($_GET['form_users_ipsearch']).
+				"&submit=".urlencode($_GET['submit'])
+				),
+
+			"back_url" => (
+				"?by_ip=".urlencode($form -> form_state['#by_ip']['value']).
+				"&by_username=".urlencode($form -> form_state['#by_username']['value']).
+				"&form_users_ipsearch=".urlencode($_GET['form_users_ipsearch'])
+				),
+			"back_text" => $lang['users_search_back_button'],
+
+			"default_sort" => "username",
+
+			"columns" => array(
+				"username" => array(
+					"name" => $form -> form_state['#by_ip']['value'],
+					"content_callback" => 'table_users_ipsearch_username_callback',
+					"sortable" => True
+					),
+				"hostname" => array(
+					"name" => $lang['search_ip_hostname'],
+					"content_callback" => 'table_users_ipsearch_hostname_callback',
+					)
+				)
+			)
+		);
+
+		$output -> add($results_table -> render());
+
+		// Stop search form displaying
+		$form -> form_state['meta']['halt_form_render'] = True;
+
+	}
+	// If we're searching by name
+	else
+	{
+		$output -> set_error_message("Not yet implemented");
+	}
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the username column on ip search
+ *
+ * @param object $form
+ */
+function table_users_ipsearch_username_callback($row_data)
+{
+
+	global $lang;
+
+	return (
+		'<a href="'.l("admin/users/edit/".$row_data['id']."/").'" '.
+		'title="'.$lang['search_users_view'].'">'.sanitise_user_input($row_data['username']).'</a>'.
+		'<br /><p class=\"results_table_small_text\">'.$row_data['ip_address'].
+		' (<a href="'.l("admin/users/ipsearch/user/".$row_data['id']."/").'">'.$lang['search_ip_results_other_ip'].'</a>)</p>'
+		);
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the hostname column on ip search
+ *
+ * @param object $form
+ */
+function table_users_ipsearch_hostname_callback($row_data)
+{
+
+	global $lang;
+
+	$hostname = @gethostbyaddr($row_data['ip_address']);
+	$hostname = (!$hostname ? $lang['search_ip_no_hostname'] : $hostname);
+
+	return $hostname;
+
+}
 
 
 //***********************************************
 // Search for users IP addresses.
 //***********************************************
+/*
 function do_search_ip()
 {
 
@@ -3386,4 +3593,6 @@ function do_search_ip()
         }       
          
 }
+*/
+
 ?>

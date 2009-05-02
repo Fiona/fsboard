@@ -343,7 +343,7 @@ class results_table
 
 		
 		// Normally just show enough links
-		if($this -> total_pages < (($this -> padding_amount * 2)+1))
+		if($this -> total_pages <= (($this -> padding_amount * 3)+1))
 			for($a = 1; $a <= $this -> total_pages; $a++)
 				$number_links[] = $template_global_results_table -> pagination_number_link(
 					$extra_url, $a, $this -> current_page
