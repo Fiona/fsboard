@@ -497,8 +497,7 @@ function page_search_users()
 			"name" => $lang['search_user_usergroup'],
 			"type" => "dropdown",
 			"blank_option" => True,
-			"options" => (array("-1" => $lang['search_user_usergroup_all'])
-						  + $dropdown_options),
+			"options" => $dropdown_options,
 			"extra_field_contents_left" => $output -> help_button("usergroup", False)
 			),
 		"#usergroup_secondary" => array(

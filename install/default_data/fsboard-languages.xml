@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="27-04-09 8:02 am">
+<languages_file fsboard_version="0.1" time="02-05-09 9:54 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2684,7 +2684,6 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="search_user_time_example" group="admin_users"><![CDATA[Format: DD-MM-YYYY]]></phrases>
 		<phrases variable_name="search_user_title" group="admin_users"><![CDATA[Search For Users]]></phrases>
 		<phrases variable_name="search_user_usergroup" group="admin_users"><![CDATA[Primary user group]]></phrases>
-		<phrases variable_name="search_user_usergroup_all" group="admin_users"><![CDATA[[ Any Group ]]]></phrases>
 		<phrases variable_name="search_user_usergroup_secondary" group="admin_users"><![CDATA[Secondary user groups]]></phrases>
 		<phrases variable_name="search_user_username" group="admin_users"><![CDATA[User Name]]></phrases>
 		<phrases variable_name="search_user_user_title" group="admin_users"><![CDATA[User title contains]]></phrases>
