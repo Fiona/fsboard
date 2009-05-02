@@ -49,7 +49,8 @@ class results_table
 		"items_per_page" => 20,
 		"extra_url" => "",
 		"default_sort" => "id",
-		"default_sort_direction" => "asc"
+		"default_sort_direction" => "asc",
+		"no_results_message" => "no results"
 		);
 
 
@@ -248,7 +249,7 @@ class results_table
 		{
 
 			$columns = array();
-
+			
 			// We need to build the right data for the template function
 			foreach($this -> settings['columns'] as $col_id => $col_info)
 			{
@@ -295,6 +296,21 @@ class results_table
 
 		}
 
+
+		// If we had no items we should tell the user
+		if(count($data) == 0)
+		{
+
+			$rows_html = $template_global_results_table -> table_row(
+				$this -> settings,
+				array(
+					$template_global_results_table -> no_results_message($this -> settings['no_results_message'])
+					),
+				1,
+				count($this -> settings['columns'])
+				);
+
+		}
 
 		// Grab correct pagination urls
 		$prev_link = "";

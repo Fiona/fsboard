@@ -842,6 +842,7 @@ function form_users_search_complete($form)
 			"items_per_page" => 50,
 
 			"title" => $template_admin -> form_header_icon("users").$lang['search_user_title'],
+			"no_results_message" => $lang['search_no_results'],
 
 			"db_table" => "users u",
 			"db_where" => $form -> form_state['meta']['search_query']['where'],

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="02-05-09 9:50 am">
+<template_set_file fsboard_version="0.1" time="02-05-09 10:33 am">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -660,12 +660,14 @@
   <ENDFOREACH>
 </tr>]]></template>
 		<template_parameters><![CDATA[$table_settings, $column_data, $url, $current_sort_col, $current_sort_dir]]></template_parameters>
+		<template name="Results table no results message" class_name="template_global_results_table" function_name="no_results_message"><![CDATA[<p class="results_table_no_results">{$message}</p>]]></template>
+		<template_parameters><![CDATA[$message]]></template_parameters>
 		<template name="Results table row" class_name="template_global_results_table" function_name="table_row"><![CDATA[<tr class="results_table_row <IF "($row_count_num % 2) == 0"> alt<ENDIF>">
   <FOREACH "$column_data as $col_id => $col_data">
-    <td class="results_table_cell results_table_cell_{$col_id} results_table_cell_align_{$table_settings['columns'][$col_id]['align']}">{$col_data}</td>
+    <td class="results_table_cell<IF "$col_id !== 0"> results_table_cell_{$col_id} results_table_cell_align_{$table_settings['columns'][$col_id]['align']}<ENDIF>"<IF "$global_colspan !== NULL"> colspan="{$global_colspan}"<ENDIF>>{$col_data}</td>
   <ENDFOREACH>
 </tr>]]></template>
-		<template_parameters><![CDATA[$table_settings, $column_data, $row_count_num]]></template_parameters>
+		<template_parameters><![CDATA[$table_settings, $column_data, $row_count_num, $global_colspan = NULL]]></template_parameters>
 		<template name="Results table wrapper" class_name="template_global_results_table" function_name="table_wrapper"><![CDATA[{$pagination_html}
 <table class="results_table">
   <IF "isset($table_settings['title'])"><caption>{$table_settings['title']}</caption><ENDIF>
