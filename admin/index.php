@@ -184,6 +184,19 @@ $mode_file_list = array(
 		"page" => "profile_fields"
 	),
 
+	// ----------------
+	// User groups
+	// ----------------
+	'user_groups' => array(
+		"page" => "user_groups"
+	),
+	'user_groups/(?<mode>add)' => array(
+		"page" => "user_groups"
+	),
+	'user_groups/(?<mode>edit|delete)/(?<group_id>[0-9]+)' => array(
+		"page" => "user_groups"
+	),
+
 
 	// --------------------
 	// Waiting to be refactored pages
@@ -202,7 +215,6 @@ $mode_file_list = array(
 	'langs'         => 'languages.php',
 	'ielangs'       => 'ielanguages.php',
 	'forums'        => 'forums.php',
-	'usergroups'    => 'usergroups.php',
 	'moderators'    => 'moderators.php',
 	'tasks'         => 'tasks.php',
 	'tasklogs'      => 'tasks_logs.php',

@@ -2,95 +2,223 @@
 /* 
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
 FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       User Groups Editing     *
-*       Started by Fiona        *
-*       10th Feb 2006           *
-*********************************
-*       Last edit by Fiona      *
-*       20th Jan 2007           *
-*********************************
-
 */
 
+/**
+ * Admin area - User groups
+ * 
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Admin
+ */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if (!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// Werds are power
-//***********************************************
+// Load language phrases into memory
 load_language_group("admin_usergroups");
 
 
-$output -> add_breadcrumb($lang['breadcrumb_usergroups'], "index.php?m=usergroups");
+// General page functions
+include ROOT."admin/common/funcs/user_groups.funcs.php";
 
-$secondary_mode = $_GET['m2'];
 
-switch($secondary_mode)
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_usergroups'], l("admin/user_groups/"));
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
+{
+	case "add":
+		page_add_user_groups();
+		break;
+
+	case "edit":
+		page_edit_user_groups($page_matches['group_id']);
+		break;
+
+	case "delete":
+		page_delete_user_groups($page_matches['group_id']);
+		break;
+
+	default:
+		page_view_user_groups();
+}
+
+
+/**
+ * Viewing all user groups
+ */
+function page_view_user_groups()
 {
 
-        case "add":
-                page_add_edit_group(true);
-                break;
+	global $lang, $output, $template_admin;
 
-        case "doadd":
-                do_add_group();
-                break;
+	// Define the table
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("usergroups").$lang['admin_usergroups_title'],
+			"description" => $lang['admin_usergroups_message'],
+			"no_results_message" => $lang['usergroups_main_no_groups'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['usergroups_add_submit'],
+				"url" => l("admin/user_groups/add/")
+				),
 
-        case "edit":
-                page_add_edit_group();
-                break;
+			"db_table" => "user_groups g",
+			'db_id_column' => "g.id",
 
-        case "doedit":
-                do_edit_group();
-                break;
+			"db_extra_what" => array(
+				"count(u.id) as count",
+				"g.perm_admin_area",
+				"g.perm_global_mod",
+				"g.removable"
+				),
 
-        case "delete":
-                page_delete_group();
-                break;
-                
-        case "dodelete":
-                do_delete_group();
-                break;
-                
-        default:
-                page_main();
+			'db_extra_settings' => array(
+				"join" => "users u",
+				"join_type" => "left",
+				"join_on" => "u.user_group = g.id",
+				"group" => "g.id"
+				),
+
+			"default_sort" => "name",
+
+			"columns" => array(
+				"name" => array(
+					"name" => $lang['usergroups_main_name'],
+					"db_column" => "name",
+					"sortable" => True
+					),
+				"admin_area" => array(
+					"name" => $lang['usergroups_main_admin_area'],
+					"content_callback" => 'table_view_groups_admin_area_callback'
+					),
+				"global_mod" => array(
+					"name" => $lang['usergroups_main_global_mod'],
+					"content_callback" => 'table_view_groups_global_mod_callback'
+					),
+				"count" => array(
+					"name" => $lang['usergroups_main_members'],
+					"content_callback" => 'table_view_groups_count_callback',
+					"sortable" => True
+					),
+				"actions" => array(
+					"content_callback" => 'table_view_groups_actions_callback'
+					)
+				)
+			)
+		);
+
+	$output -> add($results_table -> render());
 
 }
 
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * The results table needs to specifically be told what to put in here
+ * because we got the data from a count() sql function and not directly
+ * from a column.
+ *
+ * @param object $form
+ */
+function table_view_groups_count_callback($row_data)
+{
+	return $row_data['count'];
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * We need to show the words yes or no depending on the value of these.
+ *
+ * @param object $form
+ */
+function table_view_groups_admin_area_callback($row_data)
+{
+
+	global $lang;
+
+	if($row_data['perm_admin_area'])
+		return "<strong>".$lang['yes']."<strong>";
+
+	return $lang['no'];
+
+}
+
+
+/**
+ * See table_view_groups_admin_area_callback
+ */
+function table_view_groups_global_mod_callback($row_data)
+{
+
+	global $lang;
+
+	if($row_data['perm_global_mod'])
+		return "<strong>".$lang['yes']."</strong>";
+
+	return $lang['no'];
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the user group view actions.
+ *
+ * @param object $form
+ */
+function table_view_groups_actions_callback($row_data)
+{
+
+	global $lang, $template_global_results_table;
+
+	$return = $template_global_results_table -> action_button(
+		"edit",
+		$lang['usergroups_main_edit'],
+		l("admin/user_groups/edit/".$row_data['id']."/")
+		);
+
+	// The default user groups in FSBoard cannot be deleted so we'll
+	// hide the button for those groups.
+	if($row_data['removable'])
+		$return .= $template_global_results_table -> action_button(
+			"delete",
+			$lang['usergroups_main_delete'],
+			l("admin/user_groups/delete/".$row_data['id']."/")
+			);
+
+	return $return;
+
+}
 
 
 //***********************************************
 // Main group listings
 //***********************************************
+/*
 function page_main()
 {
 
@@ -223,6 +351,70 @@ function page_main()
                 $table -> end_table().
                 $form -> end_form()                
         );
+
+}
+*/
+
+/**
+ * Page to create a new user group.
+ */
+function page_add_user_groups()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['usergroups_add_form_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_usergroups_add'],
+		l("admin/user_groups/add/")
+		);
+
+	// You can inherit settings for a new user group. Here we
+	// check if we have currently set an ID for inheritence.
+	// If we haven't set one then we need to define the form
+	// for selecting one.
+	if(!isset($_POST['inherit']))
+	{
+
+		$dropdown_options = array();
+		$groups = user_groups_get_groups();
+
+		foreach($groups as $g_id => $g_info)
+			$dropdown_options[$g_id] = $g_info['name'];
+
+		$form = new form(
+			array(
+				"meta" => array(
+					"name" => "user_groups_add",
+					"title" => $lang['usergroups_add_title'],
+					"extra_title_contents_left" => (
+						$output -> help_button("", True).
+						$template_admin -> form_header_icon("usergroups")
+						)
+					),
+				"#inherit" => array(
+					"name" => $lang['usergroups_add_inherit_from'],
+					"type" => "dropdown",
+					"options" => $dropdown_options
+					),
+				"#submit" => array(
+					"value" => $lang['usergroups_add_submit'],
+					"type" => "submit"
+					)
+				)
+			);
+
+		$output -> add($form -> render());
+
+		return;
+
+	}
+/*
+	$form = new form(
+		form_add_edit_profile_fields("add")
+		);
+*/
+//	$output -> add($form -> render());
 
 }
 

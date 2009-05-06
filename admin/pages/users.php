@@ -94,8 +94,8 @@ function page_add_user()
 		);
 
 	// Get a list of user groups for the form
-	include ROOT."admin/common/funcs/usergroups.funcs.php";
-	$groups = usergroups_get_groups();
+	include ROOT."admin/common/funcs/user_groups.funcs.php";
+	$groups = user_groups_get_groups();
 
 	$dropdown_options = array();
 
@@ -244,8 +244,8 @@ function page_search_users()
 		);
 
 	// Get a list of user groups for the form
-	include ROOT."admin/common/funcs/usergroups.funcs.php";
-	$groups = usergroups_get_groups();
+	include ROOT."admin/common/funcs/user_groups.funcs.php";
+	$groups = user_groups_get_groups();
 
 	$dropdown_options = array();
 
@@ -660,8 +660,8 @@ function page_edit_user($user_id)
         );
 
 	// Get data for user groups fields
-	include ROOT."admin/common/funcs/usergroups.funcs.php";
-	$groups = usergroups_get_groups();
+	include ROOT."admin/common/funcs/user_groups.funcs.php";
+	$groups = user_groups_get_groups();
 
 	$user_groups_options = array();
 

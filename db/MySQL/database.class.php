@@ -473,6 +473,7 @@ class database
 	{
 
 		$join = "";
+		$group_by = "";
 
 		if(is_string($info))
 		{
@@ -494,6 +495,7 @@ class database
 			$limit = (isset($info['limit'])) ? " LIMIT ".$info['limit'] : "";
 			$direction = (isset($info['direction'])) ? " ".$info['direction'] : "";
 			$just_return = (isset($info['just_return'])) ? True : False;
+			$group_by = (isset($info['group'])) ? " GROUP BY ".$info['group'] : "";
 
 			if(isset($info['join']))
 			{
@@ -511,6 +513,7 @@ class database
 			$table.
 			$join.
 			$where.
+			$group_by.
 			$order_by.
 			$direction.
 			$limit;

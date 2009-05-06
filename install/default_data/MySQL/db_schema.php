@@ -214,7 +214,8 @@ $sql_schema['table']['users']['create'] = "CREATE TABLE `".PREFIX."users` (
   `need_validate` tinyint(1) NOT NULL default '0',
   `reset_password` tinyint(1) NOT NULL default '0',
   `notepad` text,  
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `user_group` (`user_group`)
 );";
 
 

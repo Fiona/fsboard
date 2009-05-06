@@ -86,7 +86,7 @@ function page_view_profile_fields()
 			"db_table" => "profile_fields",
 			"default_sort" => "order",
 
-			"db_extra_what" => array("`name`", "`description`", "`id`"),
+			"db_extra_what" => array("`name`", "`description`"),
 
 			"columns" => array(
 				"name" => array(

@@ -153,7 +153,7 @@ class results_table
 
 			$database_info = array(
 					"table" => $this -> settings['db_table'],
-					"what" => "COUNT(`".$id."`) as `row_count`",
+					"what" => "COUNT(".$id.") as `row_count`",
 					"where" => (
 						isset($this -> settings['db_where']) ?
 						$this -> settings['db_where'] :
@@ -181,7 +181,7 @@ class results_table
 			{
 
 				// Get what kind of data we need to display
-				$what = array("`".$id."`");
+				$what = array($id);
 
 				foreach($this -> settings['columns'] as $col)
 					if(isset($col['db_column']))

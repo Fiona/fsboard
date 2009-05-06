@@ -34,7 +34,7 @@ if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOAR
  *
  * @return array An array of groups, with ids against info
  */
-function usergroups_get_groups()
+function user_groups_get_groups()
 {
 
 	global $db;
