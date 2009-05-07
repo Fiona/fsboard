@@ -649,6 +649,12 @@ function shutdown_tasks()
 	        	$_SERVER['DOCUMENT_ROOT'].$_SERVER['PHP_SELF']
 	        );
         
+		// This is related to the above issue. Geshi would throw a great
+		// big paddy because it was trying to include files outside of the
+		// webroot. This definition will stop the database class doing any
+		// saving of debug data from this pount.
+		define("DISABLE_DATABASE_DEBUG", True);
+
         // Run common tasks
         task_check_run($include_root);
 

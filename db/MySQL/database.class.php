@@ -206,7 +206,13 @@ class database
 		$error = false;
                 
 		// Debug
-		if(!isset($cache -> cache['config']) || $cache -> cache['config']['debug'] >= 2)
+		if(
+			(
+				!isset($cache -> cache['config']) ||
+				$cache -> cache['config']['debug'] >= 2
+				) &&
+			!defined("DISABLE_DATABASE_DEBUG")
+			)
 			$start_dbg_time = explode(' ', microtime());
 
 		// run query and log error
@@ -220,7 +226,13 @@ class database
 		$this -> num_query ++;
 
 		// Debug
-		if(!isset($cache -> cache['config']) || $cache -> cache['config']['debug'] >= 2)
+		if(
+			(
+				!isset($cache -> cache['config']) ||
+				$cache -> cache['config']['debug'] >= 2
+				) &&
+			!defined("DISABLE_DATABASE_DEBUG")
+			)
 		{
                         
 			$end_dbg_time = explode(' ', microtime());
@@ -769,31 +781,31 @@ class database
         
 	}
 
-	// -------------------------------------
-	// Generates syntax highlighted queries used in debug level 2
-	// -------------------------------------
-	function generate_query_colours($query_text, $bbcode_parse = false)
+
+	/**
+	 * Will prepare the HTML for syntax highlighting SQL queries that appear in
+	 * the footer when the debug level is set to 2.
+	 *
+	 * @param string $query_text The raw SQL for the query we want to colour.
+	 * @param bool $bbcode_parse I have got no fucking idea what this does at all.
+	 */
+	function generate_query_colours($query_text, $bbcode_parse = False)
 	{
 
+		// WHAT DOES THIS DO? WHAT IS IT FOR?
 		if(!$bbcode_parse)
 			$query_text = _htmlspecialchars($query_text);
 
-		// Logical operators
-		$query_text = preg_replace( "#(=|\+|\-|&lt;|&gt;|~|==|\!=|\*|LIKE|REGEXP|COUNT\(.*\))#i", "<span style=\"color:orange; font-weight:bold;\">\\1</span>", $query_text);
-				                
-		// Actions
-		$query_text = preg_replace( "#(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER TABLE|VALUES)#i", "<span style=\"color:red; font-weight:bold;\">\\1</span>", $query_text);
-                
-		// Query params
-		$query_text = preg_replace( "#(WHERE|LEFT|JOIN|AS|IN|ASC|DESC|ORDER BY)\s{1,}#i", "<span style=\"color:blue; font-weight:bold;\">\\1</span> ", $query_text);
+		// Before I was colouring queries with a bunch of incomplete and confusing
+		// Regex. Since I'm using Geshi for code highlighting I might as well get it
+		// to highlight my queries for me.
+		require_once(ROOT."common/class/geshi.class.php");
 
-		// Limits
-		$query_text = preg_replace( "#(LIMIT)#i", "<span style=\"color:purple; font-weight:bold;\">\\1</span>", $query_text);
-                
-		if($this -> table_prefix && !$bbcode_parse)
-			$query_text = preg_replace( "#(".$this -> table_prefix.")(\S+?)([\s\.,]|$)#", "<span style=\"color:green; font-weight:bold;\">\\1\\2</span>\\3", $query_text);
+		$geshi = new GeSHi($query_text, "mysql");
+		$geshi->set_header_type(GESHI_HEADER_NONE);
+		$parsed_query = $geshi->parse_code();        
 
-		return($query_text);
+		return $parsed_query;
 
 	} 
         
