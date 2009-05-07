@@ -238,6 +238,8 @@ function page_edit_profile_fields($field_id)
  * This is the form definition for adding/editing profile fields
  *
  * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database
+ *   that will be used to populate the fields initially when editing
  */
 function form_add_edit_profile_fields($type, $initial_data = NULL)
 {
@@ -463,7 +465,7 @@ function form_edit_profile_fields_complete($form)
 
 	global $output, $lang;
 
-	// Try and add the field
+	// Try to edit the field
 	$update = profile_fields_edit_field(
 		$form -> form_state['meta']['initial_data']['id'],
 		array(
