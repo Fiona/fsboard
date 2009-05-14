@@ -493,9 +493,19 @@ function form_users_search_complete($form)
 			"db_extra_what" => array("`username`", "`ip_address`"),
 
 			"db_extra_settings" => array(
-				"join" => "profile_fields_data p",
-				"join_type" => "LEFT",
-				"join_on" => "p.member_id = u.id"
+				"join" => array(
+					array(
+						"join" => "profile_fields_data p",
+						"join_type" => "LEFT",
+						"join_on" => "p.member_id = u.id"
+						),
+					array(
+						"join" => "users_secondary_groups s",
+						"join_type" => "LEFT",
+						"join_on" => "s.user_id = u.id"
+						)
+					),
+				"distinct" => True
 				),
 
 			"extra_url" => users_build_user_search_url($form -> form_state['meta']['data_custom_profile_fields']),
@@ -627,7 +637,7 @@ function page_edit_user($user_id)
 
 	// Expand secondary usergroups
 	$user_info['user_groups_secondary_expanded'] = array();
-	foreach(explode(",", $user_info['secondary_user_group']) as $val)
+	foreach($user_info['secondary_user_groups'] as $val)
 		$user_info['user_groups_secondary_expanded'][$val] = 1;         
 
 	// Build the timezone dropdown
@@ -905,7 +915,7 @@ function page_edit_user($user_id)
 
 	
 	// Custom profile fields
-	users_add_custom_profile_form_fields($form, False);
+	users_add_custom_profile_form_fields($form, False, True, False, NULL, $user_info);
 
 	// Submit button
 	$form -> form_state['#submit'] = array(

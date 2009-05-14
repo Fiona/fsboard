@@ -463,6 +463,7 @@ class database
 
 		foreach($info as $key => $data)
 		{
+
 			if(strpos($data, "`") !== false)
 				$data = $data;
 			else
@@ -486,6 +487,7 @@ class database
 
 		$join = "";
 		$group_by = "";
+		$distinct = "";
 
 		if(is_string($info))
 		{
@@ -508,17 +510,45 @@ class database
 			$direction = (isset($info['direction'])) ? " ".$info['direction'] : "";
 			$just_return = (isset($info['just_return'])) ? True : False;
 			$group_by = (isset($info['group'])) ? " GROUP BY ".$info['group'] : "";
+			$distinct = (isset($info['distinct']) && $info['distinct']) ? " DISTINCT " : "";
 
+			// Deal with joins. We can either pass in single parameters for one join or an array
+			// of different joins.
 			if(isset($info['join']))
 			{
-				$type = (isset($info['join_type'])) ? $info['join_type']." " : "";
-				$on = (isset($info['join_on'])) ? " ON(".$info['join_on'].") " : "";
-				$join = " ".$type."JOIN ".$this -> table_prefix.$info['join'].$on." ";
+
+				// If it's not an array package it up into one
+				if(!is_array($info['join']))
+				{
+
+					$join_info = array("join" => $info['join']);
+
+					if(isset($info['join_type']))
+						$join_info['join_type'] = $info['join_type'];
+
+					if(isset($info['join_on']))
+						$join_info['join_on'] = $info['join_on'];
+
+					$join_info = array($join_info);
+
+				}
+				else
+					$join_info = $info['join'];
+
+				// Iterate through our joins and build the SQL
+				foreach($join_info as $one_join)
+				{
+					$type = (isset($one_join['join_type'])) ? $one_join['join_type']." " : "";
+					$on = (isset($one_join['join_on'])) ? " ON(".$one_join['join_on'].") " : "";
+					$join .= " ".$type."JOIN ".$this -> table_prefix.$one_join['join'].$on." ";
+				}
+
 			}
 
 		}
         		
 		$full_query = "SELECT ".
+			$distinct.
 			$what.
 			" FROM ".
 			$this -> table_prefix.
@@ -567,14 +597,16 @@ class database
 			if(isset($info['multiple_inserts']))
 			{
 
-				$final_data = "";
+				$final_data = array();
 						
 				foreach($info['data'] as $data)
 				{
 					$curr = $this -> create_insert_strings($data);
-					$final_data .= "(".$curr['values'].")";
+					$final_data[] = "(".$curr['values'].")";
 				}
 						
+				$final_data = implode(", ", $final_data);
+
 				$final_names = $curr['names'];
 						
 			}
@@ -644,16 +676,30 @@ class database
 	// -------------------------------------
 	// Do a quick update with a where array
 	// -------------------------------------
-	function basic_update_in($table, $entries_array, $in_what, $where, $just_return = false)
+	function basic_update_in($info, $entries_array = array(), $in_what = "", $where = array(), $just_return = false)
 	{
 
-		if(!$in_what || !is_array($where) || count($where) < 1)
-			return false;
+		if(is_string($info))
+		{
 
-		$where_string = " ".$in_what." IN(".implode(",",$where).")";                        
+			$table = $info;
+			$where_string = " ".$in_what." IN(".implode(",",$where).")";                        
+			$update = $this -> create_update_string($entries_array);
 
-		$update = $this -> create_update_string($entries_array);
-                
+		}
+		else
+		{
+
+			if(!isset($info['in_col']) || !isset($info['where']) || !is_array($info['where']) || !count($info['where']))
+				return false;
+
+			$table = $info['table'];
+			$just_return = (isset($info['just_return'])) ? True : False;
+			$update = $this -> create_update_string($info['data']);
+			$where_string = " WHERE ".$info['in_col']." IN(".implode(",", $info['where']).")";                        
+
+		}
+
 		$full_query = "UPDATE ".$this -> table_prefix.$table." SET ".$update.$where_string;
                                 
 		if($just_return)
@@ -791,6 +837,8 @@ class database
 	 */
 	function generate_query_colours($query_text, $bbcode_parse = False)
 	{
+
+		return $query_text;
 
 		// WHAT DOES THIS DO? WHAT IS IT FOR?
 		if(!$bbcode_parse)
