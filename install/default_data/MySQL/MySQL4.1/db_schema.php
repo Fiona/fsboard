@@ -172,7 +172,6 @@ $sql_schema['table']['users']['create'] = "CREATE TABLE `".PREFIX."users` (
   `id` int(10) NOT NULL auto_increment,
   `username` varchar(255) NOT NULL default '',
   `user_group` int(10) NOT NULL default '1',
-  `secondary_user_group` varchar(255) NOT NULL default '',
   `ip_address` varchar(16) NOT NULL default '',
   `password` varchar(32) NOT NULL default '',
   `banned` tinyint(1) NOT NULL default '0',
@@ -217,6 +216,17 @@ $sql_schema['table']['users']['create'] = "CREATE TABLE `".PREFIX."users` (
   PRIMARY KEY  (`id`),
   KEY `user_group` (`user_group`)
 ) CHARACTER SET `utf8` COLLATE `utf8_general_ci`;";
+
+
+// Users to secondary groups
+$sql_schema['table']['user_secondary_groups']['drop'] = "DROP TABLE IF EXISTS `".PREFIX."users_secondary_groups`;";
+$sql_schema['table']['user_secondary_groups']['create'] = "CREATE TABLE IF NOT EXISTS `".PREFIX."users_secondary_groups` (
+  `user_id` int(12) NOT NULL,
+  `group_id` int(12) NOT NULL,
+  UNIQUE KEY `unique` (`user_id`,`group_id`),
+  KEY `user_id` (`user_id`),
+  KEY `group_id` (`group_id`)
+);";
 
 
 // User admin settings

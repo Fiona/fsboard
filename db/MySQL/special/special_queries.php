@@ -52,8 +52,8 @@ class db_special_queries
                 
                 global $db;
                 
-                return "SELECT user.id as user_id, user.username as username, user.user_group as user_user_group,
-                        user.secondary_user_group as user_secondary_user_group, user.registered as user_register_date,
+                return "SELECT user.id as user_id, user.username as username,
+                        user.user_group as user_user_group,user.registered as user_register_date,
                         user.posts as user_posts, user.reputation as user_reputation,
                         promotions.group_to_id as promotion_group_to_id, promotions.promotion_type as promotion_type,
                         promotions.use_posts as promotion_use_posts, promotions.use_reputation as promotion_use_reputation,
@@ -62,7 +62,7 @@ class db_special_queries
                         promotions.days_registered as promotion_days_registered,
                         promotions.reputation_comparison as promotion_reputation_comparison                                        
                         FROM ".$db -> table_prefix."users as user
-                        LEFT JOIN ".$db -> table_prefix."promotions as promotions ON(user.user_group = promotions.group_id)
+                        JOIN ".$db -> table_prefix."promotions as promotions ON(user.user_group = promotions.group_id)
                         LEFT JOIN ".$db -> table_prefix."user_groups as user_groups ON(user_groups.id = promotions.group_to_id)
                         WHERE user.last_active > ".(TIME - (60*60*24*7));
                 

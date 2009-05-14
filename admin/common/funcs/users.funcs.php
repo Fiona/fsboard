@@ -337,20 +337,51 @@ function users_get_user_by_id($user_id)
 	$db -> basic_select(
 		array(
 			"table" => "users u",
-			"what" => "u.*, p.*",
+			"what" => "u.*, p.*, s.group_id as secondary_group_id",
 			"where" => "u.id = ".(int)$user_id,
-			"limit" => "1",
 
-			"join" => "profile_fields_data p",
-			"join_type" => "LEFT",
-			"join_on" => "p.member_id = u.id"
+			"join" => array(
+				array(
+					"join" => "profile_fields_data p",
+					"join_type" => "LEFT",
+					"join_on" => "p.member_id = u.id"
+					),
+				array(
+					"join" => "users_secondary_groups s",
+					"join_type" => "LEFT",
+					"join_on" => "s.user_id = u.id"
+					),
+				)
 			)
 		);
 
 	if(!$db -> num_rows())
 		return False;
 
-	return $db -> fetch_array();
+	// We get the data back as multiple rows because of the join on 
+	// users_secondary_groups, so we need to make sure we extract the
+	// user data and send that back alone along with all the group ids
+	// taken from the extra rows. :)
+	$user = NULL;
+	$secondary_ids = array();
+
+	while($row = $db -> fetch_array())
+	{
+
+		if($row['secondary_group_id'])
+			$secondary_ids[] = $row['secondary_group_id'];
+
+		if($user === NULL)
+		{
+			$user = $row;
+			unset($user['secondary_group_id']);
+		}
+
+	}
+
+	$user['secondary_user_groups'] = $secondary_ids;
+
+	return $user;
 
 }
 
@@ -406,15 +437,6 @@ function users_update_user(
 		}
 	}
 
-	// Secondary groups should be flattened
-	if(
-		isset($user_info['secondary_user_group']) &&
-		is_array($user_info['secondary_user_group'])
-		)
-		$user_info['secondary_user_group'] = implode(
-			",", $user_info['secondary_user_group']
-			);
-
 	// Check if birthday year is out of acceptable bounds
 	if(
 		isset($user_info['birthday_year']) &&
@@ -430,11 +452,15 @@ function users_update_user(
 	if(isset($user_info['birthday_day']) && $user_info['birthday_day'] < 10)
 		$user_info['birthday_day'] = "0".$user_info['birthday_day'];
 
+	// This is to ensure we don't send the secondary info and we don't lose it
+    $user_info_update = $user_info;
+	unset($user_info_update['secondary_user_group']);
+
 	// Update the profile
 	$q = $db -> basic_update(
 		array(
 			"table" => "users",
-			"data" => $user_info,
+			"data" => $user_info_update,
 			"where" =>  "id = ".(int)$user_id,
 			"limit" => 1
 			)
@@ -445,6 +471,38 @@ function users_update_user(
 		if(!$suppress_errors)
 			$output -> set_error_message($lang['error_updating_user']);
 		return False;
+	}
+
+
+	// Secondary groups info should be put into it's relevant table
+	if(
+		isset($user_info['secondary_user_group']) &&
+		is_array($user_info['secondary_user_group'])
+		)
+	{
+
+		// Easiest to kill all groups first
+		$db -> basic_delete(
+			array(
+				"table" => "users_secondary_groups",
+				"where" => "user_id = ".(int)$user_id
+				)
+			);
+
+		// We'll build up a multi part insert query
+		$insert_data = array();
+
+		foreach($user_info['secondary_user_group'] as $group_id)
+			$insert_data[] = array("group_id" => $group_id, "user_id" => $user_id);
+
+		$db -> basic_insert(
+			array(
+				"table" => "users_secondary_groups",
+				"data" => $insert_data,
+				"multiple_inserts" => True
+				)
+			);
+
 	}
 
 	// Deal with any custom field data we have left
@@ -669,6 +727,34 @@ function users_delete_user($user_id, $suppress_errors = False)
 			)
 		);
 
+	// Remove administration area settings
+	save_undelete_data(
+		"users_admin_settings",
+		"Deleted user ID ".$user_id." (Admin settings)", 
+		"user_id = ".(int)$user_id,
+		array("limit" => 1)
+		);
+	$db -> basic_delete(
+		array(
+			"table" => "users_admin_settings",
+			"where" => "user_id = ".(int)$user_id,
+			"limit" => 1
+			)
+		);
+
+	// Remove secondary group mappings
+	save_undelete_data(
+		"users_secondary_groups",
+		"Deleted user ID ".$user_id." (Secondary group data)", 
+		"user_id = ".(int)$user_id
+		);
+	$db -> basic_delete(
+		array(
+			"table" => "users_secondary_groups",
+			"where" => "user_id = ".(int)$user_id
+			)
+		);
+
 	// Remove moderator info for this user
 	save_undelete_data(
 		"moderators",
@@ -704,13 +790,20 @@ function users_delete_user($user_id, $suppress_errors = False)
  * @param $honour_required If a field is marked as required and
  *   this is true then the resulting field will check for being
  *   filled in.
+ * @param bool $blank_options Dropdown fields with have blank options
+ *   if this is True.
+ * @param array $fields This is the profile fields information incase
+ *   we want to specifically pass them in ourselves. If NULL the
+ *   function will get them itself.
+ * @param array $user_info Default values for the form fields.
  */
 function users_add_custom_profile_form_fields(
 	&$form,
 	$use_cache = True,
 	$honour_required = True,
 	$blank_options = False,
-	$fields = NULL
+	$fields = NULL,
+	$user_info = array()
 	)
 {
 
@@ -904,10 +997,11 @@ function users_build_user_search_query_array($search_data, $user_groups, $custom
 		count($search_data['usergroup_secondary'])
 		)
 	{
+		$secondary_where_clause = array();
 		foreach($search_data['usergroup_secondary'] as $group_id)
-			$where_clause[] = ("find_in_set(".
-							   intval($group_id).
-							   ", `secondary_user_group`)");
+			$secondary_where_clause[] = "group_id = ".intval($group_id);
+
+		$where_clause[] = implode(" OR ", $secondary_where_clause);
 	}
 
 	// Title

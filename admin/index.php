@@ -271,7 +271,7 @@ $output -> add_breadcrumb($lang['breadcrumb_admin_area'], l("admin/"));
 if(CURRENT_MODE == NULL)
 	$output -> set_error_message($lang['error_page_no_exist']);
 else
-	include ROOT."admin/pages/".CURRENT_MODE.".php";
+	require ROOT."admin/pages/".CURRENT_MODE.".php";
 
 
 if($output -> page_title == "")
