@@ -315,10 +315,6 @@ define("CHARSET", $cache -> cache['languages'][LANG_ID]['charset']);
 load_language_group("global");
 
 
-// Load the global template
-$template_global = load_template_class("template_global");
-
-
 //***********************************************
 // Load global output class and theme specific stuff
 //***********************************************
@@ -335,6 +331,14 @@ else
 // Load the set in
 $output -> template_set($cache -> cache['config']['default_template_set']);
         
+
+//***********************************************
+// Load the global template - It is important that this
+// is done after the output class is created as it needs
+// to get the current template set ID from the  output.
+//***********************************************
+$template_global = load_template_class("template_global");
+
 
 //***********************************************
 // Load Stylesheet, one wonders why she's not doing tihs in the output class yet
