@@ -51,9 +51,11 @@ load_language_group("admin_templates");
 
 
 //***********************************************
-// Functions plzkthx
+// Functions  - This is require_once because the debug mode
+// that loads templates from the database already loads this
+// file.
 //***********************************************
-include ROOT."admin/common/funcs/templates.funcs.php";
+require_once ROOT."admin/common/funcs/templates.funcs.php";
 
 
 $output -> add_breadcrumb($lang['breadcrumb_templates'], "index.php?m=templates");

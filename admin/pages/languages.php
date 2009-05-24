@@ -52,9 +52,11 @@ load_language_group("admin_languages");
 
 
 //***********************************************
-// Functions plzkthx
+// Functions  - This is require_once because the debug mode
+// that loads languages from the database already loads this
+// file.
 //***********************************************
-include ROOT."admin/common/funcs/languages.funcs.php";
+require_once ROOT."admin/common/funcs/languages.funcs.php";
 
 
 $output -> add_breadcrumb($lang['breadcrumb_languages'], "index.php?m=langs");
