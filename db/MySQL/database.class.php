@@ -838,8 +838,6 @@ class database
 	function generate_query_colours($query_text, $bbcode_parse = False)
 	{
 
-		return $query_text;
-
 		// WHAT DOES THIS DO? WHAT IS IT FOR?
 		if(!$bbcode_parse)
 			$query_text = _htmlspecialchars($query_text);
