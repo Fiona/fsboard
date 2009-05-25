@@ -70,6 +70,8 @@ function page_view_user_groups()
 
 	global $lang, $output, $template_admin;
 
+	$output -> page_title = $lang['admin_usergroups_title'];
+
 	// Define the table
 	$results_table = new results_table(
 		array(
