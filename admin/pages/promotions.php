@@ -11,73 +11,217 @@ See gpl.txt for a full copy of this license.
 */
 
 /**
- * Promotions
- * 
- * Admin page for editing automatic user group
- * promotions.
+ * Admin area - Promotions
  * 
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Admin
- * 
- * @started 30 Jan 2007
- * @edited 06 Feb 2007
  */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if (!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// I have no mouth but I must scream
-//***********************************************
+// Load language phrases for this page
 load_language_group("admin_promotions");
 
 
-$output -> add_breadcrumb($lang['breadcrumb_promotions'], "index.php?m=promotions");
+// General page functions
+//include ROOT."admin/common/funcs/promotions.funcs.php";
 
-$secondary_mode = $_GET['m2'];
 
-switch($secondary_mode)
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_promotions'], l("admin/promotions/"));
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
 {
 
-        case "add":
-                page_add_edit_promotions(true);
-                break;
+	case "add":
+		page_add_promotions();
+		break;
 
-        case "doadd":
-                do_add_promotions();
-                break;
-               
-        case "edit":
-                page_add_edit_promotions();
-                break;
+	case "edit":
+		page_edit_promotions($page_matches['promotion_id']);
+		break;
 
-        case "doedit":
-                do_edit_promotions();
-                break;
+	case "delete":
+		do_delete_promotions($page_matches['promotion_id']);
+		break;
                
-        case "delete":
-                do_delete_promotions();
-                break;
-               
-        default:
-                page_main();
+	default:
+		page_view_promotions();
 
 }
 
 
+function page_view_promotions()
+{
+
+	global $lang, $output, $template_admin;
+
+	$output -> page_title = $lang['promotions_main_title'];
+
+	// Define the table
+	require_once ROOT."admin/common/funcs/user_groups.funcs.php";
+	$user_group_data = user_groups_get_groups();
+
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("usergroups").$lang['promotions_main_title'],
+			"description" => $lang['promotions_main_message'],
+			"no_results_message" => $lang['no_promotions'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['add_promotions_button'],
+				"url" => l("admin/promotions/add/")
+				),
+
+			"db_table" => "promotions",
+			"default_sort" => "group_id",
+			"db_extra_what" => array(
+				"`group_id`", "`group_to_id`", "`promotion_type`",
+				"`use_reputation`", "`reputation`"
+				),
+
+			"columns" => array(
+				"group_id" => array(
+					"name" => $lang['promotions_group_from'],
+					"content_callback" => 'table_view_promotions_group_id_callback',
+					"content_callback_parameters" => array($user_group_data),
+					"sortable" => True
+					),
+				"group_to_id" => array(
+					"name" => $lang['promotions_group_to'],
+					"content_callback" => 'table_view_promotions_group_to_id_callback',
+					"content_callback_parameters" => array($user_group_data),
+					"sortable" => True
+					),
+				"promotion_type" => array(
+					"name" => $lang['promotions_type'],
+					"content_callback" => 'table_view_promotions_type_callback',
+					"sortable" => True
+					),
+				"posts" => array(
+					"name" => $lang['promotions_posts'],
+					"db_column" => "posts"
+					),
+				"reputation" => array(
+					"name" => $lang['promotions_reputation'],
+					"content_callback" => 'table_view_promotions_reputation_callback'
+					),
+				"days_registered" => array(
+					"name" => $lang['promotions_days_registered'],
+					"db_column" => "days_registered"
+					),
+
+				"actions" => array(
+					"content_callback" => 'table_view_promotions_actions_callback'
+					)
+				)
+			)
+		);
+
+	$output -> add($results_table -> render());
+
+}
+
+
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the promotions view group id.
+ *
+ * @param object $form
+ */
+function table_view_promotions_group_id_callback($row_data, $user_group_data)
+{
+	return $user_group_data[$row_data['group_id']]['name'];
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the promotions view group to id.
+ *
+ * @param object $form
+ */
+function table_view_promotions_group_to_id_callback($row_data, $user_group_data)
+{
+	return $user_group_data[$row_data['group_to_id']]['name'];
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the promotions view type.
+ *
+ * @param object $form
+ */
+function table_view_promotions_type_callback($row_data)
+{
+	global $lang;
+	return $lang['promotions_main_promotion_type_'.$row_data['promotion_type']];
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the promotions reputation type.
+ *
+ * @param object $form
+ */
+function table_view_promotions_reputation_callback($row_data)
+{
+	return $lang['promotions_main_promotion_type_'.$row_data['promotion_type']];
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the promotions view actions.
+ *
+ * @param object $form
+ */
+function table_view_promotions_actions_callback($row_data)
+{
+
+	global $lang, $template_global_results_table;
+
+	return (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['promotions_main_edit'],
+			l("admin/promotions/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['promotions_main_delete'],
+			l("admin/promotions/delete/".$row_data['id']."/")
+			)
+		);
+
+}
+
 /**
  * The main view of the promotions manager.
  */
+/*
 function page_main()
 {
 
@@ -183,6 +327,7 @@ function page_main()
         );  
                 
 }
+*/
 
 
 /**
