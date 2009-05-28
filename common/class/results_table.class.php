@@ -262,10 +262,18 @@ class results_table
 				// Or if we're calling a function to get the data
 				elseif(isset($col_info['content_callback']))
 				{
-					$columns[$col_id] = call_user_func(
-						$col_info['content_callback'],
-						$row_data_array
+
+					$extra_params = (
+						isset($col_info['content_callback_parameters']) ?
+						$col_info['content_callback_parameters'] :
+						array()
 						);
+
+					$columns[$col_id] = call_user_func_array(
+						$col_info['content_callback'],
+						array_merge(array($row_data_array), $extra_params)
+						);
+
 				}
 				// Otherwise there's nothing in it
 				else

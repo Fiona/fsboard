@@ -676,16 +676,30 @@ class database
 	// -------------------------------------
 	// Do a quick update with a where array
 	// -------------------------------------
-	function basic_update_in($table, $entries_array, $in_what, $where, $just_return = false)
+	function basic_update_in($info, $entries_array = array(), $in_what = "", $where = array(), $just_return = false)
 	{
 
-		if(!$in_what || !is_array($where) || count($where) < 1)
-			return false;
+		if(is_string($info))
+		{
 
-		$where_string = " ".$in_what." IN(".implode(",",$where).")";                        
+			$table = $info;
+			$where_string = " ".$in_what." IN(".implode(",",$where).")";                        
+			$update = $this -> create_update_string($entries_array);
 
-		$update = $this -> create_update_string($entries_array);
-                
+		}
+		else
+		{
+
+			if(!isset($info['in_col']) || !isset($info['where']) || !is_array($info['where']) || !count($info['where']))
+				return false;
+
+			$table = $info['table'];
+			$just_return = (isset($info['just_return'])) ? True : False;
+			$update = $this -> create_update_string($info['data']);
+			$where_string = " WHERE ".$info['in_col']." IN(".implode(",", $info['where']).")";                        
+
+		}
+
 		$full_query = "UPDATE ".$this -> table_prefix.$table." SET ".$update.$where_string;
                                 
 		if($just_return)
@@ -823,8 +837,6 @@ class database
 	 */
 	function generate_query_colours($query_text, $bbcode_parse = False)
 	{
-
-		return $query_text;
 
 		// WHAT DOES THIS DO? WHAT IS IT FOR?
 		if(!$bbcode_parse)

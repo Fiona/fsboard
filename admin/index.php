@@ -148,23 +148,17 @@ $mode_file_list = array(
 	// ----------------
 	// Configuration
 	// ----------------
-	'config' => array(
+	'config(/(?<mode>backup|import|export))?' => array(
 		"page" => "config"
 	),
 	'config(/(?<mode>show_group)/(?<group_name>[a-zA-Z-_]+))?' => array(
-		"page" => "config"
-	),
-	'config/(?<mode>backup|import|export)' => array(
 		"page" => "config"
 	),
 
 	// ----------------
 	// Users
 	// ----------------
-	'users' => array(
-		"page" => "users"
-	),
-	'users/(?<mode>search|add|ipsearch)' => array(
+	'users(/(?<mode>search|add|ipsearch))?' => array(
 		"page" => "users"
 	),
 	'users/(?<mode>edit|username|password|delete)/(?<user_id>[0-9]+)' => array(
@@ -174,10 +168,7 @@ $mode_file_list = array(
 	// ----------------
 	// Custom profile fields
 	// ----------------
-	'profile_fields' => array(
-		"page" => "profile_fields"
-	),
-	'profile_fields/(?<mode>add)' => array(
+	'profile_fields(/(?<mode>add))?' => array(
 		"page" => "profile_fields"
 	),
 	'profile_fields/(?<mode>edit|delete)/(?<field_id>[0-9]+)' => array(
@@ -187,14 +178,21 @@ $mode_file_list = array(
 	// ----------------
 	// User groups
 	// ----------------
-	'user_groups' => array(
-		"page" => "user_groups"
-	),
-	'user_groups/(?<mode>add)' => array(
+	'user_groups(/(?<mode>add))?' => array(
 		"page" => "user_groups"
 	),
 	'user_groups/(?<mode>edit|delete)/(?<group_id>[0-9]+)' => array(
 		"page" => "user_groups"
+	),
+
+	// ----------------
+	// Promotions
+	// ----------------
+	'promotions(/(?<mode>add))?' => array(
+		"page" => "promotions"
+	),
+	'promotions/(?<mode>edit|delete)/(?<promotion_id>[0-9]+)' => array(
+		"page" => "promotions"
 	),
 
 
@@ -203,17 +201,13 @@ $mode_file_list = array(
 	// --------------------
 	'help'			=> 'help.php',
 	'phpinfo'       => 'main.php',
-	'ieconfig'      => 'ieconfig.php',
 	'templates'     => 'templates.php',
-	'ietemplates'   => 'ietemplates.php',
 	'themes'        => 'themes.php',
-	'iethemes'      => 'iethemes.php',
 	'cache'         => 'cache.php',
 	'emaillogs'     => 'email_logs.php',
 	'adminlogs'     => 'admin_logs.php',
 	'sqltools'      => 'sqltools.php',
 	'langs'         => 'languages.php',
-	'ielangs'       => 'ielanguages.php',
 	'forums'        => 'forums.php',
 	'moderators'    => 'moderators.php',
 	'tasks'         => 'tasks.php',
@@ -227,7 +221,6 @@ $mode_file_list = array(
 	'insignia'		=> 'insignia.php',
 	'reputations'   => 'reputations.php',
 	'wordfilter'    => 'wordfilter.php',
-	'promotions'	=> 'promotions.php',
 	'mailer'		=> 'mailer.php',
 	'plugins'		=> 'plugins.php',
 	'undelete'		=> 'undelete.php'

@@ -169,4 +169,140 @@ function user_groups_edit_group($group_id, $group_data, $suppress_errors = False
 
 }
 
+
+/**
+ * This will delete a user group. We must also tell it where to move users who are
+ * current members of the group.
+ *
+ * @var int $group_id ID of the user group to delete.
+ * @var int $replace_group_id ID of the user group that all current members will 
+ *   be moved to.
+ * @var bool $suppress_errors Normally this function will output error messages
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
+ *
+ * @return bool|string Either true or a string containing an error.
+ */
+function user_groups_delete_group($group_id, $replace_group_id, $suppress_errors = False)
+{
+
+	global $db, $output, $lang, $cache;
+
+	// Delete the main group
+	save_undelete_data(
+		"user_groups",
+		"Deleted user group ID ".$group_id,
+		"id = ".(int)$group_id,
+		array("limit" => 1)
+		);
+
+	if(
+		!$db -> basic_delete(
+		   array(
+			   "table" => "user_groups",
+			   "where" => "id = ".(int)$group_id,
+			   "limit" => 1
+			   )
+		   )
+		)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['usergroup_delete_fail']);
+		return $lang['usergroup_delete_fail'];
+	}
+        
+	// Update cache
+	$cache -> update_cache("user_groups");        
+
+	// Move users
+	if(
+		!$db -> basic_update(
+			array(
+				"table" => "users",
+				"data" => array("user_group" => $replace_group_id),
+				"where" => "user_group = ".(int)$group_id
+				)
+			)
+		)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['usergroup_delete_move_fail']);
+		return $lang['usergroup_delete_fail'];
+	}
+
+
+	// Delete all secondary group info
+	save_undelete_data(
+		"users_secondary_groups",
+		"Deleted secondary group bindings for user group ID ".$group_id,
+		"group_id = ".(int)$group_id
+		);
+
+	if(
+		!$db -> basic_delete(
+		   array(
+			   "table" => "users_secondary_groups",
+			   "where" => "group_id = ".(int)$group_id
+			   )
+		   )
+		)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['usergroup_delete_move_fail']);
+		return $lang['usergroup_delete_move_fail'];
+	}
+
+
+	// Delete related promotions
+	save_undelete_data(
+		"promotions",
+		"Deleted promotion info for user group ID ".$group_id,
+		"group_id = ".(int)$group_id
+		);
+
+	$db -> basic_delete(
+		array(
+			"table" => "promotions",
+			"where" => "group_id = ".(int)$group_id." OR group_to_id = ".(int)$group_id
+			)
+		);
+
+
+	// Delete related per-forum permissions
+	save_undelete_data(
+		"forums_perms",
+		"Deleted per-forum permissions info for user group ID ".$group_id,
+		"group_id = ".(int)$group_id
+		);
+
+	$db -> basic_delete(
+		array(
+			"table" => "forums_perms",
+			"where" => "group_id = ".(int)$group_id
+			)
+		);
+
+	$cache -> update_cache("forums_perms");        
+
+
+	// Delete related moderator settings
+	save_undelete_data(
+		"moderators",
+		"Deleted moderator info for user group ID ".$group_id,
+		"group_id = ".(int)$group_id
+		);
+
+	$db -> basic_delete(
+		array(
+			"table" => "moderators",
+			"where" => "group_id = ".(int)$group_id
+			)
+		);
+
+	$cache -> update_cache("moderators");        
+
+	return True;
+
+}
+
 ?>

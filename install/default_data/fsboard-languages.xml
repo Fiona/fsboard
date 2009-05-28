@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="14-05-09 11:27 pm">
+<languages_file fsboard_version="0.1" time="25-05-09 1:34 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2500,6 +2500,9 @@ The groups that come installed with the forum cannot be deleteted.]]></phrases>
 		<phrases variable_name="usergroups_add_topic_posting" group="admin_usergroups"><![CDATA[Default Forum Permissions: Topic/Reply Posting]]></phrases>
 		<phrases variable_name="usergroups_add_user_title_settings" group="admin_usergroups"><![CDATA[User Title Settings]]></phrases>
 		<phrases variable_name="usergroups_add_visibility_title" group="admin_usergroups"><![CDATA[Visibility Options]]></phrases>
+		<phrases variable_name="usergroups_delete_main_message" group="admin_usergroups"><![CDATA[Are you sure you want to delete the user group <b><1></b>?<br />
+Users that are members of this group will not be removed, instead you must select a user group to move all current members of this group into. This will only change primary user groups and will not add users to a secondary group if they are a member of the one being deleted.<br />
+Deleting a user group <b>cannot be undone</b>.]]></phrases>
 		<phrases variable_name="usergroups_delete_message" group="admin_usergroups"><![CDATA[Please specify a user group to move the members of the group <b><1></b> to.]]></phrases>
 		<phrases variable_name="usergroups_delete_submit" group="admin_usergroups"><![CDATA[Delete Group]]></phrases>
 		<phrases variable_name="usergroups_delete_title" group="admin_usergroups"><![CDATA[Confirm User Group Deletion]]></phrases>
