@@ -192,12 +192,6 @@ class user
 		// **************************
 		// Secondary user groups
 		// **************************
-		if(isset($this -> info['secondary_user_group']))
-			$this -> info['secondary_user_group'] = explode(",", $this -> info['secondary_user_group']);
-		else
-			$this -> info['secondary_user_group'] = array();
-					
-					
 		// Who wants some nested loops? You do! You do!
 		// Basically here we go through all the secondary user groups
 		// asigned to this user.....			
@@ -206,7 +200,7 @@ class user
 		
 			foreach($this -> info['secondary_user_group'] as $key => $val)
 			{
-		
+
 				// Check to see if that user group actually exists :)
 				// Then iterate through it's perm values 
 				if(!isset($cache -> cache['user_groups'][$val]))
@@ -214,7 +208,7 @@ class user
 							
 				foreach($cache -> cache['user_groups'][$val] as $key2 => $val2)
 				{
-		
+
 					// If it's a permission (they're all bools)
 					// and it's better than what we have, override it
 					if(substr($key2, 0, 5) == "perm_" && $this -> perms[$key2] == 0)
@@ -504,34 +498,61 @@ class user
                 
 		if(!$user_id)
 			return false;
-                        
+                       
+		$what = "u.*, g.group_id as secondary_id";
+
+		$joins = array(
+			array(
+				"join" => "users_secondary_groups as g",
+				"join_on" => "g.user_id = u.id"
+				)
+			);
+
 		// Select the member...
 		if(defined("ADMIN"))
 		{
 
-			$db -> basic_select(
-				array(
-					"table" => "users u",
-					"what" => "u.*, s.admin_menu", 
-					"where" => "u.id = ".(int)$user_id, "", 
-					"limit" => "1",
+			$what .= ", s.admin_menu";
 
-					"join" => "users_admin_settings s",
-					"join_type" => "LEFT",
-					"join_on" => "s.user_id = u.id"
-					)
+			$joins[] = array(
+				"join" => "users_admin_settings s",
+				"join_type" => "LEFT",
+				"join_on" => "s.user_id = u.id"
 				);
 
 		}
-		else
-			$db -> basic_select("users", "*", "id = ".(int)$user_id, "", "1");
+
+		$db -> basic_select(
+			array(
+				"table" => "users u",
+				"what" => $what, 
+				"where" => "u.id = ".(int)$user_id, "", 
+				"join" => $joins
+				)
+			);
 
 		// Have a a bite?
 		if($db -> num_rows())
 		{
-                
+
+			$info = NULL;
+
+			while($user_info = $db -> fetch_array())
+			{
+
+				if($info === NULL)
+				{
+					$info = $user_info;
+					$info['secondary_user_group'] = array();
+				}
+				
+				if($user_info['secondary_id'] && is_numeric($user_info['secondary_id']))
+					$info['secondary_user_group'][] = $user_info['secondary_id'];
+
+			}
+
 			// Get the full info
-			$this -> info = $db -> fetch_array();
+			$this -> info = $info;
 			$this -> user_id = $this -> info['id'];
                         
 			if(defined("ADMIN") && isset($this -> info['admin_menu']))

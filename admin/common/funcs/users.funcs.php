@@ -475,10 +475,7 @@ function users_update_user(
 
 
 	// Secondary groups info should be put into it's relevant table
-	if(
-		isset($user_info['secondary_user_group']) &&
-		is_array($user_info['secondary_user_group'])
-		)
+	if(isset($user_info['secondary_user_group']))
 	{
 
 		// Easiest to kill all groups first
@@ -489,19 +486,27 @@ function users_update_user(
 				)
 			);
 
-		// We'll build up a multi part insert query
-		$insert_data = array();
+		if(
+			is_array($user_info['secondary_user_group']) &&
+			count($user_info['secondary_user_group'])
+			)
+		{
 
-		foreach($user_info['secondary_user_group'] as $group_id)
-			$insert_data[] = array("group_id" => $group_id, "user_id" => $user_id);
+			// We'll build up a multi part insert query
+			$insert_data = array();
+			
+			foreach($user_info['secondary_user_group'] as $group_id)
+				$insert_data[] = array("group_id" => $group_id, "user_id" => $user_id);
 
-		$db -> basic_insert(
-			array(
-				"table" => "users_secondary_groups",
-				"data" => $insert_data,
-				"multiple_inserts" => True
-				)
-			);
+			$db -> basic_insert(
+				array(
+					"table" => "users_secondary_groups",
+					"data" => $insert_data,
+					"multiple_inserts" => True
+					)
+				);
+
+		}
 
 	}
 

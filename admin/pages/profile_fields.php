@@ -71,6 +71,8 @@ function page_view_profile_fields()
 
 	global $lang, $output, $template_admin;
 
+	$output -> page_title = $lang['fields_main_title'];
+
 	// Define the table
 	$results_table = new results_table(
 		array(

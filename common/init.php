@@ -87,6 +87,11 @@ define("USERGROUP_GUEST", 		4);
 define("USERGROUP_VALIDATING", 	5);
 define("USERGROUP_BANNED", 		6);
 
+define("PROMOTION_TYPE_PRI", 0);
+define("PROMOTION_TYPE_SEC", 1);
+define("PROMOTION_REPUTATION_GT", 0);
+define("PROMOTION_REPUTATION_LT", 1);
+
 
 //***********************************************
 // Include the database configuration file
