@@ -184,10 +184,13 @@ class user
 		elseif(!isset($cache -> cache['user_groups'][$this -> info['user_group']]))
 			$this -> info['user_group'] = USERGROUP_GUEST;
 
+
 		// Get global group perms
 		foreach($cache -> cache['user_groups'][$this -> info['user_group']] as $key => $val)
 			$this -> perms[$key] = $val;
-                        
+                 
+		if(!isset($this -> info['secondary_user_group']))
+			$this -> info['secondary_user_group'] = array();
 
 		// **************************
 		// Secondary user groups
@@ -498,17 +501,20 @@ class user
                 
 		if(!$user_id)
 			return false;
-                       
+
+		// We may want to add to what we need to get if we're in admin so we set this here.
 		$what = "u.*, g.group_id as secondary_id";
 
+		// Our first join is the secondary groups table.
 		$joins = array(
 			array(
 				"join" => "users_secondary_groups as g",
+				"join_type" => "LEFT",
 				"join_on" => "g.user_id = u.id"
 				)
 			);
 
-		// Select the member...
+		// If we're in the admin area then we may have some settings we want to get. (Like state of the menu.)
 		if(defined("ADMIN"))
 		{
 
@@ -522,6 +528,7 @@ class user
 
 		}
 
+		// Finally do the select with all the joins and our combined "what"
 		$db -> basic_select(
 			array(
 				"table" => "users u",
@@ -531,40 +538,45 @@ class user
 				)
 			);
 
-		// Have a a bite?
+		// If we found a user with these details.
 		if($db -> num_rows())
 		{
 
 			$info = NULL;
 
+			// Our secondary groups are left joined. If we have more than one secondaary 
+			// group for this user then we would have multiple rows with the same data in apart
+			// from the secondary groups. So we go through our results.
 			while($user_info = $db -> fetch_array())
 			{
 
+				// If this is the initial iteration then we need to get our user data from the first row.
 				if($info === NULL)
 				{
 					$info = $user_info;
 					$info['secondary_user_group'] = array();
 				}
 				
+				// For all rows we keep track of the secondary group IDs as they come.
 				if($user_info['secondary_id'] && is_numeric($user_info['secondary_id']))
 					$info['secondary_user_group'][] = $user_info['secondary_id'];
 
 			}
 
-			// Get the full info
+			// Now we have a complete picture of the user, groups and all.
 			$this -> info = $info;
 			$this -> user_id = $this -> info['id'];
-                        
+
 			if(defined("ADMIN") && isset($this -> info['admin_menu']))
 				$this -> admin_menu = explode(",", $this -> info['admin_menu']);
 
-			// Check we're a real user?
+			// Last minute check to see if something went wrong. No reason for it to on top of my head, but sanity...
 			if($this -> user_id)
-				return true;
+				return True;
                                
 		}
                 
-		// Damn.. Guess there's no user.
+		// There was no user, so we kill the cookies and set them as a guest.
 		$this -> kill_user_cookies();
                                                 
 	}
