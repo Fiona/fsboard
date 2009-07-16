@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -11,29 +11,21 @@ See gpl.txt for a full copy of this license.
 */
 
 /**
- * Installer File
  * Install functions file
- * 
+ *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Install
- * 
- * @started 09 Sep 2006
- * @edited 09 Aug 2007
  */
 
 
-
-
-// ----------------------------------------------------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
-
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 function step_2_check_file($filename)

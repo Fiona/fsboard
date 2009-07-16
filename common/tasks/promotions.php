@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -21,22 +21,18 @@ See gpl.txt for a full copy of this license.
  * promotions then this will do very little, although that's admittedly a
  * really poor excuse.)
  *
- * Yeah whatever, this could be better.
- * 
  * @author Fiona Burrows <fiona@fsboard.com>
  * @version 1.0
  * @package FSBoard
- * @subpackage Common
+ * @subpackage Main
  */
-
 
 
 // -----------------------------------------------------------------------------
 
 
-
 // Check script entry
-if (!defined("FSBOARD"))
+if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 

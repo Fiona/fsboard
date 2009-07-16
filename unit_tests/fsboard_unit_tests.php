@@ -25,6 +25,9 @@ See gpl.txt for a full copy of this license.
  */
 
 
+// -----------------------------------------------------------------------------
+
+
 // Test suites extend from this.
 include "testsuite.class.php";
 

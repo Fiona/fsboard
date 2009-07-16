@@ -21,19 +21,13 @@ See gpl.txt for a full copy of this license.
  * The admin and moderator areas have their own index.php.
  * 
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Main
- * 
- * @started 01 Aug 2005
- * @edited 01 Jun 2007
  */
 
 
-
-
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 error_reporting(E_ALL|E_STRICT);

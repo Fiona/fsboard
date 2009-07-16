@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -17,7 +17,7 @@ See gpl.txt for a full copy of this license.
  * It connects to the database, loads the configuration, 
  * loads the language file and loads the current user info. 
  * Among other things....
- * 
+ *
  * @author Fiona Burrows <fiona@fsboard.com>
  * @version 1.0
  * @package FSBoard
@@ -25,11 +25,7 @@ See gpl.txt for a full copy of this license.
  */
 
 
-
-
 // -----------------------------------------------------------------------------
-
-
 
 
 /**

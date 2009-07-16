@@ -24,14 +24,12 @@ See gpl.txt for a full copy of this license.
  */
 
 
-
 // -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD"))
+if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
-
 
 
 /**

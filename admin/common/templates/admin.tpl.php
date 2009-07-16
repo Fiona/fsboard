@@ -1,45 +1,35 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
-Copyright (C) 2006 Fiona Burrows (fiona@fsboard.net)
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
 FSBoard is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-FSBoard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
 --------------------------------------------------------------------------
-
-*********************************
-*       FSBoard                 *
-*       by Fiona 2006           *
-*********************************
-*       Admin Template Class    *
-*       Started by Fiona        *
-*       08th Aug 2005           *
-*********************************
-*       Last edit by Fiona      *
-*       04th Apr 2007           *
-*********************************
-
-This provides all the templates for the admin area.
-This is all edited by hand, unlike the main template files
-which are generated with code.
 */
 
+/**
+ * Admin template class
+ *
+ * This provides all the templates for the admin area.
+ * This is all edited by hand, unlike the main template files which are
+ * generated with code.
+ *
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Admin
+ */
 
 
+// -----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------------------------------------------------
+
+// Check script entry
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 class template_admin 

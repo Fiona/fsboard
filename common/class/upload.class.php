@@ -1,8 +1,32 @@
 <?php
+/*
+--------------------------------------------------------------------------
+FSBoard - Free, open-source message board system.
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
+
+FSBoard is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
+--------------------------------------------------------------------------
+*/
+
 /**
- * This is a helper class for uploading files
+ * Upload helper class
  *
+ * @author Fiona Burrows <fiona@fsboard.com>
+ * @version 1.0
+ * @package FSBoard
+ * @subpackage Main
  */
+
+
+// -----------------------------------------------------------------------------
+
+
+// Check script entry
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
+
 
 class upload
 {

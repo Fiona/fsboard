@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -17,27 +17,22 @@ See gpl.txt for a full copy of this license.
  * strtoupper() and strtolower(). Only a few languages actually
  * have a concept of case, this covers them. 
  * 
- * Original tables taken from code by Niels Leenheer & Andy Matsubara, released under GPL.
- * 
+ * Original tables taken from code by Niels Leenheer & Andy Matsubara,
+ * released under GPL.
+ *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Main
- * 
- * @started 07 Aug 2007
- * @edited 07 Aug 2007
  */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
-
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 $UTF8_TABLES['strtolower'] = array(

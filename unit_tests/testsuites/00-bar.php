@@ -20,6 +20,9 @@ See gpl.txt for a full copy of this license.
  */
 
 
+// -----------------------------------------------------------------------------
+
+
 class bar_testsuite extends testsuite
 {
 

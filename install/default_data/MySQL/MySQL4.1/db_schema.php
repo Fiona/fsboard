@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -15,28 +15,20 @@ See gpl.txt for a full copy of this license.
  * Database schema
  * 
  * MySQL version 4.1.3+ 
- * 
+ *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Install
- * 
- * @started 03 Dec 2006
- * @edited 13 Oct 2007
  */
 
 
-
-
-// ----------------------------------------------------------------------------------------------------------------------
-
-
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 // Config table

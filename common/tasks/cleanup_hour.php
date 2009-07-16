@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -15,23 +15,20 @@ See gpl.txt for a full copy of this license.
  * Hourly cleanup
  * 
  * This runs about every hour and cleans up unneeded database entries.
- * 
+ *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
- * @subpackage Common
- * 
- * @started 28 Mar 2006
- * @edited 06 Feb 2007
+ * @subpackage Main
  */
 
 
+// -----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------------------------------------------------
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 // *********************************

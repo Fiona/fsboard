@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 --------------------------------------------------------------------------
 FSBoard - Free, open-source message board system.
 Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
@@ -16,25 +16,20 @@ See gpl.txt for a full copy of this license.
  * This is a file for a bunch of queries which
  * are beyond the scope of the basic database 
  * functions.
- * 
+ *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Database
- * 
- * @started 26 Feb 2007
- * @edited 26 Feb 2007
  */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 /**

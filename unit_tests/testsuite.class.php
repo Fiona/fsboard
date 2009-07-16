@@ -22,6 +22,9 @@ See gpl.txt for a full copy of this license.
  */
 
 
+// -----------------------------------------------------------------------------
+
+
 /**
  * Child class of all testsuites.
  * Suites can override setup() and teardown() all other methods will be

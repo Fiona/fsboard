@@ -20,6 +20,9 @@ See gpl.txt for a full copy of this license.
  */
 
 
+// -----------------------------------------------------------------------------
+
+
 class foo_testsuite extends testsuite
 {
 

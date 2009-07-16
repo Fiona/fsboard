@@ -17,23 +17,18 @@ See gpl.txt for a full copy of this license.
  * This is a tool to get them back if you deleted something by accudent.
  * 
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Admin
- * 
- * @started 23 Oct 2008
- * @edited 23 Oct 2008
  */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 //***********************************************

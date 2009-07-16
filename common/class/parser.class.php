@@ -11,22 +11,21 @@ See gpl.txt for a full copy of this license.
 */
 
 /**
- * BBCode Parser
+ * BBCode parser
  *
  * @author Fiona Burrows <fiona@fsboard.com>
  * @version 1.0
  * @package FSBoard
- * @subpackage Database
+ * @subpackage Main
  */
 
 
-
-// ----------------------------------------------------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 /**

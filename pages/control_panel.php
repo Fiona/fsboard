@@ -1,14 +1,14 @@
 <?php
 /*
- --------------------------------------------------------------------------
- FSBoard - Free, open-source message board system.
- Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
+--------------------------------------------------------------------------
+FSBoard - Free, open-source message board system.
+Copyright (C) 2007 Fiona Burrows (fiona@fsboard.net)
 
- FSBoard is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License.
- See gpl.txt for a full copy of this license.
- --------------------------------------------------------------------------
- */
+FSBoard is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License.
+See gpl.txt for a full copy of this license.
+--------------------------------------------------------------------------
+*/
 
 /**
  * User control panel
@@ -17,23 +17,18 @@
  * Edit profile stuff, avatars, settings, blah de blah blah.
  *
  * @author Fiona Burrows <fiona@fsboard.com>
- * @copyright Fiona Burrows 2007
  * @version 1.0
  * @package FSBoard
  * @subpackage Main
- *
- * @started 01 Jan 2008
- * @edited 01 Jan 2008
  */
 
 
-
-
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
 // Check script entry
-if (!defined("FSBOARD")) die("Script has not been initialised correctly! (FSBOARD not defined)");
+if(!defined("FSBOARD"))
+	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
 $template_control_panel = load_template_class("template_control_panel");
