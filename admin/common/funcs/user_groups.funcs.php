@@ -48,11 +48,9 @@ function user_groups_get_groups()
 			)
 		);
 
-	if(!$db -> num_rows())
-		return $users;
-
-	while($g_array = $db -> fetch_array())
-		$users[$g_array['id']] = $g_array;
+	if($db -> num_rows())
+		while($g_array = $db -> fetch_array())
+			$users[$g_array['id']] = $g_array;
 
 	return $users;
 
@@ -156,7 +154,7 @@ function user_groups_edit_group($group_id, $group_data, $suppress_errors = False
 	if(!$update_result)
 	{
 		if(!$suppress_errors)
-			$output -> set_error_message($lang['error_editing_field']);
+			$output -> set_error_message($lang['error_updating_usergroup']);
 		return $lang['error_updating_usergroup'];
 	}
 

@@ -33,7 +33,7 @@ load_language_group("admin_promotions");
 
 
 // General page functions
-//include ROOT."admin/common/funcs/promotions.funcs.php";
+include ROOT."admin/common/funcs/promotions.funcs.php";
 
 
 // Main page crumb
@@ -54,7 +54,7 @@ switch($mode)
 		break;
 
 	case "delete":
-		do_delete_promotions($page_matches['promotion_id']);
+		page_delete_promotions($page_matches['promotion_id']);
 		break;
                
 	default:
@@ -116,7 +116,7 @@ function page_view_promotions()
 					),
 				"reputation" => array(
 					"name" => $lang['promotions_reputation'],
-					"content_callback" => 'table_view_promotions_reputation_callback'
+					"db_column" => "reputation"
 					),
 				"days_registered" => array(
 					"name" => $lang['promotions_days_registered'],
@@ -180,19 +180,6 @@ function table_view_promotions_type_callback($row_data)
 /**
  * RESULTS TABLE FUNCTION
  * ----------------------
- * Content callback for the promotions reputation type.
- *
- * @param object $form
- */
-function table_view_promotions_reputation_callback($row_data)
-{
-	return $lang['promotions_main_promotion_type_'.$row_data['promotion_type']];
-}
-
-
-/**
- * RESULTS TABLE FUNCTION
- * ----------------------
  * Content callback for the promotions view actions.
  *
  * @param object $form
@@ -217,506 +204,423 @@ function table_view_promotions_actions_callback($row_data)
 
 }
 
+
+
 /**
- * The main view of the promotions manager.
+ * Page for creating a new promotion.
  */
-/*
-function page_main()
+function page_add_promotions()
 {
 
-        global $lang, $output, $db;
-        
-        // *********************
-        // Set page title
-        // *********************
-        $output -> page_title = $lang['promotions_main_title'];
+	global $output, $lang, $db, $template_admin;
 
-        // ********************
-        // Start table
-        // ********************
-        // Create class
-        $table = new table_generate;
-        $form = new form_generate;
+	$output -> page_title = $lang['add_promotions_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_promotions_add'],
+		l("admin/promotions/add/")
+		);
 
-        $output -> add(
-                $form -> start_form("dummyform", "", "post").
-                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
+	// Put the form up
+	$form = new form(
+		form_add_edit_promotions("add")
+		);
 
-                $table -> add_basic_row($lang['promotions_main_title'], "strip1",  "", "left", "100%", "7").
-                $table -> add_basic_row($lang['promotions_main_message'], "normalcell",  "padding : 5px", "left", "100%", "7").
-                
-                $table -> add_row(
-                        array(
-                                array($lang['promotions_group_from'], "auto"),
-                                array($lang['promotions_group_to'], "auto"),
-                                array($lang['promotions_type'], "auto"),
-                                array($lang['promotions_posts'], "auto"),
-                                array($lang['promotions_reputation'], "auto"),
-                                array($lang['promotions_days_registered'], "auto"),
-                                array($lang['promotions_actions'], "auto")
-                        )
-                , "strip2")
-        );
+	form_add_edit_promotions_add_extra_fields($form);
 
-        // ********************
-        // Grab all promotions
-        // ********************
-        $promotion_select = $db -> basic_select("promotions", "*", "", "group_id", "", "asc");
+	$output -> add($form -> render());
 
-        // No titles?
-        if($db -> num_rows() < 1)
-               $output -> add(
-                        $table -> add_basic_row("<b>".$lang['no_promotions']."</b>", "normalcell",  "padding : 10px")
-                );        
-                
-        else
-        {
-
-		// User group names
-		$group_select = $db -> basic_select("user_groups", "id, name");
-		
-		while($group = $db -> fetch_array($group_select))
-			$group_array[$group['id']] = $group['name'];
-
-		// Promotion type dropdown
-		for($a = 0; $a <= 1; $a++)
-			$promotion_type_text[$a] = $lang['promotions_main_promotion_type_'.$a];
-
-		// Ticks
-		$use_pics[0] = "";
-		$use_pics[1] = "<img style=\"vertical-align:bottom;\" src=\"".IMGDIR."/tick.png\"> ";
-
-		// Loopy
-                while($p_array = $db-> fetch_array($promotion_select))
-                {
-
-                        $actions = "
-                        <a href=\"".ROOT."admin/index.php?m=promotions&amp;m2=edit&amp;id=".$p_array['id']."\" title=\"".$lang['promotions_main_edit']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-edit.png\"></a>
-                        <a href=\"".ROOT."admin/index.php?m=promotions&amp;m2=delete&amp;id=".$p_array['id']."\" onclick=\"return confirm('".$lang['delete_promotions_confirm']."')\" title=\"".$lang['promotions_main_delete']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-delete.png\"></a>";
-
-			$output -> add(
-				$table -> add_row(
-				        array(
-				                array($group_array[$p_array['group_id']], "auto"),
-				                array($group_array[$p_array['group_to_id']], "auto"),
-				                array($promotion_type_text[$p_array['promotion_type']], "auto"),
-				                array($use_pics[$p_array['use_posts']] . $p_array['posts'], "auto"),
-				                array($use_pics[$p_array['use_reputation']] . $p_array['reputation'], "auto"),
-				                array($use_pics[$p_array['use_days_registered']] . $p_array['days_registered'], "auto"),
-				                array($actions, "auto")
-				        )
-				, "normalcell")
-			);
-
-                }
-                
-        }
-
-        // ********************
-        // End table
-        // ********************
-        $output -> add(
-                $table -> add_basic_row(
-                        $form -> button("addpromotion", $lang['add_promotions_button'], "submitbutton", "onclick=\"return window.location = '".ROOT."admin/index.php?m=promotions&m2=add';\"")
-                , "strip3").
-                $table -> end_table().
-                $form -> end_form()
-        );  
-                
 }
-*/
+
 
 
 /**
- * Page contaninig the firm for adding or editing promotions
- * 
- * @param bool $adding If set to true will display the adding form instead of editing
- * @param array $reputations_info Array of already input values
+ * Page to edit an existing promotion
+ *
+ * @param int $group_id Integer of the promotion we want to edit.
  */
-function page_add_edit_promotions($adding = false, $promotions_info = "")
+function page_edit_promotions($promotion_id)
 {
 
-        global $output, $lang, $db, $template_admin;
+	global $output, $lang, $db, $template_admin;
 
-        // Create classes
-        $table = new table_generate;
-        $form = new form_generate;
+	// Select the promotion
+	$promotion_info = promotions_get_promotion_by_id($promotion_id);
 
-        // ***************************
-        // Need different headers
-        // ***************************
-        if($adding)
-        {
-        	
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['add_promotions_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_promotions_add'], "index.php?m=promotions&m2=add");
-
-                $output -> add(
-                        $form -> start_form("addpromotions", ROOT."admin/index.php?m=promotions&amp;m2=doadd", "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['add_promotions_title'], "strip1",  "", "left", "100%", "2").
-                        $table -> add_basic_row($lang['add_promotions_message'], "normalcell",  "padding : 5px", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['add_promotions_submit'];
-
-        }
-        else
-        {
-
-	        // **************************
-	        // Grab the promotion
-	        // **************************
-	        $get_id = trim($_GET['id']);
-	
-	        if(!$db -> query_check_id_rows("promotions", $get_id, "*"))
-	        {
-	                $output -> add($template_admin -> critical_error($lang['edit_promotions_invalid_id']));
-	                page_main();
-	                return;
-	        }
-	  
-	        if(!$promotions_info)
-	                $promotions_info = $db -> fetch_array();
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['edit_promotions_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_promotions_edit'], "index.php?m=promotions&m2=edit&amp;id=".$get_id);
-
-                $output -> add(
-                        $form -> start_form("editpromotions", ROOT."admin/index.php?m=promotions&amp;m2=doedit&amp;id=".$get_id, "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['edit_promotions_title'], "strip1",  "", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['edit_promotions_submit'];
-
-        	
-        }
-
-	// Fetch user groups for dropdowns
-	$groups_array = array();
-	
-	$db -> basic_select("user_groups", "id, name", "", "id");
-	
-	while($g = $db -> fetch_array())
+	if($promotion_info === False)
 	{
-		$group_dropdown_values[] = $g['id'];
-		$group_dropdown_text[] = $g['name'];
+		$output -> set_error_message($lang['edit_promotions_invalid_id']);
+		page_view_promotions();
+		return;
 	}
 
-	// Promotion type dropdown
+	$output -> page_title = $lang['edit_promotions_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_promotions_edit'],
+		l("admin/promotions/edit/".$promotion_id."/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_promotions("edit", $promotion_info)
+		);
+
+	form_add_edit_promotions_add_extra_fields($form);
+
+	$output -> add($form -> render());
+
+}
+
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing promotions
+ *
+ * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database that will
+ *   be used to populate the fields initially.
+ */
+function form_add_edit_promotions($type, $initial_data = NULL)
+{
+
+	global $lang, $output, $template_admin;
+
+	// Prepare the data for dropdowns
+	$group_options = array();
+	$promotion_type_options = array();
+	$comparison_options = array();
+
+	include ROOT."admin/common/funcs/user_groups.funcs.php";
+	$groups = user_groups_get_groups();
+
+	foreach($groups as $g_id => $g_info)
+		$group_options[$g_id] = $g_info['name'];
+
 	for($a = 0; $a <= 1; $a++)
 	{
-		$promotion_type_dropdown_values[] = $a;
-		$promotion_type_dropdown_text[] = $lang['add_promotions_promotion_type_'.$a];
+		$promotion_type_options[$a] = $lang['add_promotions_promotion_type_'.$a];
+		$comparison_options[$a] = $lang['add_promotions_reputation_comparison_'.$a];
 	}
 
-	// Reputation comparison type dropdown
-	for($a = 0; $a <= 1; $a++)
+	// Form definition
+	$form_data = array(
+			"meta" => array(
+				"name" => "user_groups_".$type,
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("usergroups")
+					),
+				"initial_data" => $initial_data,
+				"validation_func" => "form_add_edit_promotions_validate"
+				),
+			"#group_id" => array(
+				"name" => $lang['add_promotions_group_id'],
+				"type" => "dropdown",
+				"required" => True,
+				"options" => $group_options
+				),
+			"#promotion_type" => array(
+				"name" => $lang['add_promotions_promotion_type'],
+				"type" => "dropdown",
+				"required" => True,
+				"options" => $promotion_type_options
+				),
+			"#group_to_id" => array(
+				"name" => $lang['add_promotions_group_to_id'],
+				"type" => "dropdown",
+				"required" => True,
+				"options" => $group_options
+				),
+			"#use_posts" => array(
+				"name" => $lang['add_promotions_posts'],
+				"description" => $lang['add_promotions_posts_message'],
+				"type" => "checkbox"
+				),
+			"#use_reputation" => array(
+				"name" => $lang['add_promotions_reputation'],
+				"description" => $lang['add_promotions_reputation_message'],
+				"type" => "checkbox"
+				),
+			"#reputation_comparison" => array(
+				"name" => $lang['add_promotions_reputation_comparison'],
+				"type" => "dropdown",
+				"required" => True,
+				"options" => $comparison_options
+				),
+			"#use_days_registered" => array(
+				"name" => $lang['add_promotions_days_registered'],
+				"description" => $lang['add_promotions_days_registered_message'],
+				"type" => "checkbox"
+				),
+			"#submit" => array(
+				"type" => "submit"
+				)
+		);
+
+	// Make alterations to the form based on the mode we're in before sending back
+	if($type == "add")
 	{
-		$comparison_dropdown_values[] = $a;
-		$comparison_dropdown_text[] = $lang['add_promotions_reputation_comparison_'.$a];
+		$form_data['meta']['title'] = $lang['add_promotions_title'];
+		$form_data['meta']['description'] = $lang['add_promotions_message'];
+		$form_data['meta']['complete_func'] = "form_add_promotions_complete";
+		$form_data['#submit']['value'] = $lang['add_promotions_submit'];
+	}
+	elseif($type == "edit")
+	{
+		$form_data['meta']['title'] = $lang['edit_promotions_title'];
+		$form_data['meta']['complete_func'] = "form_edit_promotions_complete";
+		$form_data['#submit']['value'] = $lang['edit_promotions_submit'];
 	}
 
-        // ***************************
-        // Print the form
-        // ***************************
-        $output -> add(
-		$table -> simple_input_row_dropdown($form, $lang['add_promotions_group_id'], "group_id", $promotions_info['group_id'], $group_dropdown_values, $group_dropdown_text).
-		$table -> simple_input_row_dropdown($form, $lang['add_promotions_promotion_type'], "promotion_type", $promotions_info['promotion_type'], $promotion_type_dropdown_values, $promotion_type_dropdown_text).
-		$table -> simple_input_row_dropdown($form, $lang['add_promotions_group_to_id'], "group_to_id", $promotions_info['group_to_id'], $group_dropdown_values, $group_dropdown_text).
-
-		$table -> add_row(
-			array(
-				$lang['add_promotions_posts']."<br /><font class=\"small_text\">".$lang['add_promotions_posts_message']."</font>",
-				$form -> input_checkbox("use_posts", "1", "inputtext", $promotions_info['use_posts'])." ".
-				$form -> input_int("posts", $promotions_info['posts'])
-			),
-			"normalcell"
-		).
-		$table -> add_row(
-			array(
-				$lang['add_promotions_reputation']."<br /><font class=\"small_text\">".$lang['add_promotions_reputation_message']."</font>",
-				$form -> input_checkbox("use_reputation", "1", "inputtext", $promotions_info['use_reputation'])." ".
-				$form -> input_int("reputation", $promotions_info['reputation'])
-			),
-			"normalcell"
-		).
-		$table -> simple_input_row_dropdown($form, $lang['add_promotions_reputation_comparison'], "reputation_comparison", $promotions_info['reputation_comparison'], $comparison_dropdown_values, $comparison_dropdown_text).
-		$table -> add_row(
-			array(
-				$lang['add_promotions_days_registered']."<br /><font class=\"small_text\">".$lang['add_promotions_days_registered_message']."</font>",
-				$form -> input_checkbox("use_days_registered", "1", "inputtext", $promotions_info['use_days_registered'])." ".
-				$form -> input_int("days_registered", $promotions_info['days_registered'])
-			),
-			"normalcell"
-		).
-
-                $table -> add_submit_row($form, "submit", $submit_lang).
-                $table -> end_table().
-                $form -> end_form()
-        );   
-                
-}        
-
-
-/**
- * Taking input and adding the promotion
- */
-function do_add_promotions()
-{
-
-        global $output, $lang, $db, $template_admin;
-
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $promotions_info = array(
-                "group_id"		=> $_POST['group_id'],
-                "promotion_type"	=> $_POST['promotion_type'],
-                "group_to_id"		=> $_POST['group_to_id'],
-                "use_posts"		=> $_POST['use_posts'],
-                "posts"			=> intval($_POST['posts']),
-                "use_reputation"	=> $_POST['use_reputation'],
-                "reputation"		=> intval($_POST['reputation']),
-                "reputation_comparison"	=> $_POST['reputation_comparison'],
-                "use_days_registered"	=> $_POST['use_days_registered'],
-                "days_registered"	=> intval($_POST['days_registered'])
-        );
-
-        // **********************
-	// User groups the same lmbo
-        // **********************
-        if($promotions_info['group_id'] == $promotions_info['group_to_id'])
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_same_group']));
-		page_add_edit_promotions(true, $promotions_info);        	
-		return;        	
-        }
-
-        // **********************
-	// Nothing selected
-        // **********************
-        if(!$promotions_info['use_posts'] && !$promotions_info['use_reputation'] && !$promotions_info['use_days_registered'])
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_no_rules']));
-		page_add_edit_promotions(true, $promotions_info);        	
-		return;        	
-        }
-
-        // **********************
-	// Check group moving from exists
-        // **********************
-	if($db -> query_check_id_rows("user_groups", $promotions_info['group_id'], "name") < 1)
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_group_id_no_exist']));
-		page_add_edit_promotions(true, $promotions_info);        	
-		return;        	
-        }
-        
-        $group_from = $db -> fetch_array();
-
-        // **********************
-	// Check group moving to exists
-        // **********************
-	if($db -> query_check_id_rows("user_groups", $promotions_info['group_to_id'], "name") < 1)
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_group_to_id_no_exist']));
-		page_add_edit_promotions(true, $promotions_info);        	
-		return;        	
-        }
-        
-        $group_to = $db -> fetch_array();
-
-        // ***************************
-        // Add it!
-        // ***************************
-        if(!$db -> basic_insert("promotions", $promotions_info))
-        {
-                $output -> add($template_admin -> critical_error($lang['add_promotions_insert_error']));
-                page_add_edit_promotions(true, $promotions_info);
-                return;
-        }    
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("promotions", "doadd", "Added promotion: ".$group_from['name']." to ".$group_to['name']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=promotions", $lang['add_promotions_created_successfully']);
-        
-}
-
-
-
-/**
- * Taking input and editing
- */
-function do_edit_promotions()
-{
-
-        global $output, $lang, $db, $template_admin;
-
-        // **************************
-        // Grab the promotion
-        // **************************
-        $get_id = trim($_GET['id']);
-
-        if(!$db -> query_check_id_rows("promotions", $get_id, "*"))
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_promotions_invalid_id']));
-		page_main();
-                return;
-        }
-	        
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $promotions_info = array(
-                "group_id"		=> $_POST['group_id'],
-                "promotion_type"	=> $_POST['promotion_type'],
-                "group_to_id"		=> $_POST['group_to_id'],
-                "use_posts"		=> $_POST['use_posts'],
-                "posts"			=> intval($_POST['posts']),
-                "use_reputation"	=> $_POST['use_reputation'],
-                "reputation"		=> intval($_POST['reputation']),
-                "reputation_comparison"	=> $_POST['reputation_comparison'],
-                "use_days_registered"	=> $_POST['use_days_registered'],
-                "days_registered"	=> intval($_POST['days_registered'])
-        );
-
-        // **********************
-	// User groups the same lmbo
-        // **********************
-        if($promotions_info['group_id'] == $promotions_info['group_to_id'])
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_same_group']));
-		page_add_edit_promotions(false, $promotions_info);        	
-		return;        	
-        }
-
-        // **********************
-	// Nothing selected
-        // **********************
-        if(!$promotions_info['use_posts'] && !$promotions_info['use_reputation'] && !$promotions_info['use_days_registered'])
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_no_rules']));
-		page_add_edit_promotions(false, $promotions_info);        	
-		return;        	
-        }
-
-        // **********************
-	// Check group moving from exists
-        // **********************
-	if($db -> query_check_id_rows("user_groups", $promotions_info['group_id'], "name") < 1)
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_group_id_no_exist']));
-		page_add_edit_promotions(false, $promotions_info);        	
-		return;        	
-        }
-        
-        $group_from = $db -> fetch_array();
-
-        // **********************
-	// Check group moving to exists
-        // **********************
-	if($db -> query_check_id_rows("user_groups", $promotions_info['group_to_id'], "name") < 1)
-        {
-                $output -> add($template_admin -> normal_error($lang['add_promotions_group_to_id_no_exist']));
-		page_add_edit_promotions(false, $promotions_info);        	
-		return;        	
-        }
-        
-        $group_to = $db -> fetch_array();
-
-        // *********************
-        // Do the query
-        // *********************
-        if(!$db -> basic_update("promotions", $promotions_info, "id = '".$get_id."'"))        
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_promotions_error_editing']));
-                page_main();
-                return;
-        }
-
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("promotions", "doedit", "Edited promotion: ".$group_from['name']." to ".$group_to['name']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=promotions", $lang['edit_promotions_edited_successfully']);
+	return $form_data;
 
 }
 
 
 /**
- * Deleting a promotion
+ * I need to force a couple of extra fields into this form, unfortunately to do
+ * this I also need access to an already created form_state. So this just gets
+ * called after the form is created.
+ *
+ * @var object &$form
  */
-function do_delete_promotions()
+function form_add_edit_promotions_add_extra_fields(&$form)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $template_global_forms;
 
-        // **************************
-        // Grab the promotion
-        // **************************
-        $get_id = trim($_GET['id']);
+	$init_items = array("posts", "reputation", "days_registered");
 
-        if(!$db -> query_check_id_rows("promotions", $get_id, "*"))
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_promotions_invalid_id']));
-		page_main();
-                return;
-        }
-        
-        $promotions_info = $db -> fetch_array();
-
-	// Fetch user groups
-	$groups_array = array();
-	
-	$db -> basic_select("user_groups", "id, name", "", "id");
-	
-	while($g = $db -> fetch_array())
+	foreach($init_items as $item)
 	{
-		if($promotions_info['group_id'] == $g['id'])
-			$group_from = $g['name'];
-						
-		if($promotions_info['group_to_id'] == $g['id'])
-			$group_to = $g['name'];			
+
+		if(isset($_POST[$item]))
+			$value = $_POST[$item];
+		elseif(isset($form -> form_state['meta']['initial_data'][$item]))
+			$value = $form -> form_state['meta']['initial_data'][$item];
+		else
+			$value = "";
+
+		$form -> form_state['#use_'.$item]['extra_field_contents_right'] =
+			$template_global_forms -> form_field_text(
+				$item,
+				array(
+					"value" => $value,
+					"size" => 7
+					),
+				$form -> form_state
+				);
+
 	}
 
+}
 
-        // ********************
-        // Delete it
-        // ********************
-        $db -> basic_delete("promotions", "id = '".$get_id."'");
 
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("promotions", "delete", "Deleted promotion: ".$group_from." to ".$group_to);
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for adding and editing promotions
+ *
+ * @param object $form
+ */
+function form_add_edit_promotions_validate($form)
+{
 
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=promotions", $lang['delete_promotions_deleted_successfully']);
+	global $lang;
 
-}  
+	// Selected user groups can't be the same
+	if($form -> form_state['#group_id']['value'] == $form -> form_state['#group_to_id']['value'])
+		$form -> set_error("group_id", $lang['add_promotions_same_group']);
+
+	// If no rules have been selected
+	if(!$form -> form_state['#use_posts']['value'] && !$form -> form_state['#use_reputation']['value'] && !$form -> form_state['#use_days_registered']['value'])
+		$form -> set_error(NULL, $lang['add_promotions_no_rules']);
+
+	// Check group moving from exists
+	$group_from = user_groups_get_group_by_id($form -> form_state['#group_id']['value']);
+
+	if($group_from == False)
+		$form -> set_error("group_id", $lang['add_promotions_group_id_no_exist']);
+
+	// Check group moving to exists
+	$group_to = user_groups_get_group_by_id($form -> form_state['#group_to_id']['value']);
+
+	if($group_from == False)
+		$form -> set_error("group_to_id", $lang['add_promotions_group_to_id_no_exist']);
+
+	// Keep these around - they are needed for the log
+	$form -> form_state['meta']['data_group_from_name'] = $group_from['name'];
+	$form -> form_state['meta']['data_group_to_name'] = $group_to['name'];
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding promotions
+ *
+ * @param object $form
+ */
+function form_add_promotions_complete($form)
+{
+
+	global $lang, $output;
+
+	// Try and add the promotion
+	$new_promotion_id = promotions_add_promotion(
+		array(
+			"group_id" => $form -> form_state['#group_id']['value'],
+			"promotion_type" => $form -> form_state['#promotion_type']['value'],
+			"group_to_id" => $form -> form_state['#group_to_id']['value'],
+			"use_posts" => $form -> form_state['#use_posts']['value'],
+			"use_reputation" => $form -> form_state['#use_reputation']['value'],
+			"use_days_registered" => $form -> form_state['#use_days_registered']['value'],
+			"reputation_comparison" => $form -> form_state['#reputation_comparison']['value'],
+			"posts" => intval($_POST['posts']),
+			"reputation" => intval($_POST['reputation']),
+			"days_registered" => intval($_POST['days_registered'])
+			)
+		);
+
+	if($new_promotion_id === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"promotions",
+		"add",
+		"Added promotion: ".$form -> form_state['meta']['data_group_from_name']." to ".$form -> form_state['meta']['data_group_to_name']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/promotions/"),
+		$lang['add_promotions_created_successfully']
+		);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing promotions
+ *
+ * @param object $form
+ */
+function form_edit_promotions_complete($form)
+{
+
+	global $lang, $output;
+
+	// Try and edit the promotion
+	$update = promotions_edit_promotion(
+		$form -> form_state['meta']['initial_data']['id'],
+		array(
+			"group_id" => $form -> form_state['#group_id']['value'],
+			"promotion_type" => $form -> form_state['#promotion_type']['value'],
+			"group_to_id" => $form -> form_state['#group_to_id']['value'],
+			"use_posts" => $form -> form_state['#use_posts']['value'],
+			"use_reputation" => $form -> form_state['#use_reputation']['value'],
+			"use_days_registered" => $form -> form_state['#use_days_registered']['value'],
+			"reputation_comparison" => $form -> form_state['#reputation_comparison']['value'],
+			"posts" => intval($_POST['posts']),
+			"reputation" => intval($_POST['reputation']),
+			"days_registered" => intval($_POST['days_registered'])
+			)
+		);
+
+	if($update !== True)
+		return False;
+
+	// Log
+	log_admin_action(
+		"promotions",
+		"edit",
+		"Edited promotion: ".$form -> form_state['meta']['data_group_from_name']." to ".$form -> form_state['meta']['data_group_to_name']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/promotions/"),
+		$lang['edit_promotions_edited_successfully']
+		);
+
+}
+
+
+/**
+ * Confirmation page to remove a promotion.
+ *
+ * @var $promotion_id ID of the promotion we're deleting.
+ */
+function page_delete_promotions($promotion_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the promotion
+	$promotion_info = promotions_get_promotion_by_id($promotion_id);
+
+	if($promotion_info === False)
+	{
+		$output -> set_error_message($lang['edit_promotions_invalid_id']);
+		page_view_promotions();
+		return;
+	}
+
+	// Show the confirmation page
+	$output -> page_title = $lang['delete_promotion_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_promotions_delete'],
+		l("admin/promotions/delete/".$promotion_id."/")
+		);
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title,
+				"extra_title_contents_left" => $template_admin -> form_header_icon("usergroups"),
+				"description" => $lang['delete_promotion_message'],
+				"callback" => "promotions_delete_promotion_complete",
+				"arguments" => array($promotion_id),
+				"confirm_redirect" => l("admin/promotions/"),
+				"cancel_redirect" => l("admin/promotions/")
+				)
+			)
+		);
+
+}
+
+
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting a promotions
+ *
+ * @param int $promotion_id The ID of the promotion being deleted.
+ */
+function promotions_delete_promotion_complete($promotion_id)
+{
+
+	global $output, $lang;
+
+	// Delete and check the response
+	$return = promotions_delete_promotion($promotion_id);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("promotions", "delete", "Deleted promotion.");
+		return True;
+
+	}
+	else
+		return False;
+
+}
 
 ?>

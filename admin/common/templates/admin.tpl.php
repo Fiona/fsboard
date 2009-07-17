@@ -479,8 +479,8 @@ END;
 		// Usergroups
 		// *****************
 		$return .= $this -> generate_menu_entry($lang['admin_menu_user_groups'], l("admin/user_groups/"));
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_promotions'], l("admin/promotions/"));
-		$return .= $this -> generate_menu_header("usergroups", "*** ");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_promotions'], l("admin/promotions/"));
+		$return .= $this -> generate_menu_header("usergroups");
 
 		$return .= "</div>";
 								

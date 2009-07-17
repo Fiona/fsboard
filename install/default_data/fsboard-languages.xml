@@ -1,6 +1,27 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+		<div style="border: 1px solid #111; background: #333; color : #fff;
+			padding : 5px; margin : 5px;">
+			Error: <b></b> (2048) date() [<a href='function.date'>function.date</a>]: It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected 'Europe/London' for 'BST/1.0/DST' instead<br />
+			Line <b>95</b> in <b>/srv/http/fsboard/common/class/xml.class.php</b>
+					<div style="border: 1px solid #111; background: #555; color : #fff;
+			padding : 3px; margin : 3px; font-size : 10px;">
+			/srv/http/fsboard/common/class/xml.class.php
+			&nbsp;&nbsp;&nbsp;&nbsp;  (line 95) &nbsp;&nbsp;&nbsp;&nbsp; date
+		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
+			padding : 3px; margin : 3px; font-size : 10px;">
+			/srv/http/fsboard/admin/pages/languages.php
+			&nbsp;&nbsp;&nbsp;&nbsp;  (line 1596) &nbsp;&nbsp;&nbsp;&nbsp; export_xml_root
+		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
+			padding : 3px; margin : 3px; font-size : 10px;">
+			/srv/http/fsboard/admin/pages/languages.php
+			&nbsp;&nbsp;&nbsp;&nbsp;  (line 108) &nbsp;&nbsp;&nbsp;&nbsp; do_export
+		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
+			padding : 3px; margin : 3px; font-size : 10px;">
+			/srv/http/fsboard/admin/index.php
+			&nbsp;&nbsp;&nbsp;&nbsp;  (line 264) &nbsp;&nbsp;&nbsp;&nbsp; require
+		</div>
+		</div><?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="25-05-09 1:34 pm">
+<languages_file fsboard_version="0.1" time="18-07-09 11:39 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1740,7 +1761,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_promotions_group_to_id" group="admin_promotions"><![CDATA[User group to move into]]></phrases>
 		<phrases variable_name="add_promotions_group_to_id_no_exist" group="admin_promotions"><![CDATA[Selected user group to move to does not exist!]]></phrases>
 		<phrases variable_name="add_promotions_insert_error" group="admin_promotions"><![CDATA[There was an error inserting this promotion!]]></phrases>
-		<phrases variable_name="add_promotions_message" group="admin_promotions"><![CDATA[Add a new reputation here.]]></phrases>
+		<phrases variable_name="add_promotions_message" group="admin_promotions"><![CDATA[Add a new promotion here.]]></phrases>
 		<phrases variable_name="add_promotions_no_rules" group="admin_promotions"><![CDATA[No promotion rules were set.]]></phrases>
 		<phrases variable_name="add_promotions_posts" group="admin_promotions"><![CDATA[Posts]]></phrases>
 		<phrases variable_name="add_promotions_posts_message" group="admin_promotions"><![CDATA[The checkbox must be selected for posts to be taken into account.]]></phrases>
@@ -1754,12 +1775,15 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_promotions_reputation_message" group="admin_promotions"><![CDATA[The checkbox must be selected for reputation to be taken into account.]]></phrases>
 		<phrases variable_name="add_promotions_same_group" group="admin_promotions"><![CDATA[The selected user groups were the same. Can't move users into the same user group.]]></phrases>
 		<phrases variable_name="add_promotions_submit" group="admin_promotions"><![CDATA[Create Reputation]]></phrases>
-		<phrases variable_name="add_promotions_title" group="admin_promotions"><![CDATA[Add New Reputation]]></phrases>
+		<phrases variable_name="add_promotions_title" group="admin_promotions"><![CDATA[Add New Promotion]]></phrases>
 		<phrases variable_name="breadcrumb_promotions" group="admin_promotions"><![CDATA[Automatic Group Promotions]]></phrases>
-		<phrases variable_name="breadcrumb_promotions_add" group="admin_promotions"><![CDATA[Add New Reputation]]></phrases>
+		<phrases variable_name="breadcrumb_promotions_add" group="admin_promotions"><![CDATA[Add New Promotion]]></phrases>
+		<phrases variable_name="breadcrumb_promotions_delete" group="admin_promotions"><![CDATA[Delete Promotions]]></phrases>
 		<phrases variable_name="breadcrumb_promotions_edit" group="admin_promotions"><![CDATA[Edit Promotion]]></phrases>
 		<phrases variable_name="delete_promotions_confirm" group="admin_promotions"><![CDATA[Are you sure you wish to delete this promotion?]]></phrases>
 		<phrases variable_name="delete_promotions_deleted_successfully" group="admin_promotions"><![CDATA[Promotion deleted successfully!]]></phrases>
+		<phrases variable_name="delete_promotion_message" group="admin_promotions"><![CDATA[Are you sure you want to delete this automatic promotion?]]></phrases>
+		<phrases variable_name="delete_promotion_title" group="admin_promotions"><![CDATA[Delete Promotion]]></phrases>
 		<phrases variable_name="edit_promotions_edited_successfully" group="admin_promotions"><![CDATA[Promotion edited sucessfully!]]></phrases>
 		<phrases variable_name="edit_promotions_error_editing" group="admin_promotions"><![CDATA[There was an error editing this promotion!]]></phrases>
 		<phrases variable_name="edit_promotions_invalid_id" group="admin_promotions"><![CDATA[The specified promotion was not found.]]></phrases>
@@ -1779,6 +1803,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="promotions_posts" group="admin_promotions"><![CDATA[Posts]]></phrases>
 		<phrases variable_name="promotions_reputation" group="admin_promotions"><![CDATA[Reputation]]></phrases>
 		<phrases variable_name="promotions_type" group="admin_promotions"><![CDATA[Type]]></phrases>
+		<phrases variable_name="promotion_delete_fail" group="admin_promotions"><![CDATA[There was a problem deleting this promotion.]]></phrases>
 		<phrases variable_name="add_reputations_button" group="admin_reputations"><![CDATA[Add Reputation Title]]></phrases>
 		<phrases variable_name="add_reputations_created_successfully" group="admin_reputations"><![CDATA[Reputation title created successfully!]]></phrases>
 		<phrases variable_name="add_reputations_fill_in_title" group="admin_reputations"><![CDATA[Please fill in a title for this reputation title.]]></phrases>
@@ -2543,7 +2568,7 @@ Deleting a user group <b>cannot be undone</b>.]]></phrases>
 		<phrases variable_name="change_username_error_not_inputted" group="admin_users"><![CDATA[Please enter a username!]]></phrases>
 		<phrases variable_name="change_username_error_not_inputted" group="admin_users"><![CDATA[Please enter a user name!]]></phrases>
 		<phrases variable_name="delete_user_message" group="admin_users"><![CDATA[Are you sure you want to delete this user <b><1></b>? <br />
-All posts will be turned into guest postings, <b>this cannot be undone</b>. ]]></phrases>
+All posts will be turned into guest postings, <b>this cannot be undone</b>.]]></phrases>
 		<phrases variable_name="delete_user_title" group="admin_users"><![CDATA[Delete User: <1>]]></phrases>
 		<phrases variable_name="edit_password_email_contents" group="admin_users"><![CDATA[E-mail contents]]></phrases>
 		<phrases variable_name="edit_password_email_contents_description" group="admin_users"><![CDATA[<b>&lt;username&gt;</b> - Member's name<br />
@@ -3033,21 +3058,4 @@ To not recieve these e-mails turn off the "Alert Admin of new Registrations" set
 		<phrases variable_name="homepage" group="view_profile"><![CDATA[Homepage URL:]]></phrases>
 		<phrases variable_name="icq_messenger" group="view_profile"><![CDATA[ICQ Messenger:]]></phrases>
 		<phrases variable_name="last_active_date" group="view_profile"><![CDATA[Last active:]]></phrases>
-		<phrases variable_name="last_post_date" group="view_profile"><![CDATA[Last board post:]]></phrases>
-		<phrases variable_name="msn_messenger" group="view_profile"><![CDATA[MSN Messenger:]]></phrases>
-		<phrases variable_name="never" group="view_profile"><![CDATA[Never]]></phrases>
-		<phrases variable_name="no_info" group="view_profile"><![CDATA[<i>No information</i>]]></phrases>
-		<phrases variable_name="other_information" group="view_profile"><![CDATA[Other Information]]></phrases>
-		<phrases variable_name="personal_information" group="view_profile"><![CDATA[Personal Information]]></phrases>
-		<phrases variable_name="posts" group="view_profile"><![CDATA[Post count:]]></phrases>
-		<phrases variable_name="private_email" group="view_profile"><![CDATA[[ <i>Hidden</i> ]]]></phrases>
-		<phrases variable_name="profile_page_title" group="view_profile"><![CDATA[<1>'s Profile]]></phrases>
-		<phrases variable_name="real_name" group="view_profile"><![CDATA[Real name:]]></phrases>
-		<phrases variable_name="registration_date" group="view_profile"><![CDATA[Registration date:]]></phrases>
-		<phrases variable_name="send_pm" group="view_profile"><![CDATA[Send Private Message]]></phrases>
-		<phrases variable_name="signature" group="view_profile"><![CDATA[Signature]]></phrases>
-		<phrases variable_name="user_groups" group="view_profile"><![CDATA[User group(s):]]></phrases>
-		<phrases variable_name="user_not_found" group="view_profile"><![CDATA[No user specified, or user information was not found.]]></phrases>
-		<phrases variable_name="yahoo_messenger" group="view_profile"><![CDATA[Yahoo Messenger:]]></phrases>
-	</language>
-</languages_file>
+		<phrases variable_name="last_post_date" grou
