@@ -89,7 +89,7 @@ function page_view_titles()
 			"default_sort" => "min_posts",
 
 			"columns" => array(
-				"name" => array(
+				"title" => array(
 					"name" => $lang['titles_main_name'],
 					"db_column" => "title",
 					"sortable" => True
@@ -180,7 +180,7 @@ function form_add_edit_titles($type, $initial_data = NULL)
 	// Form definition
 	$form_data = array(
 			"meta" => array(
-				"name" => "user_groups_".$type,
+				"name" => "user_titles_".$type,
 				"extra_title_contents_left" => (
 					$output -> help_button("", True).
 					$template_admin -> form_header_icon("titles_insignia_reputation")
