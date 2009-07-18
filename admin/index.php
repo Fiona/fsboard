@@ -570,10 +570,7 @@ function form_admin_login_complete($form)
 function log_admin_action($page_mode, $secondary_mode = "", $note = "Admin action.")
 {
 
-	global $mode_file_list, $db, $user;
-      
-	if($mode_file_list[$page_mode] == '')
-		return false;
+	global $db, $user;
                 
 	if($db -> basic_insert("admin_logs",
        	array(
