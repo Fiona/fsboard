@@ -11,7 +11,7 @@ See gpl.txt for a full copy of this license.
 */
 
 /**
- * User title page
+ * Admin area - User titles
  *
  * @author Fiona Burrows <fiona@fsboard.com>
  * @version 1.0
@@ -28,379 +28,391 @@ if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// lmbo
-//***********************************************
+// Load language phrases for this page
 load_language_group("admin_titles");
 
 
-$output -> add_breadcrumb($lang['breadcrumb_titles'], "index.php?m=titles");
+// General page functions
+include ROOT."admin/common/funcs/titles.funcs.php";
 
-$secondary_mode = $_GET['m2'];
 
-switch($secondary_mode)
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_titles'], l("admin/titles/"));
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
 {
 
-        case "add":
-                page_add_edit_title(true);
-                break;
+	case "add":
+		page_add_titles();
+		break;
 
-        case "doadd":
-                do_add_title();
-                break;
+	case "edit":
+		page_edit_titles($page_matches['title_id']);
+		break;
+
+	case "delete":
+		page_delete_titles($page_matches['title_id']);
+		break;
                
-        case "edit":
-                page_add_edit_title();
-                break;
+	default:
+		page_view_titles();
 
-        case "doedit":
-                do_edit_title();
-                break;
-               
-        case "delete":
-                do_delete_title();
-                break;
-               
-        default:
-                page_main();
+}
+
+
+/**
+ * Main table view
+ */
+function page_view_titles()
+{
+
+	global $lang, $output, $template_admin;
+
+	$output -> page_title = $lang['titles_main_title'];
+
+	// Define the table
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("titles_insignia_reputation").$lang['titles_main_title'],
+			"description" => $lang['titles_main_message'],
+			"no_results_message" => $lang['no_titles'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['add_title_button'],
+				"url" => l("admin/titles/add/")
+				),
+
+			"db_table" => "user_titles",
+			"default_sort" => "min_posts",
+
+			"columns" => array(
+				"name" => array(
+					"name" => $lang['titles_main_name'],
+					"db_column" => "title",
+					"sortable" => True
+					),
+				"min_posts" => array(
+					"name" => $lang['titles_main_posts'],
+					"db_column" => "min_posts",
+					"sortable" => True
+					),
+				"actions" => array(
+					"content_callback" => 'table_view_titles_actions_callback'
+					)
+				)
+			)
+		);
+
+	$output -> add($results_table -> render());
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the titles view actions.
+ *
+ * @param object $form
+ */
+function table_view_titles_actions_callback($row_data)
+{
+
+	global $lang, $template_global_results_table;
+
+	return (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['titles_main_edit'],
+			l("admin/titles/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['titles_main_delete'],
+			l("admin/titles/delete/".$row_data['id']."/")
+			)
+		);
+
+}
+
+
+/**
+ * Page for creating a new title.
+ */
+function page_add_titles()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['add_titles_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_titles_add'],
+		l("admin/titles/add/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_titles("add")
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing user titles
+ *
+ * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database that will
+ *   be used to populate the fields initially.
+ */
+function form_add_edit_titles($type, $initial_data = NULL)
+{
+
+	global $lang, $output, $template_admin;
+
+	// Form definition
+	$form_data = array(
+			"meta" => array(
+				"name" => "user_groups_".$type,
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("titles_insignia_reputation")
+					),
+				"initial_data" => $initial_data
+				),
+
+			"#title" => array(
+				"name" => $lang['add_titles_name'],
+				"type" => "text",
+				"required" => True
+				),
+			"#min_posts" => array(
+				"name" => $lang['add_titles_min_posts'],
+				"type" => "int",
+				"required" => True
+				),
+			"#submit" => array(
+				"type" => "submit"
+				)
+		);
+
+	// Make alterations to the form based on the mode we're in before sending back
+	if($type == "add")
+	{
+		$form_data['meta']['title'] = $lang['add_titles_title'];
+		$form_data['meta']['description'] = $lang['add_titles_message'];
+		$form_data['meta']['complete_func'] = "form_add_titles_complete";
+		$form_data['#submit']['value'] = $lang['add_titles_submit'];
+	}
+	elseif($type == "edit")
+	{
+		$form_data['meta']['title'] = $lang['edit_titles_title'];
+		$form_data['meta']['complete_func'] = "form_edit_titles_complete";
+		$form_data['#submit']['value'] = $lang['edit_titles_submit'];
+	}
+
+	return $form_data;
 
 }
 
 
 
-//***********************************************
-// Check out dese titles
-//***********************************************
-function page_main()
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding titles
+ *
+ * @param object $form
+ */
+function form_add_titles_complete($form)
 {
 
-        global $lang, $output, $db;
-        
-        // *********************
-        // Set page title
-        // *********************
-        $output -> page_title = $lang['titles_main_title'];
+	global $lang, $output;
 
-        // ********************
-        // Start table
-        // ********************
-        // Create class
-        $table = new table_generate;
-        $form = new form_generate;
+	// Try and add the title
+	$new_title_id = titles_add_title(
+		array(
+			"title" => $form -> form_state['#title']['value'],
+			"min_posts" => $form -> form_state['#min_posts']['value'],
+			)
+		);
 
-        $output -> add(
-                $form -> start_form("dummyform", "", "post").
-                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
+	if($new_title_id === False)
+		return False;
 
-                $table -> add_basic_row($lang['titles_main_title'], "strip1",  "", "left", "100%", "3").
-                $table -> add_basic_row($lang['titles_main_message'], "normalcell",  "padding : 5px", "left", "100%", "3").
-                
-                $table -> add_row(
-                        array(
-                                array($lang['titles_main_name'], "auto"),
-                                array($lang['titles_main_posts'], "auto"),
-                                array($lang['titles_main_actions'], "auto")
-                        )
-                , "strip2")
-        );
+	// Log
+	log_admin_action(
+		"titles",
+		"add",
+		"Added user title: ".$form -> form_state['#title']['value']
+		);
 
-        // ********************
-        // Grab all titles
-        // ********************
-        $db -> basic_select("user_titles", "*", "", "min_posts", "", "asc");
-
-        // No titles?
-        if($db -> num_rows() < 1)
-               $output -> add(
-                        $table -> add_basic_row("<b>".$lang['no_titles']."</b>", "normalcell",  "padding : 10px")
-                );        
-                
-        else
-        {
-        	
-                while($t_array = $db-> fetch_array())
-                {
-
-                        $actions = "
-                       <a href=\"".ROOT."admin/index.php?m=titles&amp;m2=edit&amp;id=".$t_array['id']."\" title=\"".$lang['titles_main_edit']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-edit.png\"></a>
-                        <a href=\"".ROOT."admin/index.php?m=titles&amp;m2=delete&amp;id=".$t_array['id']."\" onclick=\"return confirm('".$lang['delete_titles_confirm']."')\" title=\"".$lang['titles_main_delete']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-delete.png\"></a>";
-
-                        $output -> add(
-                                $table -> add_row(
-                                        array(
-                                                array("<b>".$t_array['title']."</b>", "auto"),
-                                                array($t_array['min_posts'], "auto"),
-                                                array($actions, "auto")
-                                        )
-                                , "normalcell")
-                        );
-                        
-                }        	
-
-        }
-        
-        // ********************
-        // End table
-        // ********************
-        $output -> add(
-                $table -> add_basic_row(
-                        $form -> button("addtitle", $lang['add_title_button'], "submitbutton", "onclick=\"return window.location = '".ROOT."admin/index.php?m=titles&m2=add';\"")
-                , "strip3").
-                $table -> end_table().
-                $form -> end_form()
-        );        
-        
-}
-
-
-//***********************************************
-// Form for adding or editing user titles
-//***********************************************
-function page_add_edit_title($adding = false, $title_info = "")
-{
-
-        global $output, $lang, $db, $template_admin;
-
-        // Create classes
-        $table = new table_generate;
-        $form = new form_generate;
-
-        // ***************************
-        // Need different headers
-        // ***************************
-        if($adding)
-        {
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['add_titles_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_titles_add'], "index.php?m=titles&m2=add");
-
-                $output -> add(
-                        $form -> start_form("addtitle", ROOT."admin/index.php?m=titles&amp;m2=doadd", "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['add_titles_title'], "strip1",  "", "left", "100%", "2").
-                        $table -> add_basic_row($lang['add_titles_message'], "normalcell",  "padding : 5px", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['add_titles_submit'];
-
-        }
-        else
-        {
-
-	        // **************************
-	        // Grab the title
-	        // **************************
-	        $get_id = trim($_GET['id']);
-	
-	        if(!$db -> query_check_id_rows("user_titles", $get_id, "*"))
-	        {
-	                $output -> add($template_admin -> critical_error($lang['edit_titles_invalid_id']));
-	                page_main();
-	                return;
-	        }
-	  
-	        if(!$title_info)
-	                $title_info = $db -> fetch_array();
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['edit_titles_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_titles_edit'], "index.php?m=titles&m2=edit&amp;id=".$get_id);
-
-                $output -> add(
-                        $form -> start_form("edittitle", ROOT."admin/index.php?m=titles&amp;m2=doedit&amp;id=".$get_id, "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['edit_titles_title'], "strip1",  "", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['edit_titles_submit'];
-        	
-        }
-
-        // ***************************
-        // Print the form
-        // ***************************
-        $output -> add(
-                $table -> simple_input_row_text($form, $lang['add_titles_name'], "title", $title_info['title']).
-                $table -> simple_input_row_int($form, $lang['add_titles_min_posts'], "min_posts", $title_info['min_posts']).
-                $table -> add_submit_row($form, "submit", $submit_lang).
-                $table -> end_table().
-                $form -> end_form()
-        );   
-        
-}
-
-
-//***********************************************
-// Add the user title
-//***********************************************
-function do_add_title()
-{
-
-        global $output, $lang, $db, $template_admin, $cache;
-
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $title_info = array(
-                "title"		=> $_POST['title'],
-                "min_posts"	=> $_POST['min_posts']
-        );
-
-        // ***************************
-        // Check there's something in the title
-        // ***************************
-        if(trim($title_info['title']) == "")
-        {
-                $output -> add($template_admin -> normal_error($lang['add_titles_fill_in_title']));
-                page_add_edit_title(true, $title_info);
-                return;
-        }               
-
-        // ***************************
-        // Add it!
-        // ***************************
-        if(!$db -> basic_insert("user_titles", $title_info))
-        {
-                $output -> add($template_admin -> critical_error($lang['add_titles_insert_error']));
-                page_add_edit_title(true, $title_info);
-                return;
-        }               
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_titles");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("titles", "doadd", "Added user title: ".$title_info['title']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=titles", $lang['add_titles_created_sucessfully']);
+	// Redirect...
+	$output -> redirect(
+		l("admin/titles/"),
+		$lang['add_titles_created_sucessfully']
+		);
 
 }
 
 
-//***********************************************
-// Edit the user title
-//***********************************************
-function do_edit_title()
+/**
+ * Page for editing an existing title.
+ */
+function page_edit_titles($title_id)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $output, $lang, $db, $template_admin;
 
-        // **************************
-        // Grab the title
-        // **************************
-        $get_id = trim($_GET['id']);
+	// Select the title
+	$title_info = titles_get_title_by_id($title_id);
 
-        if(!$db -> query_check_id_rows("user_titles", $get_id, "*"))
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_titles_invalid_id']));
-                page_main();
-                return;
-        }
+	if($title_info === False)
+	{
+		$output -> set_error_message($lang['edit_titles_invalid_id']);
+		page_view_titles();
+		return;
+	}
 
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $title_info = array(
-                "title"		=> $_POST['title'],
-                "min_posts"	=> $_POST['min_posts']
-        );
+	// Show the page
+	$output -> page_title = $lang['edit_titles_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_titles_edit'],
+		l("admin/titles/edit/".$title_id."/")
+		);
 
-        // ***************************
-        // Check there's something in the title
-        // ***************************
-        if(trim($title_info['title']) == "")
-        {
-                $output -> add($template_admin -> normal_error($lang['add_titles_fill_in_title']));
-                page_add_edit_title(false, $title_info);
-                return;
-        }               
+	// Put the form up
+	$form = new form(
+		form_add_edit_titles("edit", $title_info)
+		);
 
-        // *********************
-        // Do the query
-        // *********************
-        if(!$db -> basic_update("user_titles", $title_info, "id = '".$get_id."'"))        
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_titles_error_editing']));
-                page_main();
-                return;
-        }
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_titles");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("titles", "doedit", "Edited user title: ".$title_info['title']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=titles", $lang['edit_titles_edited_sucessfully']);
+	$output -> add($form -> render());
 
 }
 
 
-//***********************************************
-// Getting rid of a user title
-//***********************************************
-function do_delete_title()
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing titles
+ *
+ * @param object $form
+ */
+function form_edit_titles_complete($form)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $lang, $output;
 
-        // **************************
-        // Grab the title
-        // **************************
-        $get_id = trim($_GET['id']);
+	// Try and edit the title
+	$update = titles_edit_title(
+		$form -> form_state['meta']['initial_data']['id'],
+		array(
+			"title" => $form -> form_state['#title']['value'],
+			"min_posts" => $form -> form_state['#min_posts']['value'],
+			)
+		);
 
-        if(!$db -> query_check_id_rows("user_titles", $get_id, "id,title"))
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_titles_invalid_id']));
-                page_main();
-                return;
-        }
-        
-        $title_info = $db -> fetch_array();
+	if($update === False)
+		return False;
 
-        // ********************
-        // Delete it
-        // ********************
-        $db -> basic_delete("user_titles", "id = '".$get_id."'");
+	// Log
+	log_admin_action(
+		"titles",
+		"edit",
+		"Edit user title: ".$form -> form_state['#title']['value']
+		);
 
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_titles");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("titles", "delete", "Deleted user title: ".$title_info['title']);
+	// Redirect...
+	$output -> redirect(
+		l("admin/titles/"),
+		$lang['add_titles_created_sucessfully']
+		);
 
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=titles", $lang['delete_titles_deleted_sucessfully']);
+}
 
-}  
+
+/**
+ * Confirmation page to remove a user title.
+ *
+ * @var $title_id ID of the title we're deleting.
+ */
+function page_delete_titles($title_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the title
+	$title_info = titles_get_title_by_id($title_id);
+
+	if($title_info === False)
+	{
+		$output -> set_error_message($lang['edit_titles_invalid_id']);
+		page_view_titles();
+		return;
+	}
+
+	// Show the confirmation page
+	$output -> page_title = $lang['delete_titles_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_titles_delete'],
+		l("admin/titles/delete/".$title_id."/")
+		);
+
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title,
+				"extra_title_contents_left" => $template_admin -> form_header_icon("titles_insignia_reputation"),
+				"description" => $output -> replace_number_tags(
+					$lang['delete_titles_message'],
+					sanitise_user_input($title_info['title'])
+					),
+				"callback" => "titles_delete_title_complete",
+				"arguments" => array($title_id, $title_info['title']),
+				"confirm_redirect" => l("admin/titles/"),
+				"cancel_redirect" => l("admin/titles/")
+				)
+			)
+		);
+
+}
+
+
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting a user title
+ *
+ * @param int $title_id The ID of the title being deleted.
+ * @param string $title Name of the title. (For logging.)
+ */
+function titles_delete_title_complete($title_id, $title)
+{
+
+	global $output, $lang;
+
+	// Delete and check the response
+	$return = titles_delete_title($title_id);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("titles", "delete", "Deleted title: ".$title);
+		return True;
+
+	}
+	else
+		return False;
+
+}
 
 ?>

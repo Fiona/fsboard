@@ -192,6 +192,15 @@ $mode_file_list = array(
 		"page" => "promotions"
 	),
 
+	// ----------------
+	// User titles
+	// ----------------
+	'titles(/(?<mode>add))?' => array(
+		"page" => "titles"
+	),
+	'titles/(?<mode>edit|delete)/(?<title_id>[0-9]+)' => array(
+		"page" => "titles"
+	),
 
 	// --------------------
 	// Waiting to be refactored pages
@@ -214,7 +223,6 @@ $mode_file_list = array(
 	'emoticons'     => 'smallimages.php',
 	'avatars'       => 'smallimages.php',
 	'posticons'     => 'smallimages.php',
-	'titles'		=> 'titles.php',
 	'insignia'		=> 'insignia.php',
 	'reputations'   => 'reputations.php',
 	'wordfilter'    => 'wordfilter.php',

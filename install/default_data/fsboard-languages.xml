@@ -17,11 +17,11 @@
 		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
 			padding : 3px; margin : 3px; font-size : 10px;">
 			/srv/http/fsboard/admin/index.php
-			&nbsp;&nbsp;&nbsp;&nbsp;  (line 264) &nbsp;&nbsp;&nbsp;&nbsp; require
+			&nbsp;&nbsp;&nbsp;&nbsp;  (line 272) &nbsp;&nbsp;&nbsp;&nbsp; require
 		</div>
 		</div><?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="18-07-09 11:39 am">
+<languages_file fsboard_version="0.1" time="18-07-09 1:12 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2406,15 +2406,19 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_title_button" group="admin_titles"><![CDATA[Add User Title]]></phrases>
 		<phrases variable_name="breadcrumb_titles" group="admin_titles"><![CDATA[User Titles]]></phrases>
 		<phrases variable_name="breadcrumb_titles_add" group="admin_titles"><![CDATA[Add User Title]]></phrases>
+		<phrases variable_name="breadcrumb_titles_delete" group="admin_titles"><![CDATA[Delete User Title]]></phrases>
 		<phrases variable_name="breadcrumb_titles_edit" group="admin_titles"><![CDATA[Edit User Title]]></phrases>
 		<phrases variable_name="delete_titles_confirm" group="admin_titles"><![CDATA[Are you sure you wish to delete this user title?]]></phrases>
 		<phrases variable_name="delete_titles_deleted_sucessfully" group="admin_titles"><![CDATA[User title deleted sucessfully!]]></phrases>
+		<phrases variable_name="delete_titles_message" group="admin_titles"><![CDATA[Are you sure you want to delete this user title: <strong><1></strong>?]]></phrases>
+		<phrases variable_name="delete_titles_title" group="admin_titles"><![CDATA[Delete User Title]]></phrases>
 		<phrases variable_name="edit_titles_edited_sucessfully" group="admin_titles"><![CDATA[User title was edited sucessfully!]]></phrases>
 		<phrases variable_name="edit_titles_error_editing" group="admin_titles"><![CDATA[There was an error editing this user title!]]></phrases>
 		<phrases variable_name="edit_titles_invalid_id" group="admin_titles"><![CDATA[Specified user title ID was not found!]]></phrases>
 		<phrases variable_name="edit_titles_submit" group="admin_titles"><![CDATA[Submit Changes]]></phrases>
 		<phrases variable_name="edit_titles_title" group="admin_titles"><![CDATA[Edit User Title]]></phrases>
 		<phrases variable_name="no_titles" group="admin_titles"><![CDATA[There are no user titles!]]></phrases>
+		<phrases variable_name="titles_delete_fail" group="admin_titles"><![CDATA[There was an error deleting this title.]]></phrases>
 		<phrases variable_name="titles_main_actions" group="admin_titles"><![CDATA[Actions]]></phrases>
 		<phrases variable_name="titles_main_delete" group="admin_titles"><![CDATA[Delete user title]]></phrases>
 		<phrases variable_name="titles_main_edit" group="admin_titles"><![CDATA[Edit user title]]></phrases>
