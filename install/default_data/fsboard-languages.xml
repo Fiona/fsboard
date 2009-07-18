@@ -17,11 +17,11 @@
 		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
 			padding : 3px; margin : 3px; font-size : 10px;">
 			/srv/http/fsboard/admin/index.php
-			&nbsp;&nbsp;&nbsp;&nbsp;  (line 281) &nbsp;&nbsp;&nbsp;&nbsp; require
+			&nbsp;&nbsp;&nbsp;&nbsp;  (line 290) &nbsp;&nbsp;&nbsp;&nbsp; require
 		</div>
 		</div><?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="18-07-09 5:45 pm">
+<languages_file fsboard_version="0.1" time="18-07-09 11:39 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1820,9 +1820,12 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_reputations_title" group="admin_reputations"><![CDATA[Add Reputation Title]]></phrases>
 		<phrases variable_name="breadcrumb_reputations" group="admin_reputations"><![CDATA[Reputation Titles]]></phrases>
 		<phrases variable_name="breadcrumb_reputations_add" group="admin_reputations"><![CDATA[Add Reputation Title]]></phrases>
+		<phrases variable_name="breadcrumb_reputations_delete" group="admin_reputations"><![CDATA[Delete Reputation Title]]></phrases>
 		<phrases variable_name="breadcrumb_reputations_edit" group="admin_reputations"><![CDATA[Edit Repuptation Title]]></phrases>
 		<phrases variable_name="delete_reputations_confirm" group="admin_reputations"><![CDATA[Are you sure you want to delete this reputation title?]]></phrases>
 		<phrases variable_name="delete_reputations_deleted_successfully" group="admin_reputations"><![CDATA[Reputation title was removed successfully!]]></phrases>
+		<phrases variable_name="delete_reputations_message" group="admin_reputations"><![CDATA[Are you sure you want to delete this reputation: <strong><1></strong>]]></phrases>
+		<phrases variable_name="delete_reputations_title" group="admin_reputations"><![CDATA[Delete Reputation Title]]></phrases>
 		<phrases variable_name="edit_reputations_edited_successfully" group="admin_reputations"><![CDATA[Reputation title saved successfully!]]></phrases>
 		<phrases variable_name="edit_reputations_error_editing" group="admin_reputations"><![CDATA[There was an error updating this reputation title.]]></phrases>
 		<phrases variable_name="edit_reputations_invalid_id" group="admin_reputations"><![CDATA[The specified ID was not found!]]></phrases>
@@ -1836,6 +1839,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="reputations_main_min_rep" group="admin_reputations"><![CDATA[Minumum Reputation]]></phrases>
 		<phrases variable_name="reputations_main_name" group="admin_reputations"><![CDATA[Title]]></phrases>
 		<phrases variable_name="reputations_main_title" group="admin_reputations"><![CDATA[Reputation Titles]]></phrases>
+		<phrases variable_name="reputation_delete_fail" group="admin_reputations"><![CDATA[There was an error deleting this reputation title.]]></phrases>
 		<phrases variable_name="add_image_cat_created_avatars" group="admin_small_images"><![CDATA[Avatar category created sucessfully!]]></phrases>
 		<phrases variable_name="add_image_cat_created_emoticons" group="admin_small_images"><![CDATA[Emoticons category created sucessfully!]]></phrases>
 		<phrases variable_name="add_image_cat_created_post_icons" group="admin_small_images"><![CDATA[Post icons category created sucessfully!]]></phrases>

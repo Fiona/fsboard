@@ -28,381 +28,391 @@ if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// include.. include this... oh please include this
-//***********************************************
+// This file was refactored to BOOZE UP AND RIOT by Caustic
 load_language_group("admin_reputations");
 
 
-$output -> add_breadcrumb($lang['breadcrumb_reputations'], "index.php?m=reputations");
+// General page functions
+include ROOT."admin/common/funcs/reputations.funcs.php";
 
-$secondary_mode = $_GET['m2'];
 
-switch($secondary_mode)
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_reputations'], l("admin/reputations/"));
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
 {
 
-        case "add":
-                page_add_edit_reputations(true);
-                break;
+	case "add":
+		page_add_reputations();
+		break;
 
-        case "doadd":
-                do_add_reputations();
-                break;
+	case "edit":
+		page_edit_reputations($page_matches['reputation_id']);
+		break;
+
+	case "delete":
+		page_delete_reputations($page_matches['reputation_id']);
+		break;
                
-        case "edit":
-                page_add_edit_reputations();
-                break;
-
-        case "doedit":
-                do_edit_reputations();
-                break;
-               
-        case "delete":
-                do_delete_reputations();
-                break;
-               
-        default:
-                page_main();
+	default:
+		page_view_reputations();
 
 }
 
 
 
-//***********************************************
-// Check out dese titles
-//***********************************************
-function page_main()
+/**
+ * Main table view
+ */
+function page_view_reputations()
 {
 
-        global $lang, $output, $db;
-        
-        // *********************
-        // Set page title
-        // *********************
-        $output -> page_title = $lang['reputations_main_title'];
+	global $lang, $output, $template_admin;
 
-        // ********************
-        // Start table
-        // ********************
-        // Create class
-        $table = new table_generate;
-        $form = new form_generate;
+	$output -> page_title = $lang['reputations_main_title'];
 
-        $output -> add(
-                $form -> start_form("dummyform", "", "post").
-                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
+	// Define the table
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("titles_insignia_reputation").$lang['reputations_main_title'],
+			"description" => $lang['reputations_main_message'],
+			"no_results_message" => $lang['no_reputation'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['add_reputations_button'],
+				"url" => l("admin/reputations/add/")
+				),
 
-                $table -> add_basic_row($lang['reputations_main_title'], "strip1",  "", "left", "100%", "3").
-                $table -> add_basic_row($lang['reputations_main_message'], "normalcell",  "padding : 5px", "left", "100%", "3").
-                
-                $table -> add_row(
-                        array(
-                                array($lang['reputations_main_min_rep'], "auto"),
-                                array($lang['reputations_main_name'], "auto"),
-                                array($lang['reputations_main_actions'], "auto")
-                        )
-                , "strip2")
-        );
+			"db_table" => "user_reputations",
+			"default_sort" => "min_rep",
 
-        // ********************
-        // Grab all reps
-        // ********************
-        $db -> basic_select("user_reputations", "*", "", "min_rep", "", "asc");
+			"columns" => array(
+				"name" => array(
+					"name" => $lang['reputations_main_name'],
+					"db_column" => "name",
+					"sortable" => True
+					),
+				"min_rep" => array(
+					"name" => $lang['reputations_main_min_rep'],
+					"db_column" => "min_rep",
+					"sortable" => True
+					),
+				"actions" => array(
+					"content_callback" => 'table_view_reputations_actions_callback'
+					)
+				)
+			)
+		);
 
-        // No titles?
-        if($db -> num_rows() < 1)
-               $output -> add(
-                        $table -> add_basic_row("<b>".$lang['no_reputation']."</b>", "normalcell",  "padding : 10px")
-                );        
-                
-        else
-        {
-
-                while($r_array = $db-> fetch_array())
-                {
-
-                        $actions = "
-                       <a href=\"".ROOT."admin/index.php?m=reputations&amp;m2=edit&amp;id=".$r_array['id']."\" title=\"".$lang['reputations_main_edit']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-edit.png\"></a>
-                        <a href=\"".ROOT."admin/index.php?m=reputations&amp;m2=delete&amp;id=".$r_array['id']."\" onclick=\"return confirm('".$lang['delete_reputations_confirm']."')\" title=\"".$lang['reputations_main_delete']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-delete.png\"></a>";
-
-                        $output -> add(
-                                $table -> add_row(
-                                        array(
-                                                array($r_array['min_rep'], "auto"),
-                                                array("<b>".$r_array['name']."</b>", "auto"),
-                                                array($actions, "auto")
-                                        )
-                                , "normalcell")
-                        );
-                        
-                }        	
-
-        }
-
-        // ********************
-        // End table
-        // ********************
-        $output -> add(
-                $table -> add_basic_row(
-                        $form -> button("addreputation", $lang['add_reputations_button'], "submitbutton", "onclick=\"return window.location = '".ROOT."admin/index.php?m=reputations&m2=add';\"")
-                , "strip3").
-                $table -> end_table().
-                $form -> end_form()
-        );        
+	$output -> add($results_table -> render());
 
 }
 
 
-//***********************************************
-// Form for adding or editing reputation titles
-//***********************************************
-function page_add_edit_reputations($adding = false, $reputations_info = "")
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the reputations view actions.
+ *
+ * @param object $form
+ */
+function table_view_reputations_actions_callback($row_data)
 {
 
-        global $output, $lang, $db, $template_admin;
+	global $lang, $template_global_results_table;
 
-        // Create classes
-        $table = new table_generate;
-        $form = new form_generate;
-
-        // ***************************
-        // Need different headers
-        // ***************************
-        if($adding)
-        {
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['add_reputations_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_reputations_add'], "index.php?m=reputations&m2=add");
-
-                $output -> add(
-                        $form -> start_form("addreputations", ROOT."admin/index.php?m=reputations&amp;m2=doadd", "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['add_reputations_title'], "strip1",  "", "left", "100%", "2").
-                        $table -> add_basic_row($lang['add_reputations_message'], "normalcell",  "padding : 5px", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['add_reputations_submit'];
-
-        }
-        else
-        {
-        	
-	        // **************************
-	        // Grab the reputation title
-	        // **************************
-	        $get_id = trim($_GET['id']);
-	
-	        if(!$db -> query_check_id_rows("user_reputations", $get_id, "*"))
-	        {
-	                $output -> add($template_admin -> critical_error($lang['edit_reputations_invalid_id']));
-	                page_main();
-	                return;
-	        }
-	  
-	        if(!$reputations_info)
-	                $reputations_info = $db -> fetch_array();
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['edit_reputations_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_reputations_edit'], "index.php?m=reputations&m2=edit&amp;id=".$get_id);
-
-                $output -> add(
-                        $form -> start_form("editreputations", ROOT."admin/index.php?m=reputations&amp;m2=doedit&amp;id=".$get_id, "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['edit_reputations_title'], "strip1",  "", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['edit_reputations_submit'];
-
-        }
-
-        // ***************************
-        // Print the form
-        // ***************************
-        $output -> add(
-                $table -> simple_input_row_text($form, $lang['add_reputations_name'], "name", $reputations_info['name']).
-                $table -> simple_input_row_int($form, $lang['add_reputations_min_rep'], "min_rep", $reputations_info['min_rep']).
-                $table -> add_submit_row($form, "submit", $submit_lang).
-                $table -> end_table().
-                $form -> end_form()
-        );   
-        
-}    
-
-
-//***********************************************
-// Add the reputation title
-//***********************************************
-function do_add_reputations()
-{
-
-        global $output, $lang, $db, $template_admin, $cache;
-
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $reputations_info = array(
-                "name"		=> $_POST['name'],
-                "min_rep"	=> $_POST['min_rep']
-        );
-
-        // ***************************
-        // Check there's something in the name
-        // ***************************
-        if(trim($reputations_info['name']) == "")
-        {
-                $output -> add($template_admin -> normal_error($lang['add_reputations_fill_in_title']));
-                page_add_edit_reputations(true, $reputations_info);
-                return;
-        }               
-
-        // ***************************
-        // Add it!
-        // ***************************
-        if(!$db -> basic_insert("user_reputations", $reputations_info))
-        {
-                $output -> add($template_admin -> critical_error($lang['add_reputations_insert_error']));
-                page_add_edit_reputations(true, $reputations_info);
-                return;
-        }               
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_reputations");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("titles", "doadd", "Added reputations title: ".$reputations_info['name']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=reputations", $lang['add_reputations_created_successfully']);
-
-}
-    
-    
-//***********************************************
-// Edit the reputation title
-//***********************************************
-function do_edit_reputations()
-{
-
-        global $output, $lang, $db, $template_admin, $cache;
-
-        // **************************
-        // Grab the reputation title
-        // **************************
-        $get_id = trim($_GET['id']);
-
-        if(!$db -> query_check_id_rows("user_reputations", $get_id, "*"))
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_reputations_invalid_id']));
-                page_main();
-                return;
-        }
-
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $reputations_info = array(
-                "name"		=> $_POST['name'],
-                "min_rep"	=> $_POST['min_rep']
-        );
-
-        // ***************************
-        // Check there's something in the name
-        // ***************************
-        if(trim($reputations_info['name']) == "")
-        {
-                $output -> add($template_admin -> normal_error($lang['edit_reputations_fill_in_title']));
-                page_add_edit_reputations(false, $reputations_info);
-                return;
-        }                 
-
-        // *********************
-        // Do the query
-        // *********************
-        if(!$db -> basic_update("user_reputations", $reputations_info, "id = '".$get_id."'"))        
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_reputations_error_editing']));
-                page_main();
-                return;
-        }
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_reputations");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("reputations", "doedit", "Edited reputation title: ".$reputations_info['name']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=reputations", $lang['edit_reputations_edited_successfully']);
+	return (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['reputations_main_edit'],
+			l("admin/reputations/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['reputations_main_delete'],
+			l("admin/reputations/delete/".$row_data['id']."/")
+			)
+		);
 
 }
 
 
-
-//***********************************************
-// Getting rid of a reputation title
-//***********************************************
-function do_delete_reputations()
+/**
+ * Page for creating a new reputation.
+ */
+function page_add_reputations()
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $output, $lang, $db, $template_admin;
 
-        // **************************
-        // Grab the reputation title
-        // **************************
-        $get_id = trim($_GET['id']);
+	$output -> page_title = $lang['add_reputations_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_reputations_add'],
+		l("admin/reputations/add/")
+		);
 
-        if(!$db -> query_check_id_rows("user_reputations", $get_id, "*"))
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_reputations_invalid_id']));
-                page_main();
-                return;
-        }
-        
-        $reputations_info = $db -> fetch_array();
+	// Put the form up
+	$form = new form(
+		form_add_edit_reputations("add")
+		);
 
-        // ********************
-        // Delete it
-        // ********************
-        $db -> basic_delete("user_reputations", "id = '".$get_id."'");
+	$output -> add($form -> render());
 
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_reputations");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("reputations", "delete", "Deleted reputation title: ".$reputations_info['name']);
+}
 
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=reputations", $lang['delete_reputations_deleted_successfully']);
 
-}  
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing reputations
+ *
+ * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database that will
+ *   be used to populate the fields initially.
+ */
+function form_add_edit_reputations($type, $initial_data = NULL)
+{
 
-    
+	global $lang, $output, $template_admin;
+
+	// Form definition
+	$form_data = array(
+			"meta" => array(
+				"name" => "reputations_".$type,
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("titles_insignia_reputation")
+					),
+				"initial_data" => $initial_data
+				),
+
+			"#name" => array(
+				"name" => $lang['add_reputations_name'],
+				"type" => "text",
+				"required" => True
+				),
+			"#min_rep" => array(
+				"name" => $lang['add_reputations_min_rep'],
+				"type" => "int",
+				"required" => True
+				),
+			"#submit" => array(
+				"type" => "submit"
+				)
+		);
+
+	// Make alterations to the form based on the mode we're in before sending back
+	if($type == "add")
+	{
+		$form_data['meta']['title'] = $lang['add_reputations_title'];
+		$form_data['meta']['description'] = $lang['add_reputations_message'];
+		$form_data['meta']['complete_func'] = "form_add_reputations_complete";
+		$form_data['#submit']['value'] = $lang['add_reputations_submit'];
+	}
+	elseif($type == "edit")
+	{
+		$form_data['meta']['title'] = $lang['edit_reputations_title'];
+		$form_data['meta']['complete_func'] = "form_edit_reputations_complete";
+		$form_data['#submit']['value'] = $lang['edit_reputations_submit'];
+	}
+
+	return $form_data;
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding reputations
+ *
+ * @param object $form
+ */
+function form_add_reputations_complete($form)
+{
+
+	global $lang, $output;
+
+	// Try and add the reputation
+	$new_rep_id = reputations_add_reputation(
+		array(
+			"name" => $form -> form_state['#name']['value'],
+			"min_rep" => $form -> form_state['#min_rep']['value'],
+			)
+		);
+
+	if($new_rep_id === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"reputations",
+		"add",
+		"Added reputation: ".$form -> form_state['#name']['value']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/reputations/"),
+		$lang['add_reputations_created_successfully']
+		);
+
+}
+
+
+/**
+ * Page for editing an existing reputation.
+ */
+function page_edit_reputations($reputation_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the reputation
+	$reputation_info = reputations_get_reputation_by_id($reputation_id);
+
+	if($reputation_info === False)
+	{
+		$output -> set_error_message($lang['edit_reputations_invalid_id']);
+		page_view_reputations();
+		return;
+	}
+
+	// Show the page
+	$output -> page_title = $lang['edit_reputations_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_reputations_edit'],
+		l("admin/reputations/edit/".$reputation_id."/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_reputations("edit", $reputation_info)
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing reputations
+ *
+ * @param object $form
+ */
+function form_edit_reputations_complete($form)
+{
+
+	global $lang, $output;
+
+	// Try and edit the reputation
+	$update = reputations_edit_reputation(
+		$form -> form_state['meta']['initial_data']['id'],
+		array(
+			"name" => $form -> form_state['#name']['value'],
+			"min_rep" => $form -> form_state['#min_rep']['value'],
+			)
+		);
+
+	if($update === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"reputations",
+		"edit",
+		"Edit reputation: ".$form -> form_state['#name']['value']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/reputations/"),
+		$lang['edit_reputations_edited_successfully']
+		);
+
+}
+
+
+/**
+ * Confirmation page to remove a reputation.
+ *
+ * @var $reputation_id ID of the rep we're deleting.
+ */
+function page_delete_reputations($reputation_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the rep
+	$reputation_info = reputations_get_reputation_by_id($reputation_id);
+
+	if($reputation_info === False)
+	{
+		$output -> set_error_message($lang['edit_reputations_invalid_id']);
+		page_view_reputations();
+		return;
+	}
+
+	// Show the confirmation page
+	$output -> page_title = $lang['delete_reputations_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_reputations_delete'],
+		l("admin/reputations/delete/".$reputation_id."/")
+		);
+
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title,
+				"extra_title_contents_left" => $template_admin -> form_header_icon("titles_insignia_reputation"),
+				"description" => $output -> replace_number_tags(
+					$lang['delete_reputations_message'],
+					sanitise_user_input($reputation_info['name'])
+					),
+				"callback" => "reputations_delete_reputation_complete",
+				"arguments" => array($reputation_id, $reputation_info['name']),
+				"confirm_redirect" => l("admin/reputations/"),
+				"cancel_redirect" => l("admin/reputations/")
+				)
+			)
+		);
+
+}
+
+
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting a reputation
+ *
+ * @param int $reputation_id The ID of the rep being deleted.
+ * @param string $name Name of the rep. (For logging.)
+ */
+function reputations_delete_reputation_complete($reputation_id, $name)
+{
+
+	global $output, $lang;
+
+	// Delete and check the response
+	$return = reputations_delete_reputation($reputation_id);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("reputations", "delete", "Deleted reputation: ".$name);
+		return True;
+
+	}
+	else
+		return False;
+
+}
+
 ?>

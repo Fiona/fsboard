@@ -491,8 +491,8 @@ END;
 				
 		$return .= $this -> generate_menu_entry($lang['admin_menu_titles'], l("admin/titles/"));
 		$return .= $this -> generate_menu_entry($lang['admin_menu_insignia'], l("admin/insignia/"));
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_reputation'], ROOT."admin/index.php?m=reputations");
-		$return .= $this -> generate_menu_header("titles_insignia_reputation", "*");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_reputation'], l("admin/reputations/"));
+		$return .= $this -> generate_menu_header("titles_insignia_reputation");
 
 		$return .= $this -> generate_menu_move_a_bit();
 
