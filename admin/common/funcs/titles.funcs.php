@@ -70,7 +70,7 @@ function titles_get_title_by_id($title_id)
 function titles_add_title($title_data, $suppress_errors = False)
 {
 
-	global $db, $output, $lang;
+	global $db, $output, $lang, $cache;
 
 	// Try inserting
 	$q = $db -> basic_insert(
@@ -110,7 +110,7 @@ function titles_add_title($title_data, $suppress_errors = False)
 function titles_edit_title($title_id, $title_data, $suppress_errors = False)
 {
 
-	global $db, $output, $lang;
+	global $db, $output, $lang, $cache;
 
 	// Update the table
 	$update_result = $db -> basic_update(
@@ -127,6 +127,9 @@ function titles_edit_title($title_id, $title_data, $suppress_errors = False)
 			$output -> set_error_message($lang['edit_titles_error_editing']);
 		return $lang['edit_titles_error_editing'];
 	}
+
+	// Update cache
+	$cache -> update_cache("user_titles");
 
 	return True;
 
@@ -146,7 +149,7 @@ function titles_edit_title($title_id, $title_data, $suppress_errors = False)
 function titles_delete_title($title_id, $suppress_errors = False)
 {
 
-	global $db, $cache, $lang;
+	global $db, $cache, $lang, $output;
 
 	// Remove title
 	save_undelete_data(
@@ -169,6 +172,9 @@ function titles_delete_title($title_id, $suppress_errors = False)
 			$output -> set_error_message($lang['titles_delete_fail']);
 		return $lang['titles_delete_fail'];
 	}
+
+	// Update cache
+	$cache -> update_cache("user_titles");
 
 	return True;
 

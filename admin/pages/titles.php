@@ -332,7 +332,7 @@ function form_edit_titles_complete($form)
 	// Redirect...
 	$output -> redirect(
 		l("admin/titles/"),
-		$lang['add_titles_created_sucessfully']
+		$lang['edit_titles_edited_sucessfully']
 		);
 
 }
