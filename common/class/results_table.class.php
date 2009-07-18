@@ -324,24 +324,25 @@ class results_table
 		$first_link = "";
 		$last_link = "";
 
+		$pagnation_extra_url = "";
+
 		if(isset($_GET['sort_col']))
 		{
-			$extra_url .= (
+			$pagnation_extra_url = $extra_url.
 				"sort_col=".$this -> sort_column_selected.
-				"&sort_dir=".$this -> sort_column_direction."&"
-				);
+				"&sort_dir=".$this -> sort_column_direction."&";
 		}
 		
 		if($this -> current_page > 1)
 		{
-			$prev_link = "?".$extra_url."page=".($this -> current_page - 1);
-			$first_link = "?".$extra_url."page=1";
+			$prev_link = "?".$pagnation_extra_url."page=".($this -> current_page - 1);
+			$first_link = "?".$pagnation_extra_url."page=1";
 		}
 
 		if($this -> total_pages > 1 && $this -> current_page < $this -> total_pages)
 		{
-			$next_link = "?".$extra_url."page=".($this -> current_page + 1);
-			$last_link = "?".$extra_url."page=".($this -> total_pages);
+			$next_link = "?".$pagnation_extra_url."page=".($this -> current_page + 1);
+			$last_link = "?".$pagnation_extra_url."page=".($this -> total_pages);
 		}
 
 		// We build the individual numbers here
@@ -352,7 +353,7 @@ class results_table
 		if($this -> total_pages <= (($this -> padding_amount * 3)+1))
 			for($a = 1; $a <= $this -> total_pages; $a++)
 				$number_links[] = $template_global_results_table -> pagination_number_link(
-					$extra_url, $a, $this -> current_page
+					$pagnation_extra_url, $a, $this -> current_page
 					);
 		// When we have more than normal we have to split it up and show 
 		// only the necessary ones
@@ -368,7 +369,7 @@ class results_table
 				//Create a link for all the first numbers
 				for($a = 1; $a < $this -> current_page; $a++)
 					$number_links[] = $template_global_results_table -> pagination_number_link(
-						$extra_url, $a, $this -> current_page
+						$pagnation_extra_url, $a, $this -> current_page
 						);
 
 			}
@@ -381,7 +382,7 @@ class results_table
 				// Show the first numbers 
 				for($a = 1; $a <= $this -> padding_amount; $a++)
 					$number_links[] = $template_global_results_table -> pagination_number_link(
-						$extra_url, $a, $this -> current_page
+						$pagnation_extra_url, $a, $this -> current_page
 						);
 				
 				// Ellipsis splitter
@@ -394,14 +395,14 @@ class results_table
 					$a++
 					)
 					$number_links[] = $template_global_results_table -> pagination_number_link(
-						$extra_url, $a, $this -> current_page
+						$pagnation_extra_url, $a, $this -> current_page
 						);
 
 			}
 
 			// This is the current page link
 			$number_links[] = $template_global_results_table -> pagination_number_link(
-				$extra_url, $this -> current_page, $this -> current_page
+				$pagnation_extra_url, $this -> current_page, $this -> current_page
 				);
 
 			// Right hand side
@@ -414,7 +415,7 @@ class results_table
 				// Create a link for all the last numbers
 				for($a = ($this -> current_page + 1); $a <= $this -> total_pages; $a++)
 					$number_links[] = $template_global_results_table -> pagination_number_link(
-						$extra_url, $a, $this -> current_page
+						$pagnation_extra_url, $a, $this -> current_page
 						);
 
 			}
@@ -427,7 +428,7 @@ class results_table
 				$start = ($this -> current_page + 1);
 				for($a = $start; $a < ($start + $this -> padding_amount); $a++)
 					$number_links[] = $template_global_results_table -> pagination_number_link(
-						$extra_url, $a, $this -> current_page
+						$pagnation_extra_url, $a, $this -> current_page
 						);
 				
 				// Ellipsis splitter
@@ -440,7 +441,7 @@ class results_table
 					$a++
 					)
 					$number_links[] = $template_global_results_table -> pagination_number_link(
-						$extra_url, $a, $this -> current_page
+						$pagnation_extra_url, $a, $this -> current_page
 						);
 
 			}
@@ -457,7 +458,7 @@ class results_table
 				$first_link,
 				$last_link,
 				$number_links,
-				$extra_url
+				$pagnation_extra_url
 				);
 		}
 		else
