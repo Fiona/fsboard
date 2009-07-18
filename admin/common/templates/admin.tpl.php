@@ -490,7 +490,7 @@ END;
 		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_3\">";
 				
 		$return .= $this -> generate_menu_entry($lang['admin_menu_titles'], l("admin/titles/"));
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_insignia'], ROOT."admin/index.php?m=insignia");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_insignia'], l("admin/insignia/"));
 		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_reputation'], ROOT."admin/index.php?m=reputations");
 		$return .= $this -> generate_menu_header("titles_insignia_reputation", "*");
 

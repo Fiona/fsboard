@@ -202,6 +202,16 @@ $mode_file_list = array(
 		"page" => "titles"
 	),
 
+	// ----------------
+	// Post insignia
+	// ----------------
+	'insignia(/(?<mode>add))?' => array(
+		"page" => "insignia"
+	),
+	'insignia/(?<mode>edit|delete)/(?<insignia_id>[0-9]+)' => array(
+		"page" => "insignia"
+	),
+
 	// --------------------
 	// Waiting to be refactored pages
 	// --------------------
@@ -223,7 +233,6 @@ $mode_file_list = array(
 	'emoticons'     => 'smallimages.php',
 	'avatars'       => 'smallimages.php',
 	'posticons'     => 'smallimages.php',
-	'insignia'		=> 'insignia.php',
 	'reputations'   => 'reputations.php',
 	'wordfilter'    => 'wordfilter.php',
 	'mailer'		=> 'mailer.php',

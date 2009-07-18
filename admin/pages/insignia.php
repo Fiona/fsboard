@@ -11,7 +11,7 @@ See gpl.txt for a full copy of this license.
 */
 
 /**
- * Admin page for post insignia
+ * Admin area - Post insignia
  *
  * @author Fiona Burrows <fiona@fsboard.com>
  * @version 1.0
@@ -28,461 +28,508 @@ if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// oh no you di'nt'
-//***********************************************
+// Load language phrases for this page
 load_language_group("admin_insignia");
 
 
-$output -> add_breadcrumb($lang['breadcrumb_insignia'], "index.php?m=insignia");
+// General page functions
+include ROOT."admin/common/funcs/insignia.funcs.php";
 
-$secondary_mode = $_GET['m2'];
 
-switch($secondary_mode)
+// Main page crumb
+$output -> add_breadcrumb($lang['breadcrumb_insignia'], l("admin/insignia/"));
+
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
 {
 
-        case "add":
-                page_add_edit_insignia(true);
-                break;
+	case "add":
+		page_add_insignia();
+		break;
 
-        case "doadd":
-                do_add_insignia();
-                break;
+	case "edit":
+		page_edit_insignia($page_matches['insignia_id']);
+		break;
+
+	case "delete":
+		page_delete_insignia($page_matches['insignia_id']);
+		break;
                
-        case "edit":
-                page_add_edit_insignia();
-                break;
-
-        case "doedit":
-                do_edit_insignia();
-                break;
-               
-        case "delete":
-                do_delete_insignia();
-                break;
-                               
-        default:
-                page_main();
+	default:
+		page_view_insignia();
 
 }
 
 
-
-//***********************************************
-// Pretty insignia
-//***********************************************
-function page_main()
+/**
+ * Main table view
+ */
+function page_view_insignia()
 {
 
-        global $lang, $output, $db;
-        
-        // *********************
-        // Set page title
-        // *********************
-        $output -> page_title = $lang['insignia_main_title'];
+	global $lang, $output, $template_admin;
 
-        // ********************
-        // Start table
-        // ********************
-        // Create class
-        $table = new table_generate;
-        $form = new form_generate;
+	$output -> page_title = $lang['insignia_main_title'];
 
-        $output -> add(
-                $form -> start_form("dummyform", "", "post").
-                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
+	// Define the table
+	require_once ROOT."admin/common/funcs/user_groups.funcs.php";
+	$user_group_data = user_groups_get_groups();
 
-                $table -> add_basic_row($lang['insignia_main_title'], "strip1",  "", "left", "100%", "4").
-                $table -> add_basic_row($lang['insignia_main_message'], "normalcell",  "padding : 5px", "left", "100%", "4").
-                
-                $table -> add_row(
-                        array(
-                                array($lang['insignia_main_insignia'], "auto"),
-                                array($lang['insignia_main_posts'], "auto"),
-                                array($lang['insignia_main_newline'], "auto"),
-                                array($lang['insignia_main_actions'], "auto")
-                        )
-                , "strip2")
-        );
-        
-        // ********************
-        // Grab all insignia
-        // ********************
-        $insignia_q = $db -> basic_select("user_insignia", "*", "", "user_group, min_posts", "", "asc");
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("titles_insignia_reputation").$lang['insignia_main_title'],
+			"description" => $lang['insignia_main_message'],
+			"no_results_message" => $lang['no_insignia'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['add_insignia_button'],
+				"url" => l("admin/insignia/add/")
+				),
 
-        // No insignia?
-        if($db -> num_rows() < 1)
-               $output -> add(
-                        $table -> add_basic_row("<b>".$lang['no_insignia']."</b>", "normalcell",  "padding : 10px")
-                );        
-                
-        else
-        {
+			"db_table" => "user_insignia",
+			"default_sort" => "user_group",
+			"db_extra_what" => array(
+				"`user_group`", "`text`", "`repeat_no`", "`image`", "`newline`"
+				),
 
-		// Fetch user groups
-		$groups_array = array();
-		
-		$db -> basic_select("user_groups", "id, name", "", "id");
-	
-		while($g = $db -> fetch_array())
-			$groups_array[$g['id']] = $g['name'];
+			"columns" => array(
+				"user_group" => array(
+					"name" => $lang['insignia_main_user_group'],
+					"content_callback" => 'table_view_insignia_user_group_callback',
+					"content_callback_parameters" => array($user_group_data),
+					"sortable" => True
+					),
+				"display" => array(
+					"name" => $lang['insignia_main_insignia'],
+					"content_callback" => 'table_view_insignia_display_callback'
+					),
+				"min_posts" => array(
+					"name" => $lang['insignia_main_posts'],
+					"db_column" => "min_posts",
+					"sortable" => True
+					),
+				"newline" => array(
+					"name" => $lang['insignia_main_newline'],
+					"content_callback" => 'table_view_insignia_newline_callback',
+					"sortable" => True
+					),
+				"actions" => array(
+					"content_callback" => 'table_view_insignia_actions_callback'
+					)
+				)
+			)
+		);
 
-		$current_user_group = false;
-		
-                while($i_array = $db-> fetch_array($insignia_q))
-                {
-			
-			// User group title
-			if($current_user_group === false || $current_user_group != $i_array['user_group'])
-				if($i_array['user_group'] == "-1")
-					$output -> add(				
-			                        $table -> add_basic_row("<b>".$lang['insignia_main_all_groups']."</b>", "normalcell",  "padding : 5px")
-                			);
-				else
-					$output -> add(				
-			                        $table -> add_basic_row("<b>".$groups_array[$i_array['user_group']]."</b>", "normalcell",  "padding : 5px")
-                			);
-			
-			// Actions
-                        $actions = "
-                        <a href=\"".ROOT."admin/index.php?m=insignia&amp;m2=edit&amp;id=".$i_array['id']."\" title=\"".$lang['insignia_main_edit']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-edit.png\"></a>
-                        <a href=\"".ROOT."admin/index.php?m=insignia&amp;m2=delete&amp;id=".$i_array['id']."\" onclick=\"return confirm('".$lang['delete_insignia_confirm']."')\" title=\"".$lang['insignia_main_delete']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-delete.png\"></a>";
+	$output -> add($results_table -> render());
 
-			// Insignia text
-			if($i_array['text'])
-				$insignia_1 = $i_array['text'];
-			else
-				$insignia_1 = "<img src=\"".ROOT.$i_array['image']."\" />";
-
-			$insignia = "";
-			
-			if($i_array['repeat_no'] > 0)
-				for($a = 1; $a <= $i_array['repeat_no']; $a++)
-					$insignia .= $insignia_1;
-			else
-				$insignia = "&nbsp;";
-						
-			// Row
-                        $output -> add(
-                                $table -> add_row(
-                                        array(
-                                                array($insignia, "auto"),
-                                                array($i_array['min_posts'], "auto"),
-                                                array(
-                                                	($i_array['newline']) ? $lang['yes'] : $lang['no']
-                                                , "auto"),
-                                                array($actions, "auto")
-                                        )
-                                , "normalcell")
-                        );
-                	
-                	// Save group
-                	$current_user_group = $i_array['user_group'];
-                	
-                }
-                
-        }     
-           
-        // ********************
-        // End table
-        // ********************
-        $output -> add(
-                $table -> add_basic_row(
-                        $form -> button("addtitle", $lang['add_insignia_button'], "submitbutton", "onclick=\"return window.location = '".ROOT."admin/index.php?m=insignia&m2=add';\"")
-                , "strip3").
-                $table -> end_table().
-                $form -> end_form()
-        );        
-        
 }
 
 
-//***********************************************
-// Form for adding or editing insignia
-//***********************************************
-function page_add_edit_insignia($adding = false, $insignia_info = "")
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the insignia view actions.
+ *
+ * @param object $form
+ */
+function table_view_insignia_actions_callback($row_data)
 {
 
-        global $output, $lang, $db, $template_admin;
+	global $lang, $template_global_results_table;
 
-        // Create classes
-        $table = new table_generate;
-        $form = new form_generate;
+	return (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['insignia_main_edit'],
+			l("admin/insignia/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['insignia_main_delete'],
+			l("admin/insignia/delete/".$row_data['id']."/")
+			)
+		);
 
-        // ***************************
-        // Need different headers
-        // ***************************
-        if($adding)
-        {
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['add_insignia_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_insignia_add'], "index.php?m=insignia&m2=add");
-
-                $output -> add(
-                        $form -> start_form("addinsignia", ROOT."admin/index.php?m=insignia&amp;m2=doadd", "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['add_insignia_title'], "strip1",  "", "left", "100%", "2").
-                        $table -> add_basic_row($lang['add_insignia_message'], "normalcell",  "padding : 5px", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['add_insignia_submit'];
-                
-                if($insignia_info == "")
-                	$insignia_info['repeat_no'] = "1";
-
-        }
-        else
-        {
-
-	        // **************************
-	        // Grab the insignia
-	        // **************************
-	        $get_id = trim($_GET['id']);
-	
-	        if(!$db -> query_check_id_rows("user_insignia", $get_id, "*"))
-	        {
-	                $output -> add($template_admin -> critical_error($lang['edit_insignia_invalid_id']));
-	                page_main();
-	                return;
-	        }
-	  
-	        if(!$insignia_info)
-	                $insignia_info = $db -> fetch_array();
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['edit_insignia_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_insignia_edit'], "index.php?m=insignia&m2=edit&amp;id=".$get_id);
-
-                $output -> add(
-                        $form -> start_form("editinsignia", ROOT."admin/index.php?m=insignia&amp;m2=doedit&amp;id=".$get_id, "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;").
-                        $table -> add_basic_row($lang['edit_insignia_title'], "strip1",  "", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['edit_insignia_submit'];
-
-        }
-
-	// Fetch user groups
-	$groups_dropdown_text = array();
-	$groups_dropdown_values = array();
-	
-	$db -> basic_select("user_groups", "id, name", "", "id");
-
-	$groups_dropdown_text[] = $lang['add_insignia_groups_dropdown_all'];
-	$groups_dropdown_values[] = "-1";
-	
-	while($g = $db -> fetch_array())
-	{
-		$groups_dropdown_text[] = $g['name'];
-		$groups_dropdown_values[] = $g['id'];
-	}
-	
-        // ***************************
-        // Print the form
-        // ***************************
-        $output -> add(
-                $table -> simple_input_row_int($form, $lang['add_insignia_min_posts'], "min_posts", $insignia_info['min_posts']).
-                $table -> simple_input_row_dropdown($form, $lang['add_insignia_user_group'], "user_group", $insignia_info['user_group'], $groups_dropdown_values, $groups_dropdown_text).
-                $table -> simple_input_row_yesno($form, $lang['add_insignia_newline'], "newline", $insignia_info['newline']).
-                $table -> simple_input_row_int($form, $lang['add_insignia_repeat_no'], "repeat_no", $insignia_info['repeat_no']).
-                $table -> simple_input_row_text($form, $lang['add_insignia_image'], "image", $insignia_info['image']).
-                $table -> simple_input_row_text($form, $lang['add_insignia_text'], "text", $insignia_info['text']).
-                $table -> add_submit_row($form, "submit", $submit_lang).
-                $table -> end_table().
-                $form -> end_form()
-        );   
-        
 }
 
 
-//***********************************************
-// Add the post insignia
-//***********************************************
-function do_add_insignia()
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the insignia user group.
+ *
+ * @param array $row_data
+ * @param array $user_group_data
+ */
+function table_view_insignia_user_group_callback($row_data, $user_group_data)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $lang;
 
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $insignia_info = array(
-                "min_posts"	=> $_POST['min_posts'],
-                "user_group"	=> $_POST['user_group'],
-                "newline"	=> $_POST['newline'],
-                "repeat_no"	=> $_POST['repeat_no'],
-                "image"		=> $_POST['image'],
-                "text"		=> $_POST['text']
-        );
+	if($row_data['user_group'] == "-1")
+		return $lang['insignia_main_all_groups'];
 
-        // ***************************
-        // Check there's something for the insignia
-        // ***************************
-        if(trim($insignia_info['image']) == "" && trim($insignia_info['text']) == "" )
-        {
-                $output -> add($template_admin -> normal_error($lang['add_insignia_fill_in_something']));
-                page_add_edit_insignia(true, $insignia_info);
-                return;
-        }               
+	return $user_group_data[$row_data['user_group']]['name'];
 
-	if($insignia_info['text'])
-		$insignia_info['image'] = NULL;
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the insignia display
+ *
+ * @param array $row_data
+ */
+function table_view_insignia_display_callback($row_data)
+{
+
+	global $cache;
+
+	if($row_data['repeat_no'] == 0)
+		return "&nbsp;";
+
+	if($row_data['text'])
+		$insignia = $row_data['text'];
 	else
-		$insignia_info['text'] = NULL;
-		
-        // ***************************
-        // Add it!
-        // ***************************
-        if(!$db -> basic_insert("user_insignia", $insignia_info))
-        {
-                $output -> add($template_admin -> critical_error($lang['add_insignia_insert_error']));
-                page_add_edit_title(true, $insignia_info);
-                return;
-        }               
+		$insignia = "<img src=\"".$cache -> cache['config']['board_url'].$row_data['image']."\" />";
 
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_insignia");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("insignia", "doadd", "Added post insignia");
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=insignia", $lang['add_insignia_created_sucessfully']);
+	return str_repeat($insignia,  $row_data['repeat_no']);
 
 }
 
 
-//***********************************************
-// Finish editing the post insignia
-//***********************************************
-function do_edit_insignia()
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the insignia newline column
+ *
+ * @param array $row_data
+ */
+function table_view_insignia_newline_callback($row_data)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $lang;
 
-	// **************************
-	// Grab the insignia
-	// **************************
-	$get_id = trim($_GET['id']);
-	
-	if(!$db -> query_check_id_rows("user_insignia", $get_id, "*"))
+	return ($row_data['newline'] ? $lang['yes'] : $lang['no']);
+
+}
+
+
+/**
+ * Page for creating a new insignia
+ */
+function page_add_insignia()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['add_insignia_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_insignia_add'],
+		l("admin/insignia/add/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_insignia("add")
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing insignia
+ *
+ * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database that will
+ *   be used to populate the fields initially.
+ */
+function form_add_edit_insignia($type, $initial_data = NULL)
+{
+
+	global $lang, $output, $template_admin;
+
+	// Prepare dropdown data
+	include ROOT."admin/common/funcs/user_groups.funcs.php";
+	$groups = user_groups_get_groups();
+
+	$group_options = array("-1" => $lang['add_insignia_groups_dropdown_all']);
+
+	foreach($groups as $g_id => $g_info)
+		$group_options[$g_id] = $g_info['name'];
+
+	// Form definition
+	$form_data = array(
+			"meta" => array(
+				"name" => "insignia_".$type,
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("titles_insignia_reputation")
+					),
+				"validation_func" => "form_add_edit_insignia_validate",
+				"initial_data" => $initial_data
+				),
+
+			"#min_posts" => array(
+				"name" => $lang['add_insignia_min_posts'],
+				"type" => "int"
+				),
+			"#user_group" => array(
+				"name" => $lang['add_insignia_user_group'],
+				"type" => "dropdown",
+				"options" => $group_options
+				),
+			"#newline" => array(
+				"name" => $lang['add_insignia_newline'],
+				"type" => "yesno"
+				),
+			"#repeat_no" => array(
+				"name" => $lang['add_insignia_repeat_no'],
+				"type" => "int"
+				),
+			"#image" => array(
+				"name" => $lang['add_insignia_image'],
+				"type" => "text"
+				),
+			"#text" => array(
+				"name" => $lang['add_insignia_text'],
+				"type" => "text"
+				),
+			"#submit" => array(
+				"type" => "submit"
+				)
+		);
+
+	// Make alterations to the form based on the mode we're in before sending back
+	if($type == "add")
 	{
-	        $output -> add($template_admin -> critical_error($lang['edit_insignia_invalid_id']));
-	        page_main();
-	        return;
+		$form_data['meta']['title'] = $lang['add_insignia_title'];
+		$form_data['meta']['description'] = $lang['add_insignia_message'];
+		$form_data['meta']['complete_func'] = "form_add_insignia_complete";
+		$form_data['#submit']['value'] = $lang['add_insignia_submit'];
+	}
+	elseif($type == "edit")
+	{
+		$form_data['meta']['title'] = $lang['edit_insignia_title'];
+		$form_data['meta']['complete_func'] = "form_edit_insignia_complete";
+		$form_data['#submit']['value'] = $lang['edit_insignia_submit'];
 	}
 
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $insignia_info = array(
-                "min_posts"	=> $_POST['min_posts'],
-                "user_group"	=> $_POST['user_group'],
-                "newline"	=> $_POST['newline'],
-                "repeat_no"	=> $_POST['repeat_no'],
-                "image"		=> $_POST['image'],
-                "text"		=> $_POST['text']
-        );
+	return $form_data;
 
-        // ***************************
-        // Check there's something for the insignia
-        // ***************************
-        if(trim($insignia_info['image']) == "" && trim($insignia_info['text']) == "" )
-        {
-                $output -> add($template_admin -> normal_error($lang['add_insignia_fill_in_something']));
-                page_add_edit_insignia(false, $insignia_info);
-                return;
-        }               
+}
 
-	if($insignia_info['text'])
-		$insignia_info['image'] = NULL;
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for adding and editing insignia
+ *
+ * @param object $form
+ */
+function form_add_edit_insignia_validate($form)
+{
+
+	global $lang;
+
+	// Check we have at least an image or text
+	if(!trim($form -> form_state['#image']['value']) && !trim($form -> form_state['#text']['value']))
+		$form -> set_error(NULL, $lang['add_insignia_fill_in_something']);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding insignia
+ *
+ * @param object $form
+ */
+function form_add_insignia_complete($form)
+{
+
+	global $lang, $output;
+
+	// Try and add the insignia
+	$new_insignia_id = insignia_add_insignia(
+		array(
+			"min_posts" => $form -> form_state['#min_posts']['value'],
+			"user_group" => $form -> form_state['#user_group']['value'],
+			"newline" => $form -> form_state['#newline']['value'],
+			"repeat_no" => $form -> form_state['#repeat_no']['value'],
+			"image" => $form -> form_state['#image']['value'],
+			"text" => $form -> form_state['#text']['value']
+			)
+		);
+
+	if($new_insignia_id === False)
+		return False;
+
+	// Log
+	log_admin_action("insignia", "add", "Added insignia ".$new_insignia_id);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/insignia/"),
+		$lang['add_insignia_created_sucessfully']
+		);
+
+}
+
+
+/**
+ * Page for editing an existing insignia
+ */
+function page_edit_insignia($insignia_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the insignia
+	$insignia_info = insignia_get_insignia_by_id($insignia_id);
+
+	if($insignia_info === False)
+	{
+		$output -> set_error_message($lang['edit_insignia_invalid_id']);
+		page_view_insignia();
+		return;
+	}
+
+	$output -> page_title = $lang['edit_insignia_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_insignia_edit'],
+		l("admin/insignia/add/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_insignia("edit", $insignia_info)
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing insignia
+ *
+ * @param object $form
+ */
+function form_edit_insignia_complete($form)
+{
+
+	global $lang, $output;
+
+	// Try and add the insignia
+	$update = insignia_edit_insignia(
+		$form -> form_state['meta']['initial_data']['id'],
+		array(
+			"min_posts" => $form -> form_state['#min_posts']['value'],
+			"user_group" => $form -> form_state['#user_group']['value'],
+			"newline" => $form -> form_state['#newline']['value'],
+			"repeat_no" => $form -> form_state['#repeat_no']['value'],
+			"image" => $form -> form_state['#image']['value'],
+			"text" => $form -> form_state['#text']['value']
+			)
+		);
+
+	if($update !== True)
+		return False;
+
+	// Log
+	log_admin_action("insignia", "edit", "Edited insignia ".$form -> form_state['meta']['initial_data']['id']);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/insignia/"),
+		$lang['edit_insignia_edited_sucessfully']
+		);
+
+}
+
+
+/**
+ * Confirmation page to remove an insignia.
+ *
+ * @var $promotion_id ID of the promotion we're deleting.
+ */
+function page_delete_insignia($insignia_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the insignia
+	$insignia_info = insignia_get_insignia_by_id($insignia_id);
+
+	if($insignia_info === False)
+	{
+		$output -> set_error_message($lang['edit_insignia_invalid_id']);
+		page_view_insignia();
+		return;
+	}
+
+	// Show the confirmation page
+	$output -> page_title = $lang['delete_insignia_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_insignia_delete'],
+		l("admin/insignia/delete/".$insignia_id."/")
+		);
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title,
+				"extra_title_contents_left" => $template_admin -> form_header_icon("titles_insignia_reputation"),
+				"description" => $lang['delete_insignia_message'],
+				"callback" => "insignia_delete_insignia_complete",
+				"arguments" => array($insignia_id),
+				"confirm_redirect" => l("admin/insignia/"),
+				"cancel_redirect" => l("admin/insignia/")
+				)
+			)
+		);
+
+}
+
+
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting an insignia
+ *
+ * @param int $insignia_id The ID of the insignia being deleted.
+ */
+function insignia_delete_insignia_complete($insignia_id)
+{
+
+	global $output, $lang;
+
+	// Delete and check the response
+	$return = insignia_delete_insignia($insignia_id);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("insignia", "delete", "Deleted insignia.");
+		return True;
+
+	}
 	else
-		$insignia_info['text'] = NULL;
+		return False;
 
-        // *********************
-        // Do the query
-        // *********************
-        if(!$db -> basic_update("user_insignia", $insignia_info, "id = '".$get_id."'"))        
-        {
-                $output -> add($template_admin -> critical_error($lang['edit_insignia_error']));
-                page_main();
-                return;
-        }
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_insignia");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("insignia", "doedit", "Edited post insignia");
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=insignia", $lang['edit_insignia_edited_sucessfully']);
-        
 }
 
-
-//***********************************************
-// Delete a post insignia
-//***********************************************
-function do_delete_insignia()
-{
-
-        global $output, $lang, $db, $template_admin, $cache;
-
-	// **************************
-	// Grab the insignia
-	// **************************
-	$get_id = trim($_GET['id']);
-	
-	if(!$db -> query_check_id_rows("user_insignia", $get_id, "*"))
-	{
-	        $output -> add($template_admin -> critical_error($lang['edit_insignia_invalid_id']));
-	        page_main();
-	        return;
-	}
-
-        // ********************
-        // Delete it
-        // ********************
-        $db -> basic_delete("user_insignia", "id = '".$get_id."'");
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("user_insignia");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("insignia", "delete", "Deleted post insignia.");
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=insignia", $lang['delete_insignia_deleted_sucessfully']);
-	
-}
-	
 ?>
