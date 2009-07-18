@@ -306,7 +306,7 @@ function form_add_edit_promotions($type, $initial_data = NULL)
 	// Form definition
 	$form_data = array(
 			"meta" => array(
-				"name" => "user_groups_".$type,
+				"name" => "promotions_".$type,
 				"extra_title_contents_left" => (
 					$output -> help_button("", True).
 					$template_admin -> form_header_icon("usergroups")
