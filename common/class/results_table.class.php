@@ -324,12 +324,11 @@ class results_table
 		$first_link = "";
 		$last_link = "";
 
-		$pagnation_extra_url = "";
+		$pagnation_extra_url = $extra_url;
 
 		if(isset($_GET['sort_col']))
 		{
-			$pagnation_extra_url = $extra_url.
-				"sort_col=".$this -> sort_column_selected.
+			$pagnation_extra_url .= "sort_col=".$this -> sort_column_selected.
 				"&sort_dir=".$this -> sort_column_direction."&";
 		}
 		
