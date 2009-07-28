@@ -221,6 +221,8 @@ class form
 				{
 					if(isset($info['type']) && $info['type'] == "message")
 						$inner_form_html .= $template_global_forms -> form_field_sub_message($id, $info, $this -> form_state);
+					elseif(isset($info['type']) && $info['type'] == "mini_message")
+						$inner_form_html .= $template_global_forms -> form_field_mini_message($id, $num++, $info, $this -> form_state);
 					continue;
 				}
 								

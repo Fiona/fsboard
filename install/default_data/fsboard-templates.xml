@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="14-05-09 11:26 pm">
+<template_set_file fsboard_version="0.1" time="28-07-09 11:25 pm">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -590,6 +590,12 @@
 <div class="form_wrapper">
 <dl class="form_fields">]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: In-form mini message" class_name="template_global_forms" function_name="form_field_mini_message"><![CDATA[<div class="form_field_wrapper<IF "($field_count_num % 2) == 0"> alt<ENDIF> mini_message">
+    <IF "isset($info['extra_field_contents_left'])">{$info['extra_field_contents_left']}<ENDIF>
+    {$info['value']}
+    <IF "isset($info['extra_field_contents_right'])">{$info['extra_field_contents_right']}<ENDIF>
+</div>]]></template>
+		<template_parameters><![CDATA[$id, $field_count_num, $info, $form_state]]></template_parameters>
 		<template name="Form field: Password input" class_name="template_global_forms" function_name="form_field_password"><![CDATA[<input type="password" name="{$id}" id="{$form_state['meta']['name']}_{$id}" size="{$info['size']}" />]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
 		<template name="Form field: Single checkbox input" class_name="template_global_forms" function_name="form_field_checkbox"><![CDATA[<input type="checkbox" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="1" <IF "$info['value']">checked="checked"<ENDIF>>]]></template>

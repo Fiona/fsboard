@@ -647,6 +647,12 @@ function shutdown_tasks()
 		// big paddy because it was trying to include files outside of the
 		// webroot. This definition will stop the database class doing any
 		// saving of debug data from this pount.
+		// ....
+		// many months later
+		// ....
+		// I am now re-reading this and I do not see a correlation between 
+		// Geshi getting confused and the database class being terrible.
+		// I guess both issues exist so I'll leave this here for prosperity.
 		define("DISABLE_DATABASE_DEBUG", True);
 
         // Run common tasks
@@ -657,7 +663,7 @@ function shutdown_tasks()
         {
 
                 include_once $include_root."admin/common/funcs/mailer.funcs.php"; // Need this.
-                send_waiting_mails();
+                mailer_send_waiting_mails($include_root);
 
         }
 

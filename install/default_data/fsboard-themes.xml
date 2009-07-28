@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<theme_file fsboard_version="0.1" time="14-05-09 11:27 pm">
+<theme_file fsboard_version="0.1" time="28-07-09 11:25 pm">
 
 	<theme name="FSBoard Green" author="Fiona" image_dir="images/theme_images/FSBoard_Green">
 
@@ -511,6 +511,16 @@ div.form_wrapper
     width : 100%;
     padding : 10px 0 10px 0;
   }
+  div.form_wrapper div.mini_message
+  {
+    padding : 5px;
+  }
+  div.form_wrapper div.mini_message td
+  {
+    padding-right : 10px;
+    font-size : 9px;
+  }
+
   div.form_wrapper dl.form_fields div.form_field_wrapper.alt
   {
     background-color : #ebf3eb;

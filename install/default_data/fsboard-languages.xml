@@ -1,27 +1,6 @@
-		<div style="border: 1px solid #111; background: #333; color : #fff;
-			padding : 5px; margin : 5px;">
-			Error: <b></b> (2048) date() [<a href='function.date'>function.date</a>]: It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected 'Europe/London' for 'BST/1.0/DST' instead<br />
-			Line <b>95</b> in <b>/srv/http/fsboard/common/class/xml.class.php</b>
-					<div style="border: 1px solid #111; background: #555; color : #fff;
-			padding : 3px; margin : 3px; font-size : 10px;">
-			/srv/http/fsboard/common/class/xml.class.php
-			&nbsp;&nbsp;&nbsp;&nbsp;  (line 95) &nbsp;&nbsp;&nbsp;&nbsp; date
-		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
-			padding : 3px; margin : 3px; font-size : 10px;">
-			/srv/http/fsboard/admin/pages/languages.php
-			&nbsp;&nbsp;&nbsp;&nbsp;  (line 1596) &nbsp;&nbsp;&nbsp;&nbsp; export_xml_root
-		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
-			padding : 3px; margin : 3px; font-size : 10px;">
-			/srv/http/fsboard/admin/pages/languages.php
-			&nbsp;&nbsp;&nbsp;&nbsp;  (line 108) &nbsp;&nbsp;&nbsp;&nbsp; do_export
-		</div>		<div style="border: 1px solid #111; background: #555; color : #fff;
-			padding : 3px; margin : 3px; font-size : 10px;">
-			/srv/http/fsboard/admin/index.php
-			&nbsp;&nbsp;&nbsp;&nbsp;  (line 290) &nbsp;&nbsp;&nbsp;&nbsp; require
-		</div>
-		</div><?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="18-07-09 11:39 pm">
+<languages_file fsboard_version="0.1" time="28-07-09 11:26 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -3071,4 +3050,21 @@ To not recieve these e-mails turn off the "Alert Admin of new Registrations" set
 		<phrases variable_name="homepage" group="view_profile"><![CDATA[Homepage URL:]]></phrases>
 		<phrases variable_name="icq_messenger" group="view_profile"><![CDATA[ICQ Messenger:]]></phrases>
 		<phrases variable_name="last_active_date" group="view_profile"><![CDATA[Last active:]]></phrases>
-		<phrases variable_name="last_post_date" grou
+		<phrases variable_name="last_post_date" group="view_profile"><![CDATA[Last board post:]]></phrases>
+		<phrases variable_name="msn_messenger" group="view_profile"><![CDATA[MSN Messenger:]]></phrases>
+		<phrases variable_name="never" group="view_profile"><![CDATA[Never]]></phrases>
+		<phrases variable_name="no_info" group="view_profile"><![CDATA[<i>No information</i>]]></phrases>
+		<phrases variable_name="other_information" group="view_profile"><![CDATA[Other Information]]></phrases>
+		<phrases variable_name="personal_information" group="view_profile"><![CDATA[Personal Information]]></phrases>
+		<phrases variable_name="posts" group="view_profile"><![CDATA[Post count:]]></phrases>
+		<phrases variable_name="private_email" group="view_profile"><![CDATA[[ <i>Hidden</i> ]]]></phrases>
+		<phrases variable_name="profile_page_title" group="view_profile"><![CDATA[<1>'s Profile]]></phrases>
+		<phrases variable_name="real_name" group="view_profile"><![CDATA[Real name:]]></phrases>
+		<phrases variable_name="registration_date" group="view_profile"><![CDATA[Registration date:]]></phrases>
+		<phrases variable_name="send_pm" group="view_profile"><![CDATA[Send Private Message]]></phrases>
+		<phrases variable_name="signature" group="view_profile"><![CDATA[Signature]]></phrases>
+		<phrases variable_name="user_groups" group="view_profile"><![CDATA[User group(s):]]></phrases>
+		<phrases variable_name="user_not_found" group="view_profile"><![CDATA[No user specified, or user information was not found.]]></phrases>
+		<phrases variable_name="yahoo_messenger" group="view_profile"><![CDATA[Yahoo Messenger:]]></phrases>
+	</language>
+</languages_file>

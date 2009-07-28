@@ -222,6 +222,11 @@ $mode_file_list = array(
 		"page" => "reputations"
 	),
 
+	// ----------------
+	// Mass mailer
+	// ----------------
+	'mailer(/(?<mode>send))?' => array("page" => "mailer"),
+
 	// --------------------
 	// Waiting to be refactored pages
 	// --------------------
@@ -244,7 +249,6 @@ $mode_file_list = array(
 	'avatars'       => 'smallimages.php',
 	'posticons'     => 'smallimages.php',
 	'wordfilter'    => 'wordfilter.php',
-	'mailer'		=> 'mailer.php',
 	'plugins'		=> 'plugins.php',
 	'undelete'		=> 'undelete.php'
 

@@ -787,6 +787,144 @@ function users_delete_user($user_id, $suppress_errors = False)
 
 /**
  * Helper function - This will take any started $form
+ * object and add the search fields for searching users to it.
+ *
+ * @param $form The form object.
+ */
+function users_add_user_search_form_fields(&$form, $groups)
+{
+
+	global $template_global_forms, $lang, $output;
+
+	// Yeah this is terrible.
+	// The user name search wanted an extra dropdown sitting in there, what 
+	// i'm gonna do is just put put this html in  with the extra_field_contents_left setting and hopefully it will work
+	// alright - I'm just gonna go for the $_POST data later for this one item.
+	$user_search_critera = $template_global_forms -> form_field_dropdown(
+		"username_search",
+		array(
+			"options" => array(
+				0 => $lang['username_search_contains'],
+				1 => $lang['username_search_exactly'],
+				2 => $lang['username_search_starts'],
+				3 => $lang['username_search_end']
+				),
+			"size" => 0,
+			"value" => (isset($_POST['username_search']) ? $_POST['username_search'] : 0)
+			),
+		$form -> form_state
+		);
+
+
+	// Get a list of user groups for the form
+	$dropdown_options = array();
+
+	foreach($groups as $group_id => $group_info)
+		$dropdown_options[(string)$group_id] = $group_info['name'];
+
+	// Finish the form definition
+	$form -> form_state = $form -> form_state + array(
+		"#username" => array(
+			"name" => $lang['search_user_username'],
+			"type" => "text",
+			"extra_field_contents_left" => (
+				$output -> help_button("email", False).
+				$user_search_critera
+				),
+			),
+		"#email" => array(
+			"name" => $lang['search_user_email'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("email", False)
+			),
+		"#usergroup" => array(
+			"name" => $lang['search_user_usergroup'],
+			"type" => "dropdown",
+			"blank_option" => True,
+			"options" => $dropdown_options,
+			"extra_field_contents_left" => $output -> help_button("usergroup", False)
+			),
+		"#usergroup_secondary" => array(
+			"name" => $lang['search_user_usergroup_secondary'],
+			"type" => "checkboxes",
+			"options" => $dropdown_options,
+			"extra_field_contents_left" => $output -> help_button(
+				"usergroup_secondary",
+				False
+				)
+			),
+		"#title" => array(
+			"name" => $lang['search_user_user_title'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("title", False)
+			),
+		"#signature" => array(
+			"name" => $lang['search_user_signature'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("signature", False)
+			),
+		"#homepage" => array(
+			"name" => $lang['search_user_homepage'],
+			"type" => "text",
+			"extra_field_contents_left" => $output -> help_button("homepage", False)
+			),
+
+		"search_subtitle_posts" => array(
+			"title" => $lang['search_subtitle_posts'],
+			"type" => "message"
+			),
+		"#posts_g" => array(
+			"name" => $lang['search_user_posts_g'],
+			"type" => "int",
+			"extra_field_contents_left" => $output -> help_button("posts_g", False)
+			),
+		"#posts_l" => array(
+			"name" => $lang['search_user_posts_l'],
+			"type" => "int",
+			"extra_field_contents_left" => $output -> help_button("posts_l", False)
+			),
+
+		"search_subtitle_times" => array(
+			"title" => $lang['search_subtitle_times'],
+			"type" => "message"
+			),
+		"#register_b" => array(
+			"name" => $lang['search_user_register_b'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("register_b", False)
+			),
+		"#register_a" => array(
+			"name" => $lang['search_user_register_a'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("register_a", False)
+			),
+		"#last_active_b" => array(
+			"name" => $lang['search_user_last_active_b'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_active_b", False)
+			),
+		"#last_active_a" => array(
+			"name" => $lang['search_user_last_active_a'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_active_a", False)
+			),
+		"#last_post_a" => array(
+			"name" => $lang['search_user_last_post_a'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_post_a", False)
+			),
+		"#last_post_b" => array(
+			"name" => $lang['search_user_last_post_b'],
+			"type" => "date",
+			"extra_field_contents_left" => $output -> help_button("last_post_b", False)
+			)
+		);
+	
+}
+
+
+/**
+ * Helper function - This will take any started $form
  * object and add custom form fields to it.
  *
  * @param $form The form object.
@@ -1109,9 +1247,11 @@ function users_search_users($query_array, $suppress_errors = False)
  * @param array $custom_profile_fields Custom profile fields.
  * @param bool $back_button If we're getting the url for the back button we
  *   should set this to true.
+ * @param array $extra_fields If we have anything else submit then pass them in
+ *   and they appended to the URL along with the rest.
  * @return string The built parameters.
  */
-function users_build_user_search_url($custom_profile_fields, $back_button = False)
+function users_build_user_search_url($custom_profile_fields, $back_button = False, $extra_fields = array())
 {
 
 	// Get all the usual params
@@ -1150,7 +1290,7 @@ function users_build_user_search_url($custom_profile_fields, $back_button = Fals
 		"last_post_b[month]" => $_GET['last_post_b']['month'],
 		"last_post_b[year]" => $_GET['last_post_b']['year'],
 		"form_user_search" => $_GET['form_user_search']
-		);
+		) + $extra_fields;
 
 	if(!$back_button)
 		$params['submit'] = $_GET['submit'];

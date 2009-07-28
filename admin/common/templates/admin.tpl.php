@@ -499,10 +499,10 @@ END;
 		// *****************
 		// Titles, insignia, reputations
 		// *****************
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_send_mail'], ROOT."admin/index.php?m=mailer");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_email_logs'], ROOT."admin/index.php?m=emaillogs", true);
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_config_email'], ROOT."admin/index.php?m=config&amp;m2=group&amp;group=email", true);
-		$return .= $this -> generate_menu_header("mailer", "*** ");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_send_mail'], l("admin/mailer/"));
+		$return .= $this -> generate_menu_entry($lang['admin_menu_email_logs'], l("admin/email_logs/"), true);
+		$return .= $this -> generate_menu_entry($lang['admin_menu_config_email'], l("admin/config/show_group/email/"), true);
+		$return .= $this -> generate_menu_header("mailer");
 
 		$return .= "</div>";
 		

@@ -53,7 +53,8 @@ class cache
 			"user_titles",
 			"user_insignia",
 			"user_reputations",
-			"plugins"				//#20
+			"plugins",				//#20
+			"stats"
 		);
 
 	var $always_load = array(
@@ -660,7 +661,7 @@ function return_cache_array_'.strtolower($cache_name).'()
 		
 	}
 		
-	/*
+
 	function cache_stats()
 	{
 		
@@ -668,20 +669,19 @@ function return_cache_array_'.strtolower($cache_name).'()
 		
 		$cache = array();		
 
-                // Total members...
-                $db -> basic_select("users", "count(*)", "user_group <> 5");
-                $q_r = $db -> result();
-                $cache['total_members'] = $q_r;
+		$db -> basic_select(
+			array(
+				"table" => "stats",
+				)
+			);
 
-                // Newest member members...
-                $db -> basic_select("users", "id,username", "user_group <> 5", "registered", "1", "desc");
-                $q_r = $db -> fetch_array();
-                $cache['newest_member_id'] = $q_r['id'];
-                $cache['newest_member_username'] = $q_r['username'];
+		if($db -> num_rows())
+			while($c = $db -> fetch_array())
+				$cache[$c['stat_name']] = $c['stat_value'];
 		
 		return $cache;
 		
-	}*/
+	}
 	
 
 	function cache_themes()
