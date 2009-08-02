@@ -543,8 +543,8 @@ END;
 		// *****************
 		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_5\">";
 
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_filetypes'], ROOT."admin/index.php?m=attachments&amp;m2=filetypes");
-		$return .= $this -> generate_menu_header("attachments", "*");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_filetypes'], l("admin/attachments/filetypes"));
+		$return .= $this -> generate_menu_header("attachments");
 
 		$return .= $this -> generate_menu_move_a_bit();
 				

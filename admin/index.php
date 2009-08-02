@@ -227,6 +227,16 @@ $mode_file_list = array(
 	// ----------------
 	'mailer(/(?<mode>send))?' => array("page" => "mailer"),
 
+	// ----------------
+	// Attachments
+	// ----------------
+	'attachments/(?<page>filetypes)(/(?<mode>add))?' => array(
+		"page" => "attachments"
+	),
+	'attachments/(?<page>filetypes)/(?<mode>edit|delete)/(?<filetype_id>[0-9]+)' => array(
+		"page" => "attachments"
+	),
+
 	// --------------------
 	// Waiting to be refactored pages
 	// --------------------
@@ -244,7 +254,6 @@ $mode_file_list = array(
 	'tasks'         => 'tasks.php',
 	'tasklogs'      => 'tasks_logs.php',
 	'bbcode'        => 'bbcode.php',
-	'attachments'   => 'attachments.php',
 	'emoticons'     => 'smallimages.php',
 	'avatars'       => 'smallimages.php',
 	'posticons'     => 'smallimages.php',
