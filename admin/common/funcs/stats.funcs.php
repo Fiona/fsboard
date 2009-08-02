@@ -43,7 +43,7 @@ if(!defined("FSBOARD"))
 function stats_update_single_stat($statistic, $supress_errors = False)
 {
 
-	global $db;
+	global $db, $cache;
 
 	switch($statistic)
 	{
@@ -85,6 +85,8 @@ function stats_update_single_stat($statistic, $supress_errors = False)
 			break;
 		
 	}
+
+	$cache -> update_cache("stats");
 
 }
 
