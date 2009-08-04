@@ -511,9 +511,9 @@ END;
 		// *****************
 		$return .= "<div class=\"admin_menu_groups_wrapper admin_menu_groups_wrapper_colour_4\">";
 
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_emoticons'], ROOT."admin/index.php?m=emoticons");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=importexport");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_emoticons'], l("admin/emoticons/"));
+//		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_emoticons'], ROOT."admin/index.php?m=emoticons&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_emoticons'], l("admin/emoticons/backup/"));
 		$return .= $this -> generate_menu_header("emoticons", "*** ");
 
 		$return .= $this -> generate_menu_move_a_bit();
@@ -521,9 +521,9 @@ END;
 		// *****************
 		// Avatars
 		// *****************
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_avatars'], ROOT."admin/index.php?m=avatars");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=add");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=importexport");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_avatars'], l("admin/avatars/"));
+//		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_avatars'], ROOT."admin/index.php?m=avatars&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_avatars'], l("admin/emoticons/backup/"));
 		$return .= $this -> generate_menu_header("avatars", "*** ");
 
 		$return .= $this -> generate_menu_move_a_bit();
@@ -531,9 +531,9 @@ END;
 		// *****************
 		// Post icons
 		// *****************
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_post_icons'], ROOT."admin/index.php?m=posticons");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=add");
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=importexport");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_manage_post_icons'], l("admin/post_icons/"));
+//		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_add_post_icons'], ROOT."admin/index.php?m=posticons&amp;m2=add");
+		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_import_export_post_icons'], l("admin/post_icons/"));
 		$return .= $this -> generate_menu_header("post_icons", "*** ");
 				
 		$return .= "</div>";

@@ -145,7 +145,7 @@ $mode_file_list = array(
 	// ----------------
 	// Configuration
 	// ----------------
-	'config(/(?<mode>backup|import|export))?' => array(
+	'config(/(?<mode>backup))?' => array(
 		"page" => "config"
 	),
 	'config(/(?<mode>show_group)/(?<group_name>[a-zA-Z-_]+))?' => array(
@@ -237,6 +237,19 @@ $mode_file_list = array(
 		"page" => "attachments"
 	),
 
+	// ----------------
+	// Emoticons
+	// ----------------
+	'(?<page>avatars|emoticons|post_icons)(/(?<mode>add|backup))?' => array(
+		"page" => "small_images"
+	),
+	'(?<page>avatars|emoticons|post_icons)/(?<mode>add|edit|delete|view|move_multiple|permissions)/(?<category_id>[0-9]+)' => array(
+		"page" => "small_images"
+	),
+	'(?<page>avatars|emoticons|post_icons)/(?<category_id>[0-9]+)/(?<image_id>[0-9]+)/(?<mode>edit|delete)' => array(
+		"page" => "small_images"
+	),
+
 	// --------------------
 	// Waiting to be refactored pages
 	// --------------------
@@ -254,9 +267,6 @@ $mode_file_list = array(
 	'tasks'         => 'tasks.php',
 	'tasklogs'      => 'tasks_logs.php',
 	'bbcode'        => 'bbcode.php',
-	'emoticons'     => 'smallimages.php',
-	'avatars'       => 'smallimages.php',
-	'posticons'     => 'smallimages.php',
 	'wordfilter'    => 'wordfilter.php',
 	'plugins'		=> 'plugins.php',
 	'undelete'		=> 'undelete.php'
