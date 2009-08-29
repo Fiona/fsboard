@@ -252,6 +252,10 @@ class results_table
 			foreach($this -> settings['columns'] as $col_id => $col_info)
 			{
 
+				// NULLed columns should not appear
+				if($col_info === NULL)
+					continue;
+
 				// If it's a database column we get the relevant data
 				if(isset($col_info['db_column']))
 				{
