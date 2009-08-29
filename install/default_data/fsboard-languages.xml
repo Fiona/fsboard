@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="05-08-09 12:21 am">
+<languages_file fsboard_version="0.1" time="29-08-09 8:54 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1912,13 +1912,13 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="breadcrumb_emoticons_importexport" group="admin_small_images"><![CDATA[Import/Export Emoticons]]></phrases>
 		<phrases variable_name="breadcrumb_emoticons_move_multiple" group="admin_small_images"><![CDATA[Move Multiple Emoticons]]></phrases>
 		<phrases variable_name="breadcrumb_emoticons_view" group="admin_small_images"><![CDATA[View Emoticons]]></phrases>
-		<phrases variable_name="breadcrumb_posticons_add" group="admin_small_images"><![CDATA[Add Post Icon]]></phrases>
 		<phrases variable_name="breadcrumb_posticons_add_many" group="admin_small_images"><![CDATA[Add Multiple Post Icons]]></phrases>
 		<phrases variable_name="breadcrumb_posticons_edit_image" group="admin_small_images"><![CDATA[Edit Post Icon]]></phrases>
 		<phrases variable_name="breadcrumb_posticons_importexport" group="admin_small_images"><![CDATA[Import/Export Post Icons]]></phrases>
 		<phrases variable_name="breadcrumb_posticons_move_multiple" group="admin_small_images"><![CDATA[Move Multiple Post Icons]]></phrases>
-		<phrases variable_name="breadcrumb_posticons_view" group="admin_small_images"><![CDATA[View Post Icons]]></phrases>
 		<phrases variable_name="breadcrumb_post_icons" group="admin_small_images"><![CDATA[Post Icon Manager]]></phrases>
+		<phrases variable_name="breadcrumb_post_icons_add" group="admin_small_images"><![CDATA[Add Post Icon]]></phrases>
+		<phrases variable_name="breadcrumb_post_icons_view" group="admin_small_images"><![CDATA[View Post Icons]]></phrases>
 		<phrases variable_name="cat_perms_emoticons_no" group="admin_small_images"><![CDATA[Emoticons can not be given permissions.]]></phrases>
 		<phrases variable_name="cat_perms_error_deleting_perms" group="admin_small_images"><![CDATA[There was an error clearing the existing permissions.]]></phrases>
 		<phrases variable_name="cat_perms_insert_error" group="admin_small_images"><![CDATA[There was an error saving one of the permissions.]]></phrases>
@@ -2088,6 +2088,9 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="image_view_edit_avatars" group="admin_small_images"><![CDATA[Edit Avatar]]></phrases>
 		<phrases variable_name="image_view_edit_emoticons" group="admin_small_images"><![CDATA[Edit Emoticon]]></phrases>
 		<phrases variable_name="image_view_edit_post_icons" group="admin_small_images"><![CDATA[Edit Post Icon]]></phrases>
+		<phrases variable_name="image_view_emoticon_code" group="admin_small_images"><![CDATA[Emoticon Code]]></phrases>
+		<phrases variable_name="image_view_image_file" group="admin_small_images"><![CDATA[Image File]]></phrases>
+		<phrases variable_name="image_view_menu_input" group="admin_small_images"><![CDATA[Switch category]]></phrases>
 		<phrases variable_name="image_view_menu_submit" group="admin_small_images"><![CDATA[Go]]></phrases>
 		<phrases variable_name="image_view_menu_title_avatars" group="admin_small_images"><![CDATA[Avatars]]></phrases>
 		<phrases variable_name="image_view_menu_title_emoticons" group="admin_small_images"><![CDATA[Emoticons]]></phrases>

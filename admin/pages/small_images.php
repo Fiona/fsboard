@@ -207,11 +207,18 @@ switch($page_matches['mode'])
 		break;
 
 	case "edit":
-		page_edit_small_images_category($image_settings, $page_matches['category_id']);
+		if(isset($page_matches['image_id']))
+			page_edit_small_images($image_settings, $page_matches['category_id'], $page_matches['image_id']);
+		else
+			page_edit_small_images_category($image_settings, $page_matches['category_id']);
 		break;
 
 	case "delete":
 		page_delete_small_images_category($image_settings, $page_matches['category_id']);
+		break;
+
+	case "view":
+		page_view_small_images($image_settings, $page_matches['category_id']);
 		break;
 
 	default:
@@ -1257,6 +1264,7 @@ function do_delete_category()
 //***********************************************
 // Update positions from the main page
 //***********************************************
+/*
 function do_update_category_positions()
 {
 
@@ -1315,7 +1323,397 @@ function do_update_category_positions()
         $output -> redirect(ROOT."admin/index.php?m=".$_GET['m'], $lang['cat_positions_updated']);
         
 }
+*/
 
+
+/*
+ * Page for viewing all images in a category.
+ */
+function page_view_small_images($image_settings, $category_id)
+{
+
+	global $lang, $output, $template_admin;
+
+	$output -> page_title = $lang['breadcrumb_'.$image_settings['type']."_view"];
+	$output -> add_breadcrumb($output -> page_title, l("admin/".$image_settings['type']."/view/".$category_id."/add/"));
+
+	// Select the cat
+	$category_info = small_images_get_category_by_id($category_id);
+
+	if($category_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_cat_id']);
+		page_view_small_images_categories();
+		return;
+	}
+
+
+	// Category dropdown
+	$menu_categories = array();
+	$categories = small_images_get_categories($image_settings['type']);
+
+	foreach($categories as $cat)
+		$menu_categories[$cat['id']] = $cat['name'];
+
+	$form = new form(array(
+						 "meta" => array(
+							 "name" => "small_image_cat_select",
+							 "title" => $lang['image_view_menu_title_'.$image_settings['type']],
+							 "extra_title_contents_left" => $template_admin -> form_header_icon($image_settings['type']),
+							 "validation_func" => "form_images_cat_select_validate",
+							 "complete_func" => "form_images_cat_select_complete",
+							 "data_image_settings" => $image_settings
+							 ),
+						 "#category_menu" => array(
+							 "name" => $lang['image_view_menu_input'],
+							 "type" => "dropdown",
+							 "options" => $menu_categories,
+							 "required" => True,
+							 "value" => $category_info['id']
+							 ),
+						 "#submit" => array(
+							 "type" => "submit",
+							 "value" => $lang['image_view_menu_submit']
+							 )
+						 ));
+
+	$output -> add($form -> render());
+
+
+	// Define the table
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon($image_settings['type']).$output -> page_title,
+			"no_results_message" => $lang['image_view_no_images_'.$image_settings['type']],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['breadcrumb_'.$image_settings['type'].'_add'],
+				"url" => l("admin/".$image_settings['type']."/view/".$category_info['id']."/add/")
+				),
+
+			"db_table" => "small_images",
+			"db_extra_what" => array("`filename`", "`cat_id`"),
+			"db_where" => "`type` = '".$image_settings['type']."' AND cat_id=".(int)$category_info['id'],
+			"default_sort" => "order",
+
+			"columns" => array(
+				"file" => array(
+					"name" => $lang['image_view_image_file'],
+					"content_callback" => "table_view_small_images_file",
+					"align" => "center"
+					),
+				"emoticon_code" => (
+					$image_settings['type'] == "emoticons" ?
+					array(
+						"name" => $lang['image_view_emoticon_code'],
+						"db_column" => "emoticon_code"
+						) :
+					NULL
+					),
+				"name" => array(
+					"name" => "name",
+					"db_column" => "name"
+					),
+				"actions" => array(
+					"name" => $lang['images_main_actions'],
+					"content_callback" => 'table_view_small_images_actions_callback',
+					'content_callback_parameters' => array($image_settings)
+					)
+				)
+			)
+		);
+
+	$output -> add($results_table -> render());
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the image view file view.
+ *
+ * @param object $row_data
+ */
+function table_view_small_images_file($row_data)
+{
+
+	global $cache;
+
+	$file = $cache -> cache['config']['board_url']."/".$row_data['filename'];
+	return "<img src=\"".$file."\" alt=\"".$file."\" />";
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the image view actions.
+ *
+ * @param object $row_data
+ */
+function table_view_small_images_actions_callback($row_data, $image_settings)
+{
+
+	global $lang, $template_global_results_table;
+
+	$return = (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['image_view_edit_'.$image_settings['type']],
+			l("admin/".$image_settings['type']."/".$row_data['cat_id']."/".$row_data['id']."/edit/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['image_view_delete_'.$image_settings['type']],
+			l("admin/".$image_settings['type']."/".$row_data['cat_id']."/".$row_data['id']."/delete/")
+			)
+		);
+
+	return $return;
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for selecting a category
+ * Will check if the item we've selected exists
+ *
+ * @param object $form
+ */
+function form_images_cat_select_validate($form)
+{
+   
+	global $lang;
+
+	if(!$form -> form_state['#category_menu']['value'])
+		return;
+
+	$cat = small_images_get_category_by_id($form -> form_state['#category_menu']['value']);
+
+	if($cat === False)
+		$form -> set_error("category_menu", $lang['invalid_image_cat_id']);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for selecting a category
+ *
+ * @param object $form
+ */
+function form_images_cat_select_complete($form)
+{
+ 
+	global $output;
+
+	// Instant redirect to the right page
+	$output -> redirect(l("admin/".$form -> form_state['meta']['data_image_settings']['type']."/view/".$form -> form_state['#category_menu']['value']."/"), "", True);
+
+}
+
+
+/**
+ * Edit a single image
+ */
+function page_edit_small_images($image_settings, $category_id, $image_id)
+{
+
+	global $lang, $output;
+
+	// Select the cat
+	$category_info = small_images_get_category_by_id($category_id);
+
+	if($category_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_cat_id']);
+		page_view_small_images_categories();
+		return;
+	}
+
+
+	// Select the image
+	$image_info = small_images_get_image_by_id($image_id, $image_settings['type']);
+
+	if($image_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_cat_id']);
+		page_view_small_images($image_settings, $category_id);
+		return;
+	}
+
+}
+
+/*function page_edit_small_images_category($image_settings, $category_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the category
+	$category_info = small_images_get_category_by_id($category_id);
+
+	if($category_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_cat_id']);
+		page_view_small_images_categories($image_settings);
+		return;
+	}
+
+	// Show the page
+	$output -> page_title = $lang['image_edit_cat_title_'.$image_settings['type']];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_edit_category'],
+		l("admin/".$image_settings['type']."/edit/".$category_id."/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_small_images_category("edit", $category_info, $image_settings)
+		);
+.
+	$output -> add($form -> render());
+
+}
+ */
+/*
+
+function page_edit_image()
+{
+
+        global $output, $lang, $db, $template_admin, $image_mode;
+
+        // **************************
+        // Grab the image
+        // **************************
+        $get_id = trim($_GET['id']);
+
+        if(!$db -> query_check_id_rows("small_images", $get_id, "*", "`type` = '".$image_mode['type']."'"))
+        {
+                $output -> add($template_admin -> critical_error($lang['invalid_image_image_id']));
+                page_main();
+                return;
+        }
+
+        // Grab it
+        $image_array = $db -> fetch_array();
+
+
+        // *********************
+        // For category dropdown
+        // *********************
+        // Select the table
+        $select_table = $db -> query("select id,name from ".$db -> table_prefix."small_image_cat where `type` = '".$image_mode['type']."' order by `order` asc");
+
+        $cat_dropdown = array();
+        
+        // Go through all the rows
+        while($row = $db -> fetch_array($select_table))
+        {
+
+                $cat_dropdown['values'][] = $row['id'];
+                $cat_dropdown['text'][] = $row['name'];
+
+        }
+        
+
+        // *********************
+        // The form
+        // *********************
+	$output -> add_breadcrumb($lang['breadcrumb_'.$_GET['m'].'_view'], "index.php?m=".$_GET['m']."&amp;m2=viewimages&amp;id=".$image_array['cat_id']);
+	$output -> add_breadcrumb($lang['breadcrumb_'.$_GET['m'].'_edit_image'], "index.php?m=".$_GET['m']."&amp;m2=editimage&amp;id=".$get_id);
+
+        // Create classes
+        $table = new table_generate;
+        $form = new form_generate;
+
+        $output -> add(
+                $form -> start_form("editimage", ROOT."admin/index.php?m=".$_GET['m']."&amp;m2=doeditimage&amp;id=".$get_id, "post", true).
+                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
+                // ---------------
+                // Title and info message
+                // ---------------
+                $table -> add_basic_row(
+                        $output -> replace_number_tags($lang['edit_image_title_'.$image_mode['type']], array($image_array['name']))
+                , "strip1",  "", "left", "100%", "2").
+                $table -> add_basic_row($lang['edit_image_message_'.$image_mode['type']], "normalcell",  "padding : 5px", "left", "100%", "2").
+                // ---------------
+                // Title
+                // ---------------
+                $table -> add_row(
+                        array(
+                                array($lang['edit_image_name_'.$image_mode['type']]."<br /><font class=\"small_text\">".$lang['edit_image_name_desc_'.$image_mode['type']]."</font>", "50%"),
+                                array($form -> input_text("name", $image_array['name']), "50%")
+                        )
+                , "normalcell")
+        );
+        
+        // ******************
+        // Emoticons want a code field, others want a post count field
+        // ******************
+        switch($image_mode['type'])
+        {
+                case "emoticons":
+
+                        $output -> add(
+                                $table -> add_row(
+                                        array(
+                                                array($lang['edit_image_code_emoticons']."<br /><font class=\"small_text\">".$lang['edit_image_code_desc_emoticons']."</font>", "50%"),
+                                                array($form -> input_text("emoticon_code", $image_array['emoticon_code']), "50%")
+                                        )
+                                , "normalcell")
+                        );                
+
+                        break;
+                
+                default:
+
+                        $output -> add(
+                                $table -> add_row(
+                                        array(
+                                                array($lang['edit_image_posts_'.$image_mode['type']]."<br /><font class=\"small_text\">".$lang['edit_image_posts_desc_'.$image_mode['type']]."</font>", "50%"),
+                                                array($form -> input_int("min_posts", $image_array['min_posts']), "50%")
+                                        )
+                                , "normalcell")
+                        );                
+        }
+
+
+        // ******************
+        // Rest of form
+        // ******************
+        $output -> add(
+                $table -> add_row(
+                        array(
+                                array($lang['edit_image_order']."<br /><font class=\"small_text\">".$lang['edit_image_order_desc']."</font>", "50%"),
+                                array($form -> input_int("order", $image_array['order']), "50%")
+                        )
+                , "normalcell").
+                $table -> add_row(
+                        array(
+                                array($lang['edit_image_cat_'.$image_mode['type']], "50%"),
+                                array($form -> input_dropdown("cat_id", $image_array['cat_id'], $cat_dropdown['values'], $cat_dropdown['text']), "50%")
+                        )
+                , "normalcell").
+                $table -> add_row(
+                        array(
+                                array($lang['edit_image_filename_'.$image_mode['type']]."<br /><font class=\"small_text\">".$lang['edit_image_filename_desc']."</font>", "50%"),
+                                array($form -> input_text("filename", $image_array['filename']), "50%")
+                        )
+                , "normalcell").
+                // --------------
+                // Submit and Reset
+                // --------------
+                $table -> add_submit_row($form, "submit", $lang['edit_image_submit']).
+                $table -> end_table().
+                $form -> end_form()
+        );
+        
+}*/
 
 
 //***********************************************
