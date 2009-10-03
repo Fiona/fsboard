@@ -126,6 +126,13 @@ if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
 $mode_file_list = array(
 
 	// ----------------
+	// Log out of admin
+	// ----------------
+	'logout' => array(
+		"page" => "logout"
+	),
+
+	// ----------------
 	// Index page - Main view, includes board info and admin notes
 	// ----------------
 	'index' => array(
@@ -299,6 +306,16 @@ foreach($mode_file_list as $regex => $page_to)
 }
 
 define("CURRENT_MODE", $match);
+
+
+//***********************************************
+// Quick check if we've logging out
+//***********************************************
+if(CURRENT_MODE == "logout")
+{
+	unset($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']);
+	$output -> redirect(l("/"), $lang['admin_logout_done']);
+}
 
 
 //***********************************************
