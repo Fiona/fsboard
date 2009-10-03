@@ -179,7 +179,7 @@ function magic_quotes_gpc_stripslashes(&$variable)
 
 
 // Less than version 6 differences
-if(version_compare(PHP_VERSION, '6.0.0-dev', '<'))
+if(version_compare(PHP_VERSION, '5.3', '<'))
 {
 
 	// Sort out gpc magic quotes
