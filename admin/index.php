@@ -65,7 +65,6 @@ if(!$user -> perms['perm_admin_area'])
 }
 
 
-
 //***********************************************
 // Get the required page from the URL
 //***********************************************
@@ -117,7 +116,6 @@ if(empty($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']))
 	die();
         
 }
-
 
 
 // ******************************
@@ -344,200 +342,10 @@ $output -> page_blocks['header'] = $template_admin -> admin_header(
 $output -> page_blocks['footer'] = $template_admin -> admin_footer($crumbin);
 
 
-
 //***********************************************
 // Show up the final page
 //***********************************************
 $output -> build_and_output();
-
-
-/*
-
-//***********************************************
-// What part of the admin index do we want?
-//***********************************************
-switch(CURRENT_MODE)
-{
-
-        //***********************************************
-        // Trying to login...
-        //***********************************************
-        case "login":
-
-                if(process_admin_login())
-                {
-        
-                        // Write cookie
-                        $_SESSION["fsboard_".$db -> table_prefix.'admin_area_session'] = true;
-
-                        // Sort out redirect
-                        $extra_url = (isset($_GET['go_m'])) ? "?go_m=".$_GET['go_m'] : "";
-                        
-                        // Redirect user                                        
-                        $output -> redirect(ROOT."admin/index.php".$extra_url, $lang['logged_in']);
-        
-                }
-                
-                break;
-
-        //***********************************************
-        // Trying to logout...
-        //***********************************************
-        case "logout":
-
-                // Invalidate Cookie
-                unset($_SESSION["fsboard_".$db -> table_prefix.'admin_area_session']);
-
-                // Redirect the user
-                $output -> redirect(ROOT."index.php", $lang['admin_logout_done']);
-        
-                break;
-        
-        //***********************************************
-        // Header
-        //***********************************************
-        case "head":
-
-                die("
-<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
-<html>
-<head>
-    <title>FSBoard Admin Header</title>
-    <meta HTTP-EQUIV=\"content-type\" CONTENT=\"text/html; charset=".CHARSET."\">
-    <link rel=\"stylesheet\" type=\"text/css\" href=\"".ROOT."admin/themes/".$output -> theme_folder."/style.css\" />
-</head>
-
-<body>    
-        <table width=100% style=\"border-collapse : collapse; margin : 0px; height:100%;\">
-        <tr>
-                <td width=50% style=\"border : 0px;\" class=\"normalcell\">
-                        <p><b>FSBoard ".$cache -> cache['config']['current_version']." ".$lang['admin_area']."</b> (".$cache -> cache['config']['board_name'].")</p>
-                </td>
-                <td width=50% align=\"right\" style=\"border : 0px;\" class=\"normalcell\">
-                        <p><b><a href=\"".ROOT."index.php\" target=\"_top\">Back to forum</a> -
-                        <a href=\"".ROOT."admin/index.php?m=logout\"  onclick=\"return confirm('".$lang['admin_logout_confirm']."');\" target=\"_top\">".$lang['admin_logout']."</a></b></p>
-                </td>
-
-        </tr>
-        </table>
-</body>
-
-</html>");
-                
-                break;
-
-        //***********************************************
-        // Admin Menu
-        //***********************************************
-        case "menu":
-                
-                die("
-<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
-<html>
-<head>
-    <title>FSBoard Menu</title>
-    <meta HTTP-EQUIV=\"content-type\" CONTENT=\"text/html; charset=".CHARSET."\">
-    <link rel=\"stylesheet\" type=\"text/css\" href=\"".ROOT."admin/themes/".$output -> theme_folder."/style.css\" />
-</head>
-
-<body>     
-".$template_admin -> admin_menu()."
-</body>
-
-</html>");
-                
-                break;               
-        //***********************************************
-        // Frameset
-        //***********************************************
-        case "":
-
-                // Sort out redirect
-                $extra_url = (isset($_GET['go_m'])) ? "?m=".$_GET['go_m'] : "?m=index";
-
-                // Do it
-                die("
-<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Frameset//EN\" \"http://www.w3.org/TR/REC-html40/frameset.dtd\">
-<html>
-	 <head><title>".$cache -> cache['config']['board_name']." ".$lang['admin_area_title']."</title></head>
-
-        <frameset cols=\"240,*\" framespacing=\"0\" border=\"0\" frameborder=\"0\">
-                <frame name=\"menu\" noresize scrolling=\"auto\" src=\"".ROOT."admin/index.php?m=menu\">
-        	<frameset rows=\"18,*\"  framespacing=\"0\" border=\"0\" frameborder=\"0\">
-                        <frame name='head' noresize scrolling='no' marginwidth='10' marginheight='0' border='no' src='".ROOT."admin/index.php?m=head'>
-                        <frame name='page' noresize scrolling='auto' src='".ROOT."admin/index.php".$extra_url."'>
-        	</frameset>
-        </frameset>
-</html>");
-       
-                break;        
-
-        //***********************************************
-        // Normal page
-        //***********************************************
-        default:
-
-                // Array of files we're allowed to use        
-                $mode_file_list =
-                        array(
-                                'index'         => 'main.php',
-                                'help'			=> 'help.php',
-                                'phpinfo'       => 'main.php',
-                                'config'        => 'config.php',
-                                'ieconfig'      => 'ieconfig.php',
-                                'templates'     => 'templates.php',
-                                'ietemplates'   => 'ietemplates.php',
-                                'themes'        => 'themes.php',
-                                'iethemes'      => 'iethemes.php',
-                                'cache'         => 'cache.php',
-                                'emaillogs'     => 'email_logs.php',
-                                'adminlogs'     => 'admin_logs.php',
-                                'sqltools'      => 'sqltools.php',
-                                'langs'         => 'languages.php',
-                                'ielangs'       => 'ielanguages.php',
-                                'forums'        => 'forums.php',
-                                'usergroups'    => 'usergroups.php',
-                                'moderators'    => 'moderators.php',
-                                'users'         => 'users.php',
-                                'profilefields' => 'profilefields.php',
-                                'tasks'         => 'tasks.php',
-                                'tasklogs'      => 'tasks_logs.php',
-                                'bbcode'        => 'bbcode.php',
-                                'attachments'   => 'attachments.php',
-                                'emoticons'     => 'smallimages.php',
-                                'avatars'       => 'smallimages.php',
-                                'posticons'     => 'smallimages.php',
-                                'titles'		=> 'titles.php',
-                                'insignia'		=> 'insignia.php',
-                                'reputations'   => 'reputations.php',
-                                'wordfilter'    => 'wordfilter.php',
-                                'promotions'	=> 'promotions.php',
-                                'mailer'		=> 'mailer.php',
-                                'plugins'		=> 'plugins.php',
-                                'undelete'		=> 'undelete.php'
-                        );
-
-                // If the page doesn't exist
-                if ($mode_file_list[CURRENT_MODE] == '')
-                {
-                
-                        $output -> page_output = $template_admin -> critical_error($lang['error_page_no_exist']);
-                        $output -> finish();
-                        die();
-                
-                }        
-
-		// Root breadcrumb
-		$output -> add_breadcrumb($lang['breadcrumb_admin_area'], "index.php?m=index");
-                
-                // It exists, so include the file
-                include ROOT."admin/pages/".$mode_file_list[CURRENT_MODE];
-                
-                $output -> finish();
-                die();
-
-}
-*/
 
 
 
