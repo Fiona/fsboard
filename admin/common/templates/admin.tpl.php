@@ -298,7 +298,21 @@ class template_admin
 			margin-left:200px; !important
 		}
 
+		/* --------------- */
+		/* Misc            */
+		/* --------------- */
+		noscript div
+		{
+			padding : 5px;
+			margin : 0;
+			background-color : #f00;
+			color : #fff;
+			text-align : center;
+			font-size : 1.5em;
+		}
 	</style>
+
+	<noscript><div>{$lang['noscript_message']}</div></noscript>
 
 	<p class="admin_frame_top_left">
         <b>
