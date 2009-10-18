@@ -1413,7 +1413,7 @@ function page_view_small_images($image_settings, $category_id)
 	// Define the table
 	$results_table = new results_table(
 		array(
-			"title" => $template_admin -> form_header_icon($image_settings['type']).$output -> page_title,
+			"title" => $output -> page_title,
 			"no_results_message" => $lang['image_view_no_images_'.$image_settings['type']],
 			"title_button" => array(
 				"type" => "add",
