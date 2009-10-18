@@ -34,7 +34,7 @@ if(!defined("FSBOARD"))
 // *********************************
 // Delete old items in undeletion
 // *********************************
-$db -> basic_delete("undelete", "time < '".((60 * 60) * 24)."'");
+$db -> basic_delete("undelete", "`time` < '".(time() - ((60 * 60) * 24))."'");
 
 $common_task_log = "Deleted ".$db -> affected_rows()." items in undeletion.";
 

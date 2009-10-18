@@ -188,7 +188,7 @@ function do_undelete()
 	
 	$cache -> update_cache("ALL");
 
-	$output -> add($template_admin -> message($lang['undelete_completed_title'], $lang['undelete_completed_message']));
+//	$output -> add($template_admin -> message($lang['undelete_completed_title'], $lang['undelete_completed_message']));
 	
 }
 
