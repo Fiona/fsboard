@@ -243,12 +243,15 @@ $mode_file_list = array(
 	),
 
 	// ----------------
-	// Emoticons
+	// Small images
 	// ----------------
 	'(?<page>avatars|emoticons|post_icons)(/(?<mode>add|backup))?' => array(
 		"page" => "small_images"
 	),
-	'(?<page>avatars|emoticons|post_icons)/(?<mode>add|edit|delete|view|move_multiple|permissions)/(?<category_id>[0-9]+)' => array(
+	'(?<page>avatars|emoticons|post_icons)/(?<mode>edit|delete|view|move_multiple|permissions)/(?<category_id>[0-9]+)' => array(
+		"page" => "small_images"
+	),
+	'(?<page>avatars|emoticons|post_icons)/(?<category_id>[0-9]+)/(?<mode>add)' => array(
 		"page" => "small_images"
 	),
 	'(?<page>avatars|emoticons|post_icons)/(?<category_id>[0-9]+)/(?<image_id>[0-9]+)/(?<mode>edit|delete)' => array(

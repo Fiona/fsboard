@@ -82,11 +82,30 @@ $output -> add_breadcrumb(
 	);
 
 
-// Action selection
-$page_matches['mode'] = (isset($page_matches['mode']) ? $page_matches['mode'] : "");
 
-switch($page_matches['mode'])
+// Hey now, we need to make sure that the diroctory that's supposed to hold
+// the images is writable. We might as well do this here.
+if(
+	!is_dir(ROOT.$cache -> cache['config'][$image_settings['config_path']])
+	|| !is_writable(ROOT.$cache -> cache['config'][$image_settings['config_path']]) 
+	)
 {
+
+	$output -> set_error_message(
+		$output -> replace_number_tags($lang['add_image_directory_not_writable'], array($cache -> cache['config'][$image_settings['config_path']]))
+		);
+	
+}
+
+
+// Action selection (error check te onsure we pass the previous test
+if(!count($output -> error_messages))
+{
+
+	$page_matches['mode'] = (isset($page_matches['mode']) ? $page_matches['mode'] : "");
+
+	switch($page_matches['mode'])
+	{
 
 /*
 	// ******************************
@@ -202,27 +221,35 @@ switch($page_matches['mode'])
                 page_main();   
 */
 
-	case "add":
-		page_add_small_images_category($image_settings);
-		break;
+		case "add":
+			if(isset($page_matches['category_id']))
+				page_add_small_images($image_settings, $page_matches['category_id']);
+			else
+				page_add_small_images_category($image_settings);
+			break;
 
-	case "edit":
-		if(isset($page_matches['image_id']))
-			page_edit_small_images($image_settings, $page_matches['category_id'], $page_matches['image_id']);
-		else
-			page_edit_small_images_category($image_settings, $page_matches['category_id']);
-		break;
+		case "edit":
+			if(isset($page_matches['image_id']))
+				page_edit_small_images($image_settings, $page_matches['category_id'], $page_matches['image_id']);
+			else
+				page_edit_small_images_category($image_settings, $page_matches['category_id']);
+			break;
 
-	case "delete":
-		page_delete_small_images_category($image_settings, $page_matches['category_id']);
-		break;
+		case "delete":
+			if(isset($page_matches['image_id']))
+				page_delete_small_image($image_settings, $page_matches['image_id']);
+			else
+				page_delete_small_images_category($image_settings, $page_matches['category_id']);
+			break;
 
-	case "view":
-		page_view_small_images($image_settings, $page_matches['category_id']);
-		break;
+		case "view":
+			page_view_small_images($image_settings, $page_matches['category_id']);
+			break;
 
-	default:
-		page_view_small_images_categories($image_settings);
+		default:
+			page_view_small_images_categories($image_settings);
+
+	}
 
 }                
 
@@ -295,6 +322,11 @@ function table_view_small_images_cats_actions_callback($row_data, $image_setting
 
 	$return = (
 		$template_global_results_table -> action_button(
+			"preview",
+			$lang['images_main_action_view'],
+			l("admin/".$image_settings['type']."/view/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
 			"edit",
 			$lang['images_main_action_edit'],
 			l("admin/".$image_settings['type']."/edit/".$row_data['id']."/")
@@ -303,11 +335,6 @@ function table_view_small_images_cats_actions_callback($row_data, $image_setting
 			"delete",
 			$lang['images_main_action_delete'],
 			l("admin/".$image_settings['type']."/delete/".$row_data['id']."/")
-			).
-		$template_global_results_table -> action_button(
-			"preview",
-			$lang['images_main_action_view'],
-			l("admin/".$image_settings['type']."/view/".$row_data['id']."/")
 			).
 		$template_global_results_table -> action_button(
 			"run",
@@ -698,7 +725,7 @@ function page_edit_small_images_category($image_settings, $category_id)
 	global $output, $lang, $db, $template_admin;
 
 	// Select the category
-	$category_info = small_images_get_category_by_id($category_id);
+	$category_info = small_images_get_category_by_id($category_id, $image_settings['type']);
 
 	if($category_info === False)
 	{
@@ -906,12 +933,12 @@ function page_delete_small_images_category($image_settings, $category_id)
 	global $output, $lang, $db, $template_admin;
 
 	// Select the cat
-	$category_info = small_images_get_category_by_id($category_id);
+	$category_info = small_images_get_category_by_id($category_id, $image_settings['type']);
 
 	if($category_info === False)
 	{
 		$output -> set_error_message($lang['invalid_image_cat_id']);
-		page_view_small_images_categories();
+		page_view_small_images_categories($image_settings);
 		return;
 	}
 
@@ -989,7 +1016,10 @@ function form_delete_small_images_category_validate($form)
 
 	// If we're not deleting images then we need to make sure that the category we'll be moving images to exists.
 	if(!$form -> form_state['#delete_images']['value'])
-		if(small_images_get_category_by_id($form -> form_state['#new_cat']['value']) === False)
+		if(small_images_get_category_by_id(
+			   $form -> form_state['#new_cat']['value'],
+			   $form -> form_state['meta']['data_image_settings']['type']
+			   ) === False)
 			$form -> set_error("new_cat", $lang['invalid_image_cat_id']);
 
 }
@@ -1338,12 +1368,12 @@ function page_view_small_images($image_settings, $category_id)
 	$output -> add_breadcrumb($output -> page_title, l("admin/".$image_settings['type']."/view/".$category_id."/add/"));
 
 	// Select the cat
-	$category_info = small_images_get_category_by_id($category_id);
+	$category_info = small_images_get_category_by_id($category_id, $image_settings['type']);
 
 	if($category_info === False)
 	{
 		$output -> set_error_message($lang['invalid_image_cat_id']);
-		page_view_small_images_categories();
+		page_view_small_images_categories($image_settings);
 		return;
 	}
 
@@ -1388,13 +1418,13 @@ function page_view_small_images($image_settings, $category_id)
 			"title_button" => array(
 				"type" => "add",
 				"text" => $lang['breadcrumb_'.$image_settings['type'].'_add'],
-				"url" => l("admin/".$image_settings['type']."/view/".$category_info['id']."/add/")
+				"url" => l("admin/".$image_settings['type']."/".$category_info['id']."/add/")
 				),
 
 			"db_table" => "small_images",
 			"db_extra_what" => array("`filename`", "`cat_id`"),
 			"db_where" => "`type` = '".$image_settings['type']."' AND cat_id=".(int)$category_info['id'],
-			"default_sort" => "order",
+			"default_sort" => "name",
 
 			"columns" => array(
 				"file" => array(
@@ -1411,7 +1441,7 @@ function page_view_small_images($image_settings, $category_id)
 					NULL
 					),
 				"name" => array(
-					"name" => "name",
+					"name" => $lang['image_view_image_name'],
 					"db_column" => "name"
 					),
 				"actions" => array(
@@ -1492,7 +1522,10 @@ function form_images_cat_select_validate($form)
 	if(!$form -> form_state['#category_menu']['value'])
 		return;
 
-	$cat = small_images_get_category_by_id($form -> form_state['#category_menu']['value']);
+	$cat = small_images_get_category_by_id(
+		$form -> form_state['#category_menu']['value'],
+		$form -> form_state['meta']['data_image_settings']['type']
+		);
 
 	if($cat === False)
 		$form -> set_error("category_menu", $lang['invalid_image_cat_id']);
@@ -1519,43 +1552,15 @@ function form_images_cat_select_complete($form)
 
 
 /**
- * Edit a single image
+ * Form for adding a brand new image
  */
-function page_edit_small_images($image_settings, $category_id, $image_id)
+function page_add_small_images($image_settings, $category_id)
 {
 
 	global $lang, $output;
 
 	// Select the cat
-	$category_info = small_images_get_category_by_id($category_id);
-
-	if($category_info === False)
-	{
-		$output -> set_error_message($lang['invalid_image_cat_id']);
-		page_view_small_images_categories();
-		return;
-	}
-
-
-	// Select the image
-	$image_info = small_images_get_image_by_id($image_id, $image_settings['type']);
-
-	if($image_info === False)
-	{
-		$output -> set_error_message($lang['invalid_image_cat_id']);
-		page_view_small_images($image_settings, $category_id);
-		return;
-	}
-
-}
-
-/*function page_edit_small_images_category($image_settings, $category_id)
-{
-
-	global $output, $lang, $db, $template_admin;
-
-	// Select the category
-	$category_info = small_images_get_category_by_id($category_id);
+	$category_info = small_images_get_category_by_id($category_id, $image_settings['type']);
 
 	if($category_info === False)
 	{
@@ -1564,22 +1569,437 @@ function page_edit_small_images($image_settings, $category_id, $image_id)
 		return;
 	}
 
-	// Show the page
-	$output -> page_title = $lang['image_edit_cat_title_'.$image_settings['type']];
+	// Display the page
+	$output -> page_title = $lang['breadcrumb_'.$image_settings['type'].'_add'];
+
 	$output -> add_breadcrumb(
-		$lang['breadcrumb_edit_category'],
-		l("admin/".$image_settings['type']."/edit/".$category_id."/")
+		$lang['breadcrumb_'.$image_settings['type'].'_add'],
+		l("admin/".$image_settings['type']."/".$category_id."/add/")
 		);
 
 	// Put the form up
 	$form = new form(
-		form_add_edit_small_images_category("edit", $category_info, $image_settings)
+		form_add_edit_small_images("add", NULL, $image_settings)
 		);
-.
+
+	$output -> add($form -> render());
+
+	// Adding images has a second form for multiple image adding
+	$multiple_form = new form(
+		array(
+			"meta" => array(
+				"title" => $lang['add_many_image_title_'.$image_settings['type']],
+				"description" => $lang['add_many_image_message_'.$image_settings['type']],
+				"name" => "small_images_".$image_settings['type']."_add_multiple",
+				"extra_title_contents_left" => (
+					$output -> help_button("", True)
+					),
+				'validation_func' => "form_add_multiple_small_images_validate",
+				"data_image_settings" => $image_settings
+				),
+
+			"#path" => array(
+				"name" => $lang['add_many_image_path_'.$image_settings['type']],
+				"description" => $lang['add_many_image_path_desc'],
+				"type" => "text",
+				"required" => True
+				),
+			"#cat_id" => array(
+				"name" => $lang['add_one_image_cat_'.$image_settings['type']],
+				"type" => "dropdown",
+				"options" => $form -> form_state['#cat_id']['options'],
+				"required" => True
+				),
+			"#submit" => array(
+				"value" => $lang['add_many_image_submit_'.$image_settings['type']],
+				"type" => "submit"
+				)
+			)
+		);
+
+	$output -> add($multiple_form -> render());
+
+}
+
+
+/**
+ * Edit a single image
+ */
+function page_edit_small_images($image_settings, $category_id, $image_id)
+{
+
+	global $lang, $output;
+
+	// Select the cat
+	$category_info = small_images_get_category_by_id($category_id, $image_settings['type']);
+
+	if($category_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_cat_id']);
+		page_view_small_images_categories($image_settings);
+		return;
+	}
+
+	// Select the image
+	$image_info = small_images_get_image_by_id($image_id, $image_settings['type']);
+
+	if($image_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_image_id']);
+		page_view_small_images($image_settings, $category_id);
+		return;
+	}
+
+	// Display the page
+	$output -> page_title = $output -> replace_number_tags(
+		$lang['edit_image_title_'.$image_settings['type']],
+		$image_info['name']
+		);
+
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_'.$image_settings['type'].'_edit_image'],
+		l("admin/".$image_settings['type']."/edit/".$category_id."/".$image_id."/edit/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_small_images("edit", $image_info, $image_settings)
+		);
+
 	$output -> add($form -> render());
 
 }
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing small images
+ *
+ * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database that will
+ *   be used to populate the fields initially.
+ * @param array $image_settings Settings for the current image page type
  */
+function form_add_edit_small_images($type, $initial_data = NULL, $image_settings = array())
+{
+
+	global $lang, $output, $template_admin, $cache;
+
+	// Get categories for the dropdown
+	$dropdown_cats_values = array();
+
+	$cats = small_images_get_categories($image_settings['type']);
+
+	foreach($cats as $cat_id => $cat_info)
+		$dropdown_cats_values[$cat_id] = $cat_info['name'];
+
+	// Form definition
+	$form_data = array(
+		"meta" => array(
+			"title" => $output -> page_title,
+			"name" => "small_images_".$image_settings['type']."_".$type,
+			"enctype" => "multipart/form-data",
+			"extra_title_contents_left" => (
+				$output -> help_button("", True).
+				$template_admin -> form_header_icon($image_settings['type'])
+				),
+			"initial_data" => $initial_data,
+			'validation_func' => "form_add_edit_small_images_validate",
+			"data_image_settings" => $image_settings
+			),
+
+		"#name" => array(
+			"name" => $lang['edit_image_name_'.$image_settings['type']],
+			"description" => $lang['edit_image_name_desc_'.$image_settings['type']],
+			"type" => "text",
+			"required" => True
+			)
+		);
+
+	// Emoticons require a code to represent  it by, everything else has a minimum
+	// post setting.
+	if($image_settings['type'] == "emoticons")
+		$form_data += array(
+			"#emoticon_code" => array(
+				"name" => $lang['edit_image_code_emoticons'],
+				"description" => $lang['edit_image_code_desc_emoticons'],
+				"type" => "text",
+				"required" => True
+				)
+			);
+	else
+		$form_data += array(
+			"#min_posts" => array(
+				"name" => $lang['edit_image_posts_'.$image_settings['type']],
+				"description" => $lang['edit_image_posts_desc_'.$image_settings['type']],
+				"type" => "int"
+				)
+			);
+
+	$form_data += array(
+/*
+		"#order" => array(
+			"name" => $lang['edit_image_order'],
+			"description" => $lang['edit_image_order_desc'],
+			"type" => "int"
+			),
+*/
+		"#cat_id" => array(
+			"name" => $lang['edit_image_cat_'.$image_settings['type']],
+			"type" => "dropdown",
+			"options" => $dropdown_cats_values,
+			"required" => True
+			),
+		"#filename" => array(
+			"name" => $lang['edit_image_filename_'.$image_settings['type']],
+			"description" => $lang['edit_image_filename_desc'],
+			"type" => "text",
+			)
+		);
+
+	if($type == "edit")
+		$form_data += array(
+			"msg" => array(
+				"title" => $lang['edit_image_replace_image'],
+				"type" => "message"
+				)
+			);
+
+	$form_data += array(
+		"#upload" => array(
+			"name" => $lang[($type == "add" ? 'add_one_image_upload' : 'edit_image_upload')],
+			"description" => $output -> replace_number_tags($lang['add_one_image_upload_desc'], $cache -> cache['config'][$image_settings['config_path']]),
+			"type" => "upload",
+			"upload" => array(
+				"destination_path" => $cache -> cache['config'][$image_settings['config_path']],
+				"is_image" => True,
+				"overwrite_existing" => True
+				)
+			),
+		"#submit" => array(
+			"type" => "submit"
+			)
+		);
+
+	// Make alterations to the form based on the mode we're in before sending back
+	if($type == "add")
+	{
+		$form_data['#filename']['name'] = $lang['add_one_image_filename_'.$image_settings['type']];
+		$form_data['meta']['description'] = $lang['add_one_image_message_'.$image_settings['type']];
+		$form_data['meta']['complete_func'] = "form_add_small_images_complete";
+		$form_data['#submit']['value'] = $lang['add_one_image_submit_'.$image_settings['type']];
+	}
+	elseif($type == "edit")
+	{
+		$form_data['meta']['description'] = $lang['edit_image_message_'.$image_settings['type']];
+		$form_data['meta']['complete_func'] = "form_edit_small_images_complete";
+		$form_data['#submit']['value'] = $lang['edit_image_submit'];
+	}
+
+	return $form_data;
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for editing and adding an image
+ *
+ * @param object $form
+ */
+function form_add_edit_small_images_validate($form)
+{
+
+	global $lang, $output;
+
+	// We want to make sure we don't fudge with images if we haven't filled
+	// in a required field or something.
+	if(isset($form -> form_state['meta']['show_error']))
+		return;
+
+	// If we're not uploading then we must be selecting by filename
+	if(!$form -> form_state['#upload']['value'])
+	{
+
+		// First check the path actually exists
+		if(!file_exists(ROOT.$form -> form_state['#filename']['value']))
+			$form -> set_error(
+				"filename", 
+				$output -> replace_number_tags($lang['upload_image_error_file_not_found'], array($form -> form_state['#filename']['value']))
+				);
+		// Then check it's actually an image
+		elseif(!getimagesize(ROOT.$form -> form_state['#filename']['value']))
+			$form -> set_error("filename", $lang['upload_image_error_not_image']);
+
+	}
+
+	// Ensure that emoticons don't have the same codes
+	if($form -> form_state['meta']['data_image_settings']['type'] == "emoticons")
+	{
+
+		$check_code = small_images_get_emoticon_by_code(
+			$form -> form_state['#emoticon_code']['value'],
+			$form -> form_state['meta']['initial_data']['id']
+			);
+
+		if($check_code !== False)
+			$form -> set_error("emoticon_code", $lang['add_one_image_error_emoticon_code_exists']);
+
+	}
+
+	// Ensure the category exists if we're adding
+	if($form -> form_state['meta']['name'] == "small_images_".$form -> form_state['meta']['data_image_settings']."_add")
+	{
+
+		if(small_images_get_category_by_id($form -> form_state['#cat_id']['value'], $form -> form_state['meta']['data_image_settings']['type']) === False)
+		{
+			$form -> set_error("cat_id", $lang['edit_image_new_cat_not_found']);
+			return False;
+		}
+
+	}
+	// If we're editing and moving image to another cat then make sure it exists
+	elseif($form -> form_state['meta']['name'] == "small_images_".$form -> form_state['meta']['data_image_settings']."_edit")
+	{
+
+		if(small_images_get_category_by_id($form -> form_state['#cat_id']['value'], $form -> form_state['meta']['data_image_settings']['type']) === False)
+		{
+			$form -> set_error("cat_id", $lang['edit_image_new_cat_not_found']);
+			return False;
+		}
+
+	}
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding an image
+ *
+ * @param object $form
+ */
+function form_add_small_images_complete($form)
+{
+
+	global $lang, $output;
+
+	// Write the image to the filesystem if we're uploading
+	if($form -> form_state['#upload']['value'])
+	{
+
+		// Saves the upload and returns true or returns an error message on failure
+		$upload_return = $form -> form_state['#upload']['upload']['class'] -> complete_upload_from_form();
+
+		if($upload_return !== True)
+		{
+			$output -> set_error_message($upload_return);
+			return False;
+		}
+
+		// Save the value for putting into the db
+		$form -> form_state['#filename']['value'] = $form -> form_state['#upload']['upload']['class'] -> final_file_path;
+
+	}
+
+	// Add the name image
+	$add_result = small_images_add_image(
+		array(
+			"name" => $form -> form_state['#name']['value'],
+			"cat_id" => $form -> form_state['#cat_id']['value'],
+			"filename" => $form -> form_state['#filename']['value'],
+			"emoticon_code" => (isset($form -> form_state['#emoticon_code']['value']) ? $form -> form_state['#emoticon_code']['value'] : NULL),
+			"min_posts" => (isset($form -> form_state['#min_posts']['value']) ? $form -> form_state['#min_posts']['value'] : 0),
+			"type" => $form -> form_state['meta']['data_image_settings']['type']
+			),
+		$form -> form_state['meta']['data_image_settings']['type']
+		);
+
+	if($add_result === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"small_images",
+		"add_image",
+		"Added small image: ".$form -> form_state['#name']['value']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/".$form -> form_state['meta']['data_image_settings']['type']."/view/".$form -> form_state['#cat_id']['value']."/"),
+		$lang['add_one_image_created_sucessfully_'.$form -> form_state['meta']['data_image_settings']['type']]
+		);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing an image
+ *
+ * @param object $form
+ */
+function form_edit_small_images_complete($form)
+{
+
+	global $lang, $output;
+
+	// Write the image to the filesystem if we're uploading
+	if($form -> form_state['#upload']['value'])
+	{
+
+		// Saves the upload and returns true or returns an error message on failure
+		$upload_return = $form -> form_state['#upload']['upload']['class'] -> complete_upload_from_form();
+
+		if($upload_return !== True)
+		{
+			$output -> set_error_message($upload_return);
+			return False;
+		}
+
+		// Save the value for putting into the db
+		$form -> form_state['#filename']['value'] = $form -> form_state['#upload']['upload']['class'] -> final_file_path;
+
+	}
+
+	// Edit the image info 
+	$update = small_images_edit_image(
+		$form -> form_state['meta']['initial_data']['id'],
+		array(
+			"name" => $form -> form_state['#name']['value'],
+			"cat_id" => $form -> form_state['#cat_id']['value'],
+			"filename" => $form -> form_state['#filename']['value'],
+			"emoticon_code" => (isset($form -> form_state['#emoticon_code']['value']) ? $form -> form_state['#emoticon_code']['value'] : NULL),
+			"min_posts" => (isset($form -> form_state['#min_posts']['value']) ? $form -> form_state['#min_posts']['value'] : 0)
+			),
+		$form -> form_state['meta']['data_image_settings']['type'],
+		$form -> form_state['meta']['initial_data']['cat_id']
+		);
+
+	if($update === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"small_images",
+		"edit_image",
+		"Edited image: ".$form -> form_state['#name']['value']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/".$form -> form_state['meta']['data_image_settings']['type']."/view/".$form -> form_state['#cat_id']['value']."/"),
+		$lang['edit_image_edited_sucessfully_'.$form -> form_state['meta']['data_image_settings']['type']]
+		);
+
+}
+
+
 /*
 
 function page_edit_image()
@@ -1715,7 +2135,7 @@ function page_edit_image()
         
 }*/
 
-
+/*
 //***********************************************
 // Form for adding an image
 //***********************************************
@@ -1761,7 +2181,7 @@ function page_add_image()
         // *********************
         // Adding single image form
         // *********************
-	$output -> add_breadcrumb($lang['breadcrumb_'.$_GET['m'].'_add'], "index.php?m=".$_GET['m']."&amp;m2=add");
+	$output -> add_breadcrumb(4, "index.php?m=".$_GET['m']."&amp;m2=add");
 
         // Create classes
         $table = new table_generate;
@@ -1878,9 +2298,12 @@ function page_add_image()
         
 }
 
+*/
+
 //***********************************************
 // Actually adding one image
 //***********************************************
+/*
 function do_add_single_image()
 {
 
@@ -2104,7 +2527,167 @@ function do_add_single_image()
         // ***************************
         $output -> redirect(ROOT."admin/index.php?m=".$_GET['m'], $lang['add_one_image_created_sucessfully_'.$image_mode['type']]);
                         
+}*/
+
+
+/**
+ * Confirmation page to remove a single small image.
+ *
+ * @var array $image_settings
+ * @var int $image_id ID of the image we're deleting.
+ */
+function page_delete_small_image($image_settings, $image_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the image
+	$image_info = small_images_get_image_by_id($image_id, $image_settings['type']);
+
+	if($image_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_image_id']);
+		page_view_small_images_categories($image_settings);
+		return;
+	}
+
+	// Show the confirmation page
+	$output -> page_title = $lang['delete_small_images_title_'.$image_settings['type']];
+	$output -> add_breadcrumb(
+		$output -> page_title,
+		l("admin/".$image_settings['type']."/".$image_info['cat_id']."/".$image_info['id']."/delete/")
+		);
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title,
+				"extra_title_contents_left" => $template_admin -> form_header_icon($image_settings['type']),
+				"description" => $output -> replace_number_tags(
+					$lang['delete_small_images_message_'.$image_settings['type']],
+					sanitise_user_input($image_info['name'])
+					),
+				"callback" => "small_images_delete_small_image_complete",
+				"arguments" => array($image_info, $image_settings),
+				"confirm_redirect" => l("admin/".$image_settings['type']."/view/".$image_info['cat_id']."/"),
+				"cancel_redirect" => l("admin/".$image_settings['type']."/view/".$image_info['cat_id']."/")
+				)
+			)
+		);
+
 }
+
+
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting a small image
+ *
+ * @param array $image_info Full info about the image from the database.
+ * @param array $image_settings Settings for the current mode
+ */
+function small_images_delete_small_image_complete($image_info, $image_settings)
+{
+
+	global $output, $lang;
+
+	// Delete and check the response
+	$return = small_images_delete_small_image($image_info, $image_settings['type']);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("small_images", "delete_image", "Deleted small image: ".$image_info['name']);
+		return True;
+
+	}
+	else
+		return False;
+
+}
+
+
+//***********************************************
+// Image deletion
+//***********************************************
+/*
+function do_delete_image()
+{
+
+        global $output, $lang, $db, $template_admin, $image_mode, $cache;
+
+        // **************************
+        // Grab the image
+        // **************************
+        $get_id = trim($_GET['id']);
+
+        if(!$db -> query_check_id_rows("small_images", $get_id, "id,name,cat_id,filename", "`type` = '".$image_mode['type']."'"))
+        {
+                $output -> add($template_admin -> critical_error($lang['invalid_image_image_id']));
+                page_main();
+                return;
+        }
+
+        // Grab it
+        $image_array = $db -> fetch_array();
+
+
+        // ***************************
+        // Delete image...        
+        // ***************************
+        if(!$db -> basic_delete("small_images", "id='".$image_array['id']."' and type='".$image_mode['type']."'"))
+        {
+                $output -> add($template_admin -> critical_error($lang['delete_image_error_deleting_image']));
+                page_main();
+                return;
+        }
+
+
+        // ***************************
+        // Update users with this avatar
+        // ***************************
+        if($image_mode['type'] == "avatars")
+        {
+
+                $avatar_user_update = array(
+                        "avatar_type" => "no",
+                        "avatar_address" => "",
+                        "avatar_gallery_cat" => ""
+                );
+                
+                $db -> basic_update("users", $avatar_user_update, "`avatar_address` = '".$image_array['filename']."' and `avatar_type` = 'gallery'");
+
+        }
+                
+
+        // ***************************
+        // Update category count
+        // ***************************
+        $db -> query("update ".$db -> table_prefix."small_image_cat set image_num = image_num - 1 where id = '".$image_array['cat_id']."'");
+
+       
+        // ***************************
+        // Update cache
+        // ***************************
+        $cache -> update_cache($image_mode['cache']);
+        $cache -> update_cache("small_image_cats");
+        
+        
+        // ***************************
+        // Log it!
+        // ***************************
+        log_admin_action($image_mode['type'], "deleteimage", "Deleted small image (".$image_mode['type']."): ".$image_array['name']);
+
+
+        // ***************************
+        // Done
+        // ***************************
+        $output -> redirect(ROOT."admin/index.php?m=".$_GET['m']."&amp;m2=viewimages&amp;id=".$image_array['cat_id'], $lang['delete_image_deleted_sucessfully_'.$image_mode['type']]);
+
+}*/
+
+
 
 
 //***********************************************
@@ -2529,6 +3112,7 @@ function do_add_many_images()
 //***********************************************
 // Page for viewing images, uses the image_view functions
 //***********************************************
+/*
 function page_view_images()
 {
 
@@ -2690,7 +3274,7 @@ function page_view_images()
         image_view_page_select($images_per_page, $total_images, $get_id);
         
 }
-
+*/
 
 
 //***********************************************
@@ -2780,6 +3364,7 @@ function do_update_image_order()
 //***********************************************
 // form for editing an images details and stuff
 //***********************************************
+/*
 function page_edit_image()
 {
 
@@ -2912,7 +3497,7 @@ function page_edit_image()
         );
         
 }
-
+*/
 
 
 
@@ -2920,6 +3505,7 @@ function page_edit_image()
 //***********************************************
 // Actually editing the image woohoo
 //***********************************************
+/*
 function do_edit_image()
 {
 
@@ -3055,86 +3641,8 @@ function do_edit_image()
         $output -> redirect(ROOT."admin/index.php?m=".$_GET['m']."&amp;m2=viewimages&amp;id=".$submit_info['cat_id'], $lang['edit_image_edited_sucessfully_'.$image_mode['type']]);
         
 }
+*/
 
-
-
-//***********************************************
-// Image deletion
-//***********************************************
-function do_delete_image()
-{
-
-        global $output, $lang, $db, $template_admin, $image_mode, $cache;
-
-        // **************************
-        // Grab the image
-        // **************************
-        $get_id = trim($_GET['id']);
-
-        if(!$db -> query_check_id_rows("small_images", $get_id, "id,name,cat_id,filename", "`type` = '".$image_mode['type']."'"))
-        {
-                $output -> add($template_admin -> critical_error($lang['invalid_image_image_id']));
-                page_main();
-                return;
-        }
-
-        // Grab it
-        $image_array = $db -> fetch_array();
-
-
-        // ***************************
-        // Delete image...        
-        // ***************************
-        if(!$db -> basic_delete("small_images", "id='".$image_array['id']."' and type='".$image_mode['type']."'"))
-        {
-                $output -> add($template_admin -> critical_error($lang['delete_image_error_deleting_image']));
-                page_main();
-                return;
-        }
-
-
-        // ***************************
-        // Update users with this avatar
-        // ***************************
-        if($image_mode['type'] == "avatars")
-        {
-
-                $avatar_user_update = array(
-                        "avatar_type" => "no",
-                        "avatar_address" => "",
-                        "avatar_gallery_cat" => ""
-                );
-                
-                $db -> basic_update("users", $avatar_user_update, "`avatar_address` = '".$image_array['filename']."' and `avatar_type` = 'gallery'");
-
-        }
-                
-
-        // ***************************
-        // Update category count
-        // ***************************
-        $db -> query("update ".$db -> table_prefix."small_image_cat set image_num = image_num - 1 where id = '".$image_array['cat_id']."'");
-
-       
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache($image_mode['cache']);
-        $cache -> update_cache("small_image_cats");
-        
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action($image_mode['type'], "deleteimage", "Deleted small image (".$image_mode['type']."): ".$image_array['name']);
-
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=".$_GET['m']."&amp;m2=viewimages&amp;id=".$image_array['cat_id'], $lang['delete_image_deleted_sucessfully_'.$image_mode['type']]);
-
-}
 
 
 
@@ -3966,7 +4474,7 @@ function do_import()
 // Image view functions
 // ****************************
 
-
+/*
 // ---
 // Dropdown menu to switch to other cats
 // ----
@@ -4314,5 +4822,5 @@ function image_view_page_select($images_per_page, $total_images, $id = "", $imag
         }
         
 }
-
+*/
 ?>

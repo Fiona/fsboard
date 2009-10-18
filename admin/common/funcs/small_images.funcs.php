@@ -44,7 +44,7 @@ function small_images_get_categories($type)
 	$db -> basic_select(
 		array(
 			"table" => "small_image_cat",
-			"where" => "`type` = '".$type."'"
+			"where" => "`type` = '".$db -> escape_string($type)."'"
 			)
 		);
 
@@ -64,12 +64,14 @@ function small_images_get_categories($type)
 /**
  * Select a single category.
  *
- * @var int $reputation_id ID of the rep we want
+ * @var int $category_id The ID number of the category we require.
+ * @var string $type Type of image this category is for.
+ *   (avatars, emoticons, post_icons)
  *
  * @return bool|array Either false on failure or an array of containing info
- *   about the reputation..
+ *   about the category.
  */
-function small_images_get_category_by_id($category_id)
+function small_images_get_category_by_id($category_id, $type)
 {
 
 	global $db;
@@ -77,7 +79,7 @@ function small_images_get_category_by_id($category_id)
 	$db -> basic_select(
 		array(
 			"table" => "small_image_cat",
-			"where" => "`id` = ".(int)$category_id,
+			"where" => "`id` = ".(int)$category_id." AND `type` = '".$db -> escape_string($type)."'",
 			"limit" => 1
 			)
 		);
@@ -322,6 +324,317 @@ function small_images_delete_category(
 	$cache -> update_cache("small_image_cats");
 	$cache -> update_cache("small_image_cats_perms");
 	$cache -> update_cache($category_data['type']);
+
+	return True;
+
+}
+
+
+/**
+ * Select small image by the category they a member of.
+ *
+ * @var int $category_id The ID number of the category whose images we require.
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ *
+ * @return bool|array Either false on failure or an array of arrays containing info
+ *   about the images.
+ */
+function small_images_get_image_by_category($category_id, $type)
+{
+
+	global $db;
+
+	$db -> basic_select(
+		array(
+			"table" => "small_images",
+			"where" => "`cat_id` = ".(int)$category_id." AND `type` = '".$db -> escape_string($type)."'"
+			)
+		);
+
+	if(!$db -> num_rows())
+		return False;
+
+	$images = array();
+
+	while($img = $db -> fetch_array())
+		$images[] = $img;
+
+	return $images;
+
+}
+
+
+/**
+ * Counts the number of images that a category has.
+ *
+ * @var int $category_id The ID number of the image category we're querying
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ *
+ * @return bool|int Either false on failure the number of counted images.
+ */
+function small_images_count_category_images($category_id, $type)
+{
+
+	global $db;
+
+	$db -> basic_select(
+		array(
+			"what" => "COUNT(`id`) as image_count",
+			"table" => "small_images",
+			"where" => "`cat_id` = ".(int)$category_id." AND `type` = '".$db -> escape_string($type)."'",
+			"limit" => 1
+			)
+		);
+
+	if(!$db -> num_rows())
+		return False;
+
+	return $db -> result();
+
+}
+
+
+/**
+ * Select a single small image.
+ *
+ * @var int $image_id The ID number of the image we require.
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ *
+ * @return bool|array Either false on failure or an array of containing info
+ *   about the image.
+ */
+function small_images_get_image_by_id($image_id, $type)
+{
+
+	global $db;
+
+	$db -> basic_select(
+		array(
+			"table" => "small_images",
+			"where" => "`id` = ".(int)$image_id." AND `type` = '".$db -> escape_string($type)."'",
+			"limit" => 1
+			)
+		);
+
+	if(!$db -> num_rows())
+		return False;
+
+	return $db -> fetch_assoc();
+
+}
+
+
+/**
+ * Select full info for an emoticon by it's code. This is only used to check existance
+ * of conflicting emoticons at the moment.
+ *
+ * @var string $code Code to check
+ * @var int $ignore_id ID of any emoticon that we wish to ignore when checking
+ *
+ * @return bool|array Either false on nothing existing or an array of containing info
+ *   about the emoticon.
+ */
+function small_images_get_emoticon_by_code($code, $ignore_id = NULL)
+{
+
+	global $db;
+
+	$db -> basic_select(
+		array(
+			"table" => "small_images",
+			"where" => (
+				"`type` = 'emoticons' AND `emoticon_code` = '".$db -> escape_string($code)."'".
+				($ignore_id !== NULL ? " AND `id` != ".(int)$ignore_id : "")
+				),
+			"limit" => 1
+			)
+		);
+
+	if(!$db -> num_rows())
+		return False;
+
+	return $db -> fetch_array();
+
+}
+
+
+/**
+ * This will create a small image for us based on data given
+ *
+ * @var array $image_data Array of data to be saved. Keys are the column names.
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ * @var bool $suppress_errors Normally this function will output error messages
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
+ *
+ * @return bool|string True on success otherwise a string cantaining an error.
+ */
+function small_images_add_image($image_data, $type, $suppress_errors = False)
+{
+
+	global $db, $output, $lang, $cache;
+
+	// Try inserting
+	$q = $db -> basic_insert(
+		array(
+			"table" => "small_images",
+			"data" => $image_data
+			)
+		);
+
+	// Error if something went wrong
+	if(!$q)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['add_one_image_error_inserting']);
+		return $lang['add_one_image_error_inserting'];
+	}
+
+	// Update category counts
+	$cat_image_count = (int)small_images_count_category_images($image_data['cat_id'], $type);
+	$result = small_images_edit_category($image_data['cat_id'], array('image_num' => $cat_image_count), True);
+
+	if($result === False)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($result);
+		return $result;
+	}
+
+	// Update cache
+	$cache -> update_cache($type);
+
+	return True;
+
+}
+
+
+/**
+ * This will update a single small image for us based on data given
+ *
+ * @var int $image_id ID number of the image to update.
+ * @var array $image_data Array of data to be saved. Keys are the column names.
+ * @var int $initial_cat_id If we're moving categories then this should be passed as
+ *   the category id that the image used to belong to, to ensure that the image count
+ *   gets updated correctly.
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ * @var bool $suppress_errors Normally this function will output error messages
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
+ *
+ * @return bool|string True on success otherwise a string cantaining an error.
+ */
+function small_images_edit_image($image_id, $image_data, $type, $initial_cat_id = NULL, $suppress_errors = False)
+{
+
+	global $db, $output, $lang, $cache;
+
+	// Update the table
+	$update_result = $db -> basic_update(
+		array(
+			"table" => "small_images",
+			"data" => $image_data,
+			"where" => "id = ".(int)$image_id." AND `type` = '".$db -> escape_string($type)."'"
+			)
+		);
+
+	if(!$update_result)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['edit_image_update_error']);
+		return $lang['edit_image_update_error'];
+	}
+
+	// Update category image counts if necessary
+	if(isset($image_data['cat_id']) && $initial_cat_id !== NULL && $initial_cat_id != $image_data['cat_id'])
+	{
+
+		// We get the current count and update both categories
+		$old_cat_count = (int)small_images_count_category_images($initial_cat_id, $type);
+		$result = small_images_edit_category($initial_cat_id, array('image_num' => $old_cat_count), True);
+
+		if($result === False)
+		{
+			if(!$suppress_errors)
+				$output -> set_error_message($result);
+			return $result;
+		}
+
+		$new_cat_count = (int)small_images_count_category_images($image_data['cat_id'], $type);
+		$result = small_images_edit_category($image_data['cat_id'], array('image_num' => $new_cat_count), True);
+
+		if($result === False)
+		{
+			if(!$suppress_errors)
+				$output -> set_error_message($result);
+			return $result;
+		}
+
+	}
+
+	// Update cache
+	$cache -> update_cache($type);
+
+	return True;
+
+}
+
+
+/**
+ * This will delete a single image
+ *
+ * @var array $image_info Full data for the image we're deleting from the database.
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ * @var bool $suppress_errors Normally this function will output error messages
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
+ *
+ * @return bool|string True on success otherwise a string cantaining an error.
+ */
+function small_images_delete_small_image($image_info, $type, $suppress_errors = False)
+{
+
+	global $db, $lang, $output, $cache;
+
+	// Delete image category
+	save_undelete_data(
+		"small_images",
+		"Deleted small image ".$image_info['name'],
+		$image_info
+		);
+	$delete = $db -> basic_delete(
+		array(
+			"table" => "small_images",
+			"where" => "`id` = ".(int)$image_info['id']." AND `type` = '".$type."'"
+			)
+		);
+
+	if(!$delete)
+	{
+			if(!$suppress_errors)
+				$output -> set_error_message($lang['delete_cat_error_deleting_category']);
+			return $lang['delete_cat_error_deleting_category'];
+	}
+
+	// Update category counts
+	$cat_image_count = (int)small_images_count_category_images($image_info['cat_id'], $type);
+	$result = small_images_edit_category($image_info['cat_id'], array('image_num' => $cat_image_count), True);
+
+	if($result === False)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($result);
+		return $result;
+	}
+
+	// Cachin'
+	$cache -> update_cache($type);
 
 	return True;
 

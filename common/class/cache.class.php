@@ -288,8 +288,6 @@ function return_cache_array_'.strtolower($cache_name).'()
                 	
                 fclose($fh);
 
-				@chmod($include_root."cache/cache_".strtolower($cache_name).".php", 0777);
-                
                 return true;
                 						
 	}	

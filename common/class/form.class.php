@@ -32,6 +32,8 @@ if(!defined("FSBOARD"))
  * This class acts as a single interface for creating forms in FSBoard.
  * Through the use of hooks, plugins can extend forms too, easily adding
  * additional functionality.
+ *
+ * TODO: ERRORS ARE IN ENGLISH. STOP BEING LAZY.
  */
 class form
 {
@@ -124,6 +126,7 @@ class form
 			{
 				
 				$this -> form_submitted = True;
+				$uploads = array();
 				
 				// Get the values of each form field
 				foreach($this -> form_state as $id => $info)
@@ -148,8 +151,53 @@ class form
 						if($this -> form_state["#".$id]['value'] != $this -> form_state[$info['identical_to']]['value'])
 							$this -> set_error($id, "value must be same as ".$this -> form_state[$info['identical_to']]['name']);					
 							
-					
+					// Keep track of uploaded files so we can process them later
+					if($this -> form_state['#'.$id]['type'] == "upload" && isset($this -> form_state['#'.$id]['upload']))
+						$uploads[$id] = $this -> form_state['#'.$id]['upload'];
+
 				}	
+
+				// Process any uploads that we have
+				if(count($uploads))
+				{
+
+					include_once ROOT."common/class/upload.class.php";
+
+					foreach($uploads as $upload_id => $upload_info)
+					{
+
+						// Quick check to see if it's required and error if it doesn't exist
+						if(!$_FILES[$upload_id]['tmp_name'] || !$_FILES[$upload_id]['name'])
+						{
+
+							if(isset($this -> form_state['#".$upload_id']['required']) )
+								$this -> set_error($upload_id, "fill in the field");
+
+						}
+						else
+						{
+						
+							// Create an upload class instance for each one and set settings
+							$is_image = (isset($upload_info['is_image']) ?  $upload_info['is_image'] : False);
+
+							$class = new upload($is_image);
+							$class -> destination_path = $upload_info['destination_path'];
+							$class -> overwrite_existing = (isset($upload_info['overwrite_existing']) ? $upload_info['overwrite_existing'] : False);
+
+							// If there's an initial problem with teh file then we need to tell the user
+							if(($error = $class -> check_upload_from_form($upload_id)) !== True)
+								$this -> set_error($upload_id, $error);
+
+							// By saving the uploaded file as the field value it enables us to easily
+							// check if the upload has worked in validation/completion callbacks.
+							$this -> form_state['#'.$upload_id]['value'] = $class -> real_name;
+							$this -> form_state['#'.$upload_id]['upload']['class'] = $class;
+
+						}
+
+					}
+
+				}
 
 				// call custom validation
 				if(isset($this -> form_state['meta']['validation_func']))
@@ -304,6 +352,7 @@ class form
 						break;
 
 					case "file":
+					case "upload":
 						$info['size'] = (!isset($info['size'])) ? 30 : $info['size'];					
 						$field_html = $template_global_forms -> form_field_file($id, $info, $this -> form_state);
 						break;

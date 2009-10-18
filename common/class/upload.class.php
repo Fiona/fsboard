@@ -28,6 +28,8 @@ if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
+// TODO: Urm all these error messages are in fucking ENGLISH
+// TODO: SOME DOCSTRINGS WOULD BE BLOODY NICE
 class upload
 {
 	
@@ -79,6 +81,8 @@ class upload
 	 * @var unknown_type
 	 */
 	var $name_to_upload = "";
+
+	var $final_file_path = "";
 	
 	var $uploaded_name = "";
 	var $real_name = "";
@@ -213,12 +217,14 @@ class upload
 			
 		$dest_name = ($this -> name_to_upload != "") ? $this -> name_to_upload : $this -> real_name;
 
-		if($this -> overwrite_existing == False && file_exists($this -> destination_path.$dest_name))
+		if($this -> overwrite_existing == False && file_exists(ROOT.$this -> destination_path.$dest_name))
 			return "Destination filename already exists.";
 		
-		if(!move_uploaded_file($this -> uploaded_name, $this -> destination_path.$dest_name))
+		if(!move_uploaded_file($this -> uploaded_name, ROOT.$this -> destination_path.$dest_name))
 			return "File could not be moved to the correct folder. Please inform an administrator.";
 			
+		$this -> final_file_path = $this -> destination_path.$dest_name;
+
 		return True;
 		
 	}
@@ -297,7 +303,7 @@ class upload
 				
 		}
 				
-		if(!file_exists($this -> destination_path) || !is_writable($this -> destination_path))
+		if(!file_exists(ROOT.$this -> destination_path) || !is_writable(ROOT.$this -> destination_path))
 			return "Destination path for upload does not exist or is not writable";
 		
 		return True;

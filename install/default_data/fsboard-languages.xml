@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="29-08-09 8:54 am">
+<languages_file fsboard_version="0.1" time="18-10-09 3:52 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1279,6 +1279,7 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="help_button_text" group="admin_global"><![CDATA[Help]]></phrases>
 		<phrases variable_name="logged_in" group="admin_global"><![CDATA[You have been sucessfully logged in!]]></phrases>
 		<phrases variable_name="login_error_user_not_same" group="admin_global"><![CDATA[Login information does not match currently the logged-in user.]]></phrases>
+		<phrases variable_name="noscript_message" group="admin_global"><![CDATA[Javascript is required for the administration area to function properly.]]></phrases>
 		<phrases variable_name="permission_denied" group="admin_global"><![CDATA[Permission denied.]]></phrases>
 		<phrases variable_name="add_insignia_button" group="admin_insignia"><![CDATA[Add Insignia]]></phrases>
 		<phrases variable_name="add_insignia_created_sucessfully" group="admin_insignia"><![CDATA[Insignia was added sucessfully!]]></phrases>
@@ -1840,9 +1841,9 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_many_error_none_selected" group="admin_small_images"><![CDATA[No images were selected to be added.]]></phrases>
 		<phrases variable_name="add_many_images_empty_dir" group="admin_small_images"><![CDATA[The directory specified does not have any images in, or they have already been added.]]></phrases>
 		<phrases variable_name="add_many_images_invalid_path" group="admin_small_images"><![CDATA[The path specified was invalid or blank.]]></phrases>
-		<phrases variable_name="add_many_image_message_avatars" group="admin_small_images"><![CDATA[Here you can add many avatars at once that have already uploaded, specify the path where they were uploaded and submit, the next screen wlil let you select which avatars to add.]]></phrases>
-		<phrases variable_name="add_many_image_message_emoticons" group="admin_small_images"><![CDATA[Here you can add many emoticons at once that have already uploaded, specify the path where they were uploaded and submit, the next screen wlil let you select which emoticons to add.]]></phrases>
-		<phrases variable_name="add_many_image_message_post_icons" group="admin_small_images"><![CDATA[Here you can add many post icons at once that have already uploaded, specify the path where they were uploaded and submit, the next screen wlil let you select which post icons to add.]]></phrases>
+		<phrases variable_name="add_many_image_message_avatars" group="admin_small_images"><![CDATA[Use this form to add multiple avatars at once that have already uploaded. Specify the path where they were uploaded. The next screen will let you select which avatars to add.]]></phrases>
+		<phrases variable_name="add_many_image_message_emoticons" group="admin_small_images"><![CDATA[Use this form to add multiple emoticons at once that have already uploaded. Specify the path where they were uploaded. The next screen will let you select which emoticons to add.]]></phrases>
+		<phrases variable_name="add_many_image_message_post_icons" group="admin_small_images"><![CDATA[Use this form to add multiple post icons at once that have already uploaded. Specify the path where they were uploaded. The next screen will let you select which post icons to add.]]></phrases>
 		<phrases variable_name="add_many_image_path_avatars" group="admin_small_images"><![CDATA[Directory path to the avatars]]></phrases>
 		<phrases variable_name="add_many_image_path_desc" group="admin_small_images"><![CDATA[FSBoard will look inside this directory and get a list of all the image files for you to select and add. Path is relative to your forum root.]]></phrases>
 		<phrases variable_name="add_many_image_path_emoticons" group="admin_small_images"><![CDATA[Directory path to the emoticons]]></phrases>
@@ -1874,9 +1875,9 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_one_image_filename_desc" group="admin_small_images"><![CDATA[Path is relative to your message board root.]]></phrases>
 		<phrases variable_name="add_one_image_filename_emoticons" group="admin_small_images"><![CDATA[<b>DO THIS</b> Path to the emoticon image file]]></phrases>
 		<phrases variable_name="add_one_image_filename_post_icons" group="admin_small_images"><![CDATA[<b>DO THIS</b> Path to the post icon image file]]></phrases>
-		<phrases variable_name="add_one_image_message_avatars" group="admin_small_images"><![CDATA[Add one avatar from here, you can either specify a filename of an already uploaded image or upload the file yourself.]]></phrases>
-		<phrases variable_name="add_one_image_message_emoticons" group="admin_small_images"><![CDATA[Add one emoticon from here, you can either specify a filename of an already uploaded image or upload the file yourself.]]></phrases>
-		<phrases variable_name="add_one_image_message_post_icons" group="admin_small_images"><![CDATA[Add one post icon from here, you can either specify a filename of an already uploaded image or upload the file yourself.]]></phrases>
+		<phrases variable_name="add_one_image_message_avatars" group="admin_small_images"><![CDATA[Use this form to add a single avatar. You can either specify a filename of an already uploaded image or upload the file yourself.]]></phrases>
+		<phrases variable_name="add_one_image_message_emoticons" group="admin_small_images"><![CDATA[Use this form to add a single emoticon. You can either specify a filename of an already uploaded image or upload the file yourself.]]></phrases>
+		<phrases variable_name="add_one_image_message_post_icons" group="admin_small_images"><![CDATA[Use this form to add a single post icon. You can either specify a filename of an already uploaded image or upload the file yourself.]]></phrases>
 		<phrases variable_name="add_one_image_min_posts_avatars" group="admin_small_images"><![CDATA[Minimum posts to use avatar]]></phrases>
 		<phrases variable_name="add_one_image_min_posts_desc_avatars" group="admin_small_images"><![CDATA[A user will not be able to use this avatar unless thier post count is at least this number.]]></phrases>
 		<phrases variable_name="add_one_image_min_posts_desc_post_icons" group="admin_small_images"><![CDATA[A user will not be able to use this post icon unless thier post count is at least this number.]]></phrases>
@@ -1912,12 +1913,12 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="breadcrumb_emoticons_importexport" group="admin_small_images"><![CDATA[Import/Export Emoticons]]></phrases>
 		<phrases variable_name="breadcrumb_emoticons_move_multiple" group="admin_small_images"><![CDATA[Move Multiple Emoticons]]></phrases>
 		<phrases variable_name="breadcrumb_emoticons_view" group="admin_small_images"><![CDATA[View Emoticons]]></phrases>
-		<phrases variable_name="breadcrumb_posticons_add_many" group="admin_small_images"><![CDATA[Add Multiple Post Icons]]></phrases>
-		<phrases variable_name="breadcrumb_posticons_edit_image" group="admin_small_images"><![CDATA[Edit Post Icon]]></phrases>
-		<phrases variable_name="breadcrumb_posticons_importexport" group="admin_small_images"><![CDATA[Import/Export Post Icons]]></phrases>
-		<phrases variable_name="breadcrumb_posticons_move_multiple" group="admin_small_images"><![CDATA[Move Multiple Post Icons]]></phrases>
 		<phrases variable_name="breadcrumb_post_icons" group="admin_small_images"><![CDATA[Post Icon Manager]]></phrases>
 		<phrases variable_name="breadcrumb_post_icons_add" group="admin_small_images"><![CDATA[Add Post Icon]]></phrases>
+		<phrases variable_name="breadcrumb_post_icons_add_many" group="admin_small_images"><![CDATA[Add Multiple Post Icons]]></phrases>
+		<phrases variable_name="breadcrumb_post_icons_edit_image" group="admin_small_images"><![CDATA[Edit Post Icon]]></phrases>
+		<phrases variable_name="breadcrumb_post_icons_importexport" group="admin_small_images"><![CDATA[Import/Export Post Icons]]></phrases>
+		<phrases variable_name="breadcrumb_post_icons_move_multiple" group="admin_small_images"><![CDATA[Move Multiple Post Icons]]></phrases>
 		<phrases variable_name="breadcrumb_post_icons_view" group="admin_small_images"><![CDATA[View Post Icons]]></phrases>
 		<phrases variable_name="cat_perms_emoticons_no" group="admin_small_images"><![CDATA[Emoticons can not be given permissions.]]></phrases>
 		<phrases variable_name="cat_perms_error_deleting_perms" group="admin_small_images"><![CDATA[There was an error clearing the existing permissions.]]></phrases>
@@ -1941,6 +1942,12 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="delete_image_deleted_sucessfully_emoticons" group="admin_small_images"><![CDATA[Emoticon sucessfully deleted!]]></phrases>
 		<phrases variable_name="delete_image_deleted_sucessfully_post_icons" group="admin_small_images"><![CDATA[Post icon sucessfully deleted!]]></phrases>
 		<phrases variable_name="delete_image_error_deleting_image" group="admin_small_images"><![CDATA[There was an error deleting this image!]]></phrases>
+		<phrases variable_name="delete_small_images_message_avatars" group="admin_small_images"><![CDATA[Are you sure you want to delete this avatar: <b><1></b>?]]></phrases>
+		<phrases variable_name="delete_small_images_message_emoticons" group="admin_small_images"><![CDATA[Are you sure you want to delete this emoticon: <b><1></b>?]]></phrases>
+		<phrases variable_name="delete_small_images_message_post_icons" group="admin_small_images"><![CDATA[Are you sure you want to delete this post icon: <b><1></b>?]]></phrases>
+		<phrases variable_name="delete_small_images_title_avatars" group="admin_small_images"><![CDATA[Delete Avatars]]></phrases>
+		<phrases variable_name="delete_small_images_title_emoticons" group="admin_small_images"><![CDATA[Delete Emoticon]]></phrases>
+		<phrases variable_name="delete_small_images_title_post_icons" group="admin_small_images"><![CDATA[Delete Post Icons]]></phrases>
 		<phrases variable_name="edit_image_cat_avatars" group="admin_small_images"><![CDATA[Avatar category to place into]]></phrases>
 		<phrases variable_name="edit_image_cat_edited" group="admin_small_images"><![CDATA[Successfully edited category!]]></phrases>
 		<phrases variable_name="edit_image_cat_emoticons" group="admin_small_images"><![CDATA[Emoticon category to place into]]></phrases>
@@ -1975,11 +1982,13 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="edit_image_posts_desc_avatars" group="admin_small_images"><![CDATA[A user will not be able to use this avatar unless thier post count is at least this number.]]></phrases>
 		<phrases variable_name="edit_image_posts_desc_post_icons" group="admin_small_images"><![CDATA[A user will not be able to use this post icon unless thier post count is at least this number.]]></phrases>
 		<phrases variable_name="edit_image_posts_post_icons" group="admin_small_images"><![CDATA[Minimum posts to use post icon]]></phrases>
+		<phrases variable_name="edit_image_replace_image" group="admin_small_images"><![CDATA[Replace Current Image]]></phrases>
 		<phrases variable_name="edit_image_submit" group="admin_small_images"><![CDATA[Submit Changes]]></phrases>
-		<phrases variable_name="edit_image_title_avatars" group="admin_small_images"><![CDATA[Edit avatar: <b><1></b>]]></phrases>
-		<phrases variable_name="edit_image_title_emoticons" group="admin_small_images"><![CDATA[Edit emoticon: <b><1></b>]]></phrases>
-		<phrases variable_name="edit_image_title_post_icons" group="admin_small_images"><![CDATA[Edit post icon: <b><1></b>]]></phrases>
+		<phrases variable_name="edit_image_title_avatars" group="admin_small_images"><![CDATA[Edit avatar: <1>]]></phrases>
+		<phrases variable_name="edit_image_title_emoticons" group="admin_small_images"><![CDATA[Edit emoticon: <1>]]></phrases>
+		<phrases variable_name="edit_image_title_post_icons" group="admin_small_images"><![CDATA[Edit post icon: <1>]]></phrases>
 		<phrases variable_name="edit_image_update_error" group="admin_small_images"><![CDATA[There was an error updating this image!]]></phrases>
+		<phrases variable_name="edit_image_upload" group="admin_small_images"><![CDATA[Upload new image]]></phrases>
 		<phrases variable_name="error_delete_image_cat_last_one" group="admin_small_images"><![CDATA[You cannot remove the last remaining category.]]></phrases>
 		<phrases variable_name="error_updating_cat_positions" group="admin_small_images"><![CDATA[There was an error updating category positions!]]></phrases>
 		<phrases variable_name="error_updating_image_order" group="admin_small_images"><![CDATA[There was an error updating an image order number!]]></phrases>
@@ -2090,6 +2099,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="image_view_edit_post_icons" group="admin_small_images"><![CDATA[Edit Post Icon]]></phrases>
 		<phrases variable_name="image_view_emoticon_code" group="admin_small_images"><![CDATA[Emoticon Code]]></phrases>
 		<phrases variable_name="image_view_image_file" group="admin_small_images"><![CDATA[Image File]]></phrases>
+		<phrases variable_name="image_view_image_name" group="admin_small_images"><![CDATA[Name]]></phrases>
 		<phrases variable_name="image_view_menu_input" group="admin_small_images"><![CDATA[Switch category]]></phrases>
 		<phrases variable_name="image_view_menu_submit" group="admin_small_images"><![CDATA[Go]]></phrases>
 		<phrases variable_name="image_view_menu_title_avatars" group="admin_small_images"><![CDATA[Avatars]]></phrases>
