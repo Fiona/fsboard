@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="18-10-09 3:52 am">
+<languages_file fsboard_version="0.1" time="23-11-09 1:18 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2055,6 +2055,10 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="image_add_many_title_avatars" group="admin_small_images"><![CDATA[Add Many Avatars: <1> (Page <2> of <3>)]]></phrases>
 		<phrases variable_name="image_add_many_title_emoticons" group="admin_small_images"><![CDATA[Add Many Emoticons: <1> (Page <2> of <3>)]]></phrases>
 		<phrases variable_name="image_add_many_title_post_icons" group="admin_small_images"><![CDATA[Add Many Post Icons: <1> (Page <2> of <3>)]]></phrases>
+		<phrases variable_name="image_add_multiple_image_emoticon_code" group="admin_small_images"><![CDATA[Emoticon Code]]></phrases>
+		<phrases variable_name="image_add_multiple_image_filename" group="admin_small_images"><![CDATA[Image Filename]]></phrases>
+		<phrases variable_name="image_add_multiple_image_image" group="admin_small_images"><![CDATA[Image]]></phrases>
+		<phrases variable_name="image_add_multiple_image_name" group="admin_small_images"><![CDATA[Name]]></phrases>
 		<phrases variable_name="image_delete_cat_delete_images_avatars" group="admin_small_images"><![CDATA[Remove avatars in this category?]]></phrases>
 		<phrases variable_name="image_delete_cat_delete_images_emoticons" group="admin_small_images"><![CDATA[Remove emoticons in this category?]]></phrases>
 		<phrases variable_name="image_delete_cat_delete_images_post_icons" group="admin_small_images"><![CDATA[Remove post icons in this category?]]></phrases>

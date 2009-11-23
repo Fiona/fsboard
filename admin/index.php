@@ -251,7 +251,7 @@ $mode_file_list = array(
 	'(?<page>avatars|emoticons|post_icons)/(?<mode>edit|delete|view|move_multiple|permissions)/(?<category_id>[0-9]+)' => array(
 		"page" => "small_images"
 	),
-	'(?<page>avatars|emoticons|post_icons)/(?<category_id>[0-9]+)/(?<mode>add)' => array(
+	'(?<page>avatars|emoticons|post_icons)/(?<category_id>[0-9]+)/(?<mode>add|add_multiple)' => array(
 		"page" => "small_images"
 	),
 	'(?<page>avatars|emoticons|post_icons)/(?<category_id>[0-9]+)/(?<image_id>[0-9]+)/(?<mode>edit|delete)' => array(

@@ -224,6 +224,7 @@ class results_table
 		// If we have defined the data ourselves
 		elseif(isset($this -> settings['data']))
 		{
+			$data = $this -> settings['data'];
 			$this -> total_items = count($data);
 			$this -> save_total_pages();
 			$this -> save_current_page();

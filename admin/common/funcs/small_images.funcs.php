@@ -331,6 +331,42 @@ function small_images_delete_category(
 
 
 /**
+ * Select all small images of a particular type.
+ *
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ * @var string $what_query What's asked for as "what" for the query ran.
+ *
+ * @return bool|array Either false on failure or an array of arrays containing info
+ *   about the images.
+ */
+function small_images_get_images_by_type($type, $what_query = "*")
+{
+
+	global $db;
+
+	$db -> basic_select(
+		array(
+			"what" => $what_query,
+			"table" => "small_images",
+			"where" => "`type` = '".$db -> escape_string($type)."'"
+			)
+		);
+
+	if(!$db -> num_rows())
+		return False;
+
+	$images = array();
+
+	while($img = $db -> fetch_array())
+		$images[] = $img;
+
+	return $images;
+
+}
+
+
+/**
  * Select small image by the category they a member of.
  *
  * @var int $category_id The ID number of the category whose images we require.

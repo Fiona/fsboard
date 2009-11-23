@@ -357,6 +357,24 @@ class form
 						$field_html = $template_global_forms -> form_field_file($id, $info, $this -> form_state);
 						break;
 
+					case "results_table":
+
+						if(isset($info['results_table_checkboxes']))
+						{
+							$info['results_table_settings']['columns'] = array(
+								"checkboxes" => array(
+									"name" => $template_global_forms -> form_field_checkbox("select_all_checkbox", $info, $this -> form_state),
+									"content_callback" => array($this, "table_checkboxes_callback"),
+									'content_callback_parameters' => array($id, $info),
+									)
+								) +
+								$info['results_table_settings']['columns'];
+						}
+
+						$info['results_table_class'] = new results_table($info['results_table_settings']);
+						$field_html = $info['results_table_class'] -> render();
+						break;
+
 					case "hidden":
 						$field_html = $template_global_forms -> form_field_hidden($id, $info, $this -> form_state);
 						break;
@@ -367,7 +385,7 @@ class form
 						$field_html = $template_global_forms -> form_field_text($id, $info, $this -> form_state);
 				}
 				
-				if($info['type'] == "hidden")
+				if(in_array($info['type'], array("hidden", "results_table")))
 					$inner_form_html .= $field_html;
 				else
 				{
@@ -444,6 +462,19 @@ class form
 			return 0;
 
 		}
+
+	}
+
+
+	/*
+	 * This is used for result table fields to add checkboxes to the table.
+	 */
+	function table_checkboxes_callback($raw_data, $id, $info)
+	{
+
+		global $template_global_forms;
+
+		return $template_global_forms -> form_field_checkbox($id, $info, $this -> form_state);
 
 	}
 

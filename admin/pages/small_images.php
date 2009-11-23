@@ -214,8 +214,7 @@ if(!count($output -> error_messages))
                 break;
 
         case "doexport":
-                do_export();
-                break;  
+                do_export case;  
                 	                
         default;
                 page_main();   
@@ -226,6 +225,10 @@ if(!count($output -> error_messages))
 				page_add_small_images($image_settings, $page_matches['category_id']);
 			else
 				page_add_small_images_category($image_settings);
+			break;
+
+		case "add_multiple":
+			page_add_multiple_small_images($image_settings, $page_matches['category_id']);
 			break;
 
 		case "edit":
@@ -1569,7 +1572,9 @@ function page_add_small_images($image_settings, $category_id)
 		return;
 	}
 
-	// Display the page
+	// Breadcrummin'
+	$output -> add_breadcrumb($lang['breadcrumb_'.$image_settings['type']."_view"], l("admin/".$image_settings['type']."/view/".$category_id."/"));
+
 	$output -> page_title = $lang['breadcrumb_'.$image_settings['type'].'_add'];
 
 	$output -> add_breadcrumb(
@@ -1579,7 +1584,7 @@ function page_add_small_images($image_settings, $category_id)
 
 	// Put the form up
 	$form = new form(
-		form_add_edit_small_images("add", NULL, $image_settings)
+		form_add_edit_small_images("add", $category_id, NULL, $image_settings)
 		);
 
 	$output -> add($form -> render());
@@ -1595,6 +1600,7 @@ function page_add_small_images($image_settings, $category_id)
 					$output -> help_button("", True)
 					),
 				'validation_func' => "form_add_multiple_small_images_validate",
+				'complete_func' => "form_add_multiple_small_images_complete",
 				"data_image_settings" => $image_settings
 				),
 
@@ -1608,6 +1614,7 @@ function page_add_small_images($image_settings, $category_id)
 				"name" => $lang['add_one_image_cat_'.$image_settings['type']],
 				"type" => "dropdown",
 				"options" => $form -> form_state['#cat_id']['options'],
+				"value" => $category_id,
 				"required" => True
 				),
 			"#submit" => array(
@@ -1656,6 +1663,8 @@ function page_edit_small_images($image_settings, $category_id, $image_id)
 		$image_info['name']
 		);
 
+	$output -> add_breadcrumb($lang['breadcrumb_'.$image_settings['type']."_view"], l("admin/".$image_settings['type']."/view/".$category_id."/"));
+
 	$output -> add_breadcrumb(
 		$lang['breadcrumb_'.$image_settings['type'].'_edit_image'],
 		l("admin/".$image_settings['type']."/edit/".$category_id."/".$image_id."/edit/")
@@ -1663,7 +1672,7 @@ function page_edit_small_images($image_settings, $category_id, $image_id)
 
 	// Put the form up
 	$form = new form(
-		form_add_edit_small_images("edit", $image_info, $image_settings)
+		form_add_edit_small_images("edit", $category_id, $image_info, $image_settings)
 		);
 
 	$output -> add($form -> render());
@@ -1677,11 +1686,12 @@ function page_edit_small_images($image_settings, $category_id, $image_id)
  * This is the form definition for adding/editing small images
  *
  * @param string $type The type of request. "add" or "edit".
+ * @param array $page_matches 
  * @param array $initial_data Array of data directly from the database that will
  *   be used to populate the fields initially.
  * @param array $image_settings Settings for the current image page type
  */
-function form_add_edit_small_images($type, $initial_data = NULL, $image_settings = array())
+function form_add_edit_small_images($type, $page_matches, $initial_data = NULL, $image_settings = array())
 {
 
 	global $lang, $output, $template_admin, $cache;
@@ -1749,6 +1759,7 @@ function form_add_edit_small_images($type, $initial_data = NULL, $image_settings
 			"name" => $lang['edit_image_cat_'.$image_settings['type']],
 			"type" => "dropdown",
 			"options" => $dropdown_cats_values,
+			"value" => $page_matches,
 			"required" => True
 			),
 		"#filename" => array(
@@ -1995,6 +2006,304 @@ function form_edit_small_images_complete($form)
 	$output -> redirect(
 		l("admin/".$form -> form_state['meta']['data_image_settings']['type']."/view/".$form -> form_state['#cat_id']['value']."/"),
 		$lang['edit_image_edited_sucessfully_'.$form -> form_state['meta']['data_image_settings']['type']]
+		);
+
+}
+
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for adding multiple images
+ *
+ * @param object $form
+ */
+function form_add_multiple_small_images_validate($form)
+{
+
+	global $lang, $output;
+
+	if(isset($form -> form_state['meta']['show_error']))
+		return;
+
+	if(($ret = small_images_add_multiple_images_check_routine($form -> form_state['meta'], $form -> form_state['#cat_id']['value'], $form -> form_state['#path']['value'])) !== True)
+		$form -> set_error(NULL, $ret);
+
+}
+
+
+/**
+ * Used by both steps of the add multiple procedures
+ */
+function small_images_add_multiple_images_check_routine(&$form_state_meta, $cat_id, $path)
+{
+
+	global $lang;
+
+	// Check category exists
+	if(small_images_get_category_by_id($cat_id, $form_state_meta['data_image_settings']['type']) === False)
+		return $lang['edit_image_new_cat_not_found'];
+
+	// Make sure we have / on the end so we can check it as a real dir
+	$form_state_meta['data_real_path'] = (_substr($path, -1, 1) == "/" ? $path : $path."/");
+
+	// Check the path exists and is a dir
+	if(!file_exists(ROOT.$form_state_meta['data_real_path']) || !is_dir(ROOT.$form_state_meta['data_real_path']))
+		return $lang['add_many_images_invalid_path'];
+
+	// Get all the current images by their filename - to ensure that we don't have any duplicates
+	$all_images_raw = small_images_get_images_by_type($form_state_meta['data_image_settings']['type'], "`filename`");
+
+	// Make it a bit more searchable
+	$all_images = array();
+
+	foreach($all_images_raw as $image)
+		$all_images[] = $image['filename'];
+
+	// Read the directory we've got for getting a list of viable images
+	if(!$dirh = opendir(ROOT.$form_state_meta['data_real_path']))
+		return $lang['add_many_images_invalid_path'];
+
+	// Get a list of only images from this directory
+	$form_state_meta['data_image_filename_list'] = array();
+
+	while(False !== ($file_checking = readdir($dirh)))
+	{
+
+		// If you're wondering about the filesize check it's because that it seems that
+		// imagesize() bawlks over files less than 12 bytes in length regardless of error
+		// supression (i'm serious, all it says is "Read error!". Stellar.)
+		// i found a bug report that was closed in 2007 as fixed, it's now 2009 I'M SERIOUS
+		// Good job on a class A regression there guys, if you even fixed it in the first place.
+		if(
+			$file_checking == "." || $file_checking == ".." ||
+			is_dir(ROOT.$form_state_meta['data_real_path'].$file_checking) ||
+			!is_readable(ROOT.$form_state_meta['data_real_path'].$file_checking) ||
+			filesize(ROOT.$form_state_meta['data_real_path'].$file_checking) < 12
+			)
+			continue;
+
+		if(!@getimagesize(ROOT.$form_state_meta['data_real_path'].$file_checking))
+			continue;
+
+		if(!in_array($form_state_meta['data_real_path'].$file_checking, $all_images))
+			$form_state_meta['data_image_filename_list'][] = array(
+				"filename" => $file_checking
+				);
+
+	}
+	
+	// If we didn't manage to get any images
+	if(!count($form_state_meta['data_image_filename_list']))
+		return $lang['add_many_images_empty_dir'];
+
+	return True;
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding multiple images
+ *
+ * @param object $form
+ */
+function form_add_multiple_small_images_complete($form)
+{
+
+	global $lang, $output;
+
+	// Instant redirect to the correct page for these shenanegans
+	$output -> redirect(
+		l(
+			"admin/".$form -> form_state['meta']['data_image_settings']['type']."/".
+			$form -> form_state['#cat_id']['value']."/add_multiple/?path=".
+			urlencode($form -> form_state['meta']['data_real_path'])
+			),
+		"",
+		True
+		);
+
+}
+
+
+/**
+ * Page for adding multiple images, this does the cool table/form thing with checkboxes
+ */
+function page_add_multiple_small_images($image_settings, $category_id)
+{
+
+	global $lang, $output, $template_admin;
+
+	// Check get param for path
+	$path = (isset($_GET['path']) ? urldecode(trim($_GET['path'])) : "");
+
+	if(!$path)
+	{
+		$output -> set_error_message($lang['add_many_images_invalid_path']);
+		return page_add_small_images($image_settings, $category_id);
+	}
+
+	$form_state_meta = array(
+		'data_image_settings' => $image_settings
+		);
+
+	if(($ret = small_images_add_multiple_images_check_routine($form_state_meta, $category_id, $path)) !== True)
+	{
+		$output -> set_error_message($ret);
+		return page_add_small_images($image_settings, $category_id);
+	}
+
+	// oh crumbs
+	$output -> page_title = $lang['breadcrumb_'.$image_settings['type'].'_add_many'];
+
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_'.$image_settings['type'].'_add'],
+		l("admin/".$image_settings['type']."/".$category_id."/add/")
+		);
+
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_'.$image_settings['type'].'_add_many'],
+		l("admin/".$image_settings['type']."/".$category_id."/add_multiple?path=".$_GET['path'])
+		);
+
+	// THIS IS GREAT
+	// We make a result table for the filename list and then we add it to a form as a field
+	// MAGICALLY the result table gets checkboxes that we can check as form values as normal.
+	// is nifty, no?
+	$form = new form(
+		array(
+			"meta" => array(
+				"title" => $output -> page_title,
+				"name" => "small_images_".$image_settings['type']."_add_multiple_step2",
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon($image_settings['type'])
+					),
+//				'validation_func' => "form_add_multiple_small_images_validate",
+//				'complete_func' => "form_add_multiple_small_images_complete",
+				"data_image_settings" => $image_settings
+				) + $form_state_meta,
+			)
+		);
+
+	// Define the table
+	$results_table = array(
+		"no_results_message" => $lang['add_many_images_empty_dir'],
+
+		"data" => $form_state_meta['data_image_filename_list'],
+		"items_per_page" => count($form_state_meta['data_image_filename_list']),
+		"default_sort" => "name",
+
+		"columns" => array(
+			"image" => array(
+				"name" => $lang['image_add_multiple_image_image'],
+				"content_callback" => "table_add_multiple_images_image",
+				'content_callback_parameters' => array($path),
+				"align" => "center"
+				),
+			"filename" => array(
+				"name" => $lang['image_add_multiple_image_filename'],
+				"db_column" => "filename"
+				),
+			"name" => array(
+				"name" => $lang['image_add_multiple_image_name'],
+				"content_callback" => "table_add_multiple_images_name",
+				'content_callback_parameters' => array($form),
+				),
+			"emoticon_code" => (
+				$image_settings['type'] == "emoticons" ? 
+				array(
+					"name" => $lang['image_add_multiple_image_emoticon_code'],
+					"content_callback" => "table_add_multiple_images_emoticon_code",
+					'content_callback_parameters' => array($form),
+					)
+				: NULL
+				),
+			)
+		);
+
+	$form -> form_state += array(
+		"#images" => array(
+			"type" => "results_table",
+			"results_table_settings" => $results_table,
+			"results_table_checkboxes" => True
+			),
+		"#submit" => array(
+			"value" => $lang['add_many_add_submit'],
+			"type" => "submit"
+			)
+		);
+
+
+	$output -> add($form -> render());
+	
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the adding multilpe images table. (Image)
+ *
+ * @param object $row_data
+ */
+function table_add_multiple_images_image($row_data, $path)
+{
+
+	global $cache;
+
+	$file = $cache -> cache['config']['board_url']."/".$path.$row_data['filename'];
+	return "<img src=\"".$file."\" alt=\"".$file."\" />";
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the adding multilpe images table. (Names)
+ *
+ * @param object $row_data
+ */
+function table_add_multiple_images_name($row_data, $form)
+{
+
+	global $template_global_forms;
+
+	return $template_global_forms -> form_field_text(
+		"",
+		array(
+			"value" => strrev(_substr(strchr(strrev($row_data['filename']), "."), 1 )),
+			"size" => 30
+			),
+		$form -> form_state
+		);
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the adding multilpe images table. (emote code)
+ *
+ * @param object $row_data
+ */
+function table_add_multiple_images_emoticon_code($row_data, $form)
+{
+
+	global $template_global_forms;
+
+	return $template_global_forms -> form_field_text(
+		"",
+		array(
+			"value" => ":".strrev(_substr(strchr(strrev($row_data['filename']), "."), 1 )).":",
+			"size" => 15
+			),
+		$form -> form_state
 		);
 
 }
@@ -2553,6 +2862,9 @@ function page_delete_small_image($image_settings, $image_id)
 
 	// Show the confirmation page
 	$output -> page_title = $lang['delete_small_images_title_'.$image_settings['type']];
+
+	$output -> add_breadcrumb($lang['breadcrumb_'.$image_settings['type']."_view"], l("admin/".$image_settings['type']."/view/".$image_info['cat_id']."/"));
+
 	$output -> add_breadcrumb(
 		$output -> page_title,
 		l("admin/".$image_settings['type']."/".$image_info['cat_id']."/".$image_info['id']."/delete/")
