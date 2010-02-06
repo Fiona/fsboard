@@ -488,12 +488,24 @@ function config_import_config_xml($xml_contents, $ignore_version = false)
 	$current_groups = array();
 	$current_config = array();
 
-	$db -> query("select name from ".$db -> table_prefix."config_groups order by `order`");
+	$db -> basic_select(
+		array(
+			"what" => "`name`",
+			"table" => "config_groups",
+			"order" => "`order`"
+			)
+		);
 
 	while($a = $db -> fetch_array())
 		$current_groups[$a['name']] = true;
 
-	$db -> query("select name from ".$db -> table_prefix."config order by `config_group`");
+	$db -> basic_select(
+		array(
+			"what" => "`name`",
+			"table" => "config",
+			"order" => "`config_group`"
+			)
+		);
 
 	while($a = $db -> fetch_array())
 		$current_config[$a['name']] = true;
@@ -506,15 +518,20 @@ function config_import_config_xml($xml_contents, $ignore_version = false)
 
 		// If exists - Baleete it
 		if(isset($current_groups[$group['ATTRS']['name']]))
-			$db -> basic_delete("config_groups", "name='".$group['ATTRS']['name']."'");
+			$db -> basic_delete(
+				array(
+					"table" => "config_groups",
+					"where" => "`name` = '".$db -> escape_string($group['ATTRS']['name'])."'"
+					)
+				);
 
 		// Stick it in! So to speak.
 		$group_insert = array(
-                        'name'  => $group['ATTRS']['name'],
-                        'order' => $group['ATTRS']['order']
-		);
+			'name'  => $group['ATTRS']['name'],
+			'order' => $group['ATTRS']['order']
+			);
 
-		if(!$db -> basic_insert("config_groups", $group_insert))
+		if(!$db -> basic_insert(array("table" => "config_groups", "data" => $group_insert)))
 			return false;
 
 		// No config in this group?
@@ -530,20 +547,25 @@ function config_import_config_xml($xml_contents, $ignore_version = false)
 
 			// If exists delete
 			if(isset($current_config[$config['ATTRS']['name']]))
-				$db -> basic_delete("config", "name='".$config['ATTRS']['name']."'");
+				$db -> basic_delete(
+					array(
+						"table" => "config",
+						"where" => "`name` = '".$db -> escape_string($config['ATTRS']['name'])."'"
+						)
+					);
 
 			// Inseeeeeert
 			$config_insert = array(
-                                'name'            => $config['ATTRS']['name'],
-                                'value'           => trim($config['CONTENT']),
-                                'default'         => trim($config['CONTENT']),
-                                'config_group'    => $group['ATTRS']['name'],
-                                'config_type'     => $config['ATTRS']['config_type'],
-                                'dropdown_values' => $config['ATTRS']['dropdown_values'],
-                                'order'           => $config['ATTRS']['order']
-			);
+				'name'            => $config['ATTRS']['name'],
+				'value'           => trim($config['CONTENT']),
+				'default'         => trim($config['CONTENT']),
+				'config_group'    => $group['ATTRS']['name'],
+				'config_type'     => $config['ATTRS']['config_type'],
+				'dropdown_values' => $config['ATTRS']['dropdown_values'],
+				'order'           => $config['ATTRS']['order']
+				);
 
-			if(!$db -> basic_insert("config", $config_insert))
+			if(!$db -> basic_insert(array("table" => "config", "data" => $config_insert)))
 				return false;
 
 		}
