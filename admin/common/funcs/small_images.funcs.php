@@ -143,7 +143,7 @@ function small_images_add_category($category_data, $suppress_errors = False)
  *
  * @return bool False on failure.
  */
-function small_images_edit_category($category_id, $category_data, $suppress_errors = False)
+function small_images_edit_category($category_id, $category_data, $skip_cache = False, $suppress_errors = False)
 {
 
 	global $db, $output, $lang, $cache;
@@ -165,7 +165,8 @@ function small_images_edit_category($category_id, $category_data, $suppress_erro
 	}
 
 	// Update cache
-	$cache -> update_cache("small_image_cats");
+	if(!$skip_cache)
+		$cache -> update_cache("small_image_cats");
 
 	return True;
 
@@ -324,6 +325,103 @@ function small_images_delete_category(
 	$cache -> update_cache("small_image_cats");
 	$cache -> update_cache("small_image_cats_perms");
 	$cache -> update_cache($category_data['type']);
+
+	return True;
+
+}
+
+
+/**
+ * Selects all user groups that are denied access to an image category.
+ *
+ * @var int $category_id The ID number of the category we're checking.
+ *
+ * @return array An array of user group IDs that represent groups that may
+ *   not access a category.
+ */
+function small_images_get_category_permissions($category_id)
+{
+
+	global $db;
+
+	$db -> basic_select(
+		array(
+			"table" => "small_image_cat_perms",
+			"where" => "`cat_id` = ".(int)$category_id
+			)
+		);
+
+	if(!$db -> num_rows())
+		return array();
+
+	$user_groups = array();
+	while($g = $db -> fetch_array())
+		$user_groups[] = $g['user_group_id'];
+
+	return $user_groups;
+
+}
+
+
+/**
+ * Update permissions for a given category. By defaulte all user groups have
+ * access to all categories unless specified.
+ *
+ * @var int $category_id ID number of the category to update.
+ * @var array $denied_groups An array of IDs of groups that are forbidden to use this category.
+ * @var bool $suppress_errors Normally this function will output error messages
+ *   using set_error_message. If this is not wanted for whatever reason
+ *   setting this to True will stop them appearing.
+ *
+ * @return bool|string True on success or an error string.
+ */
+function small_images_edit_category_permissions($category_id, $denied_groups, $suppress_errors = False)
+{
+
+	global $db, $output, $lang, $cache;
+
+	// First we kill existing permissions
+	$q = $db -> basic_delete(
+		array(
+			"table" => "small_image_cat_perms",
+			"where" => "cat_id = ".(int)$category_id
+			)
+		);
+
+	if(!$q)
+	{
+		if(!$suppress_errors)
+			$output -> set_error_message($lang['cat_perms_error_deleting_perms']);
+		return $lang['cat_perms_error_deleting_perms'];
+	}
+
+	// If any groups are to be denied access we save them
+	if(count($denied_groups))
+	{
+
+		$inserts = array();
+
+		foreach($denied_groups as $group_id)
+			$inserts[] = array('cat_id' => $category_id, 'user_group_id' => $group_id);
+
+		$q = $db -> basic_insert(
+			array(
+				"table" => "small_image_cat_perms",
+				"data" => $inserts,
+				'multiple_inserts' => True
+				)
+			);
+
+		if(!$q)
+		{
+			if(!$suppress_errors)
+				$output -> set_error_message($lang['cat_perms_insert_error']);
+			return $lang['cat_perms_insert_error'];
+		}
+
+	}
+
+	$cache -> update_cache("small_image_cats_perms");
 
 	return True;
 
@@ -509,7 +607,7 @@ function small_images_get_emoticon_by_code($code, $ignore_id = NULL)
  *
  * @return bool|string True on success otherwise a string cantaining an error.
  */
-function small_images_add_image($image_data, $type, $suppress_errors = False)
+function small_images_add_image($image_data, $type, $skip_cache = False, $suppress_errors = False)
 {
 
 	global $db, $output, $lang, $cache;
@@ -532,7 +630,7 @@ function small_images_add_image($image_data, $type, $suppress_errors = False)
 
 	// Update category counts
 	$cat_image_count = (int)small_images_count_category_images($image_data['cat_id'], $type);
-	$result = small_images_edit_category($image_data['cat_id'], array('image_num' => $cat_image_count), True);
+	$result = small_images_edit_category($image_data['cat_id'], array('image_num' => $cat_image_count), $skip_cache, True);
 
 	if($result === False)
 	{
@@ -542,7 +640,8 @@ function small_images_add_image($image_data, $type, $suppress_errors = False)
 	}
 
 	// Update cache
-	$cache -> update_cache($type);
+	if(!$skip_cache)
+		$cache -> update_cache($type);
 
 	return True;
 
@@ -592,7 +691,7 @@ function small_images_edit_image($image_id, $image_data, $type, $initial_cat_id 
 
 		// We get the current count and update both categories
 		$old_cat_count = (int)small_images_count_category_images($initial_cat_id, $type);
-		$result = small_images_edit_category($initial_cat_id, array('image_num' => $old_cat_count), True);
+		$result = small_images_edit_category($initial_cat_id, array('image_num' => $old_cat_count), False, True);
 
 		if($result === False)
 		{
@@ -602,7 +701,7 @@ function small_images_edit_image($image_id, $image_data, $type, $initial_cat_id 
 		}
 
 		$new_cat_count = (int)small_images_count_category_images($image_data['cat_id'], $type);
-		$result = small_images_edit_category($image_data['cat_id'], array('image_num' => $new_cat_count), True);
+		$result = small_images_edit_category($image_data['cat_id'], array('image_num' => $new_cat_count), False, True);
 
 		if($result === False)
 		{
@@ -660,7 +759,7 @@ function small_images_delete_small_image($image_info, $type, $suppress_errors = 
 
 	// Update category counts
 	$cat_image_count = (int)small_images_count_category_images($image_info['cat_id'], $type);
-	$result = small_images_edit_category($image_info['cat_id'], array('image_num' => $cat_image_count), True);
+	$result = small_images_edit_category($image_info['cat_id'], array('image_num' => $cat_image_count), False, True);
 
 	if($result === False)
 	{

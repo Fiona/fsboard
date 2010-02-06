@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<template_set_file fsboard_version="0.1" time="23-11-09 1:18 am">
+<template_set_file fsboard_version="0.1" time="06-02-10 1:05 am">
 
 	<template_set name="FSBoard Default" can_change_theme="1" author="Fiona" default_theme="1">
 
@@ -598,8 +598,8 @@
 		<template_parameters><![CDATA[$id, $field_count_num, $info, $form_state]]></template_parameters>
 		<template name="Form field: Password input" class_name="template_global_forms" function_name="form_field_password"><![CDATA[<input type="password" name="{$id}" id="{$form_state['meta']['name']}_{$id}" size="{$info['size']}" />]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
-		<template name="Form field: Single checkbox input" class_name="template_global_forms" function_name="form_field_checkbox"><![CDATA[<input type="checkbox" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="1" <IF "$info['value']">checked="checked"<ENDIF>>]]></template>
-		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
+		<template name="Form field: Single checkbox input" class_name="template_global_forms" function_name="form_field_checkbox"><![CDATA[<input type="checkbox" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="{$checkbox_value}" <IF "$info['value']">checked="checked"<ENDIF>>]]></template>
+		<template_parameters><![CDATA[$id, $info, $form_state, $checkbox_value = 1]]></template_parameters>
 		<template name="Form field: Submit button" class_name="template_global_forms" function_name="form_field_submit"><![CDATA[<input type="submit" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="<IF "$info['value']">{$info['value']}<ELSE>{$lang['form_submit']}<ENDIF>" />]]></template>
 		<template_parameters><![CDATA[$id, $info, $form_state]]></template_parameters>
 		<template name="Form field: Text input" class_name="template_global_forms" function_name="form_field_text"><![CDATA[<input type="text" name="{$id}" id="{$form_state['meta']['name']}_{$id}" value="{$info['value']}" size="{$info['size']}" />]]></template>

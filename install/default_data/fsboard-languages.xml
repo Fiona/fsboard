@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="23-11-09 1:18 am">
+<languages_file fsboard_version="0.1" time="06-02-10 1:05 am">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -1834,7 +1834,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_many_add_submit" group="admin_small_images"><![CDATA[Add Selected]]></phrases>
 		<phrases variable_name="add_many_add_text" group="admin_small_images"><![CDATA[Add:]]></phrases>
 		<phrases variable_name="add_many_cat_text" group="admin_small_images"><![CDATA[To category:]]></phrases>
-		<phrases variable_name="add_many_done_message" group="admin_small_images"><![CDATA[<b><1></b>: Was added sucessfully!]]></phrases>
+		<phrases variable_name="add_many_done_message" group="admin_small_images"><![CDATA[<1> images were added sucessfully!]]></phrases>
 		<phrases variable_name="add_many_done_title" group="admin_small_images"><![CDATA[....Done!]]></phrases>
 		<phrases variable_name="add_many_emoticon_code_exists" group="admin_small_images"><![CDATA[<b><1></b>: An emoticon with the code specified already exists.]]></phrases>
 		<phrases variable_name="add_many_error_inserting" group="admin_small_images"><![CDATA[<b><1></b>: There was an error inserting this into the database!]]></phrases>
@@ -1896,6 +1896,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="add_one_image_title_post_icons" group="admin_small_images"><![CDATA[Add A Post Icon]]></phrases>
 		<phrases variable_name="add_one_image_upload" group="admin_small_images"><![CDATA[<b>OR THIS</b> Upload an image file from your computer.]]></phrases>
 		<phrases variable_name="add_one_image_upload_desc" group="admin_small_images"><![CDATA[The file will be uploaded to the following directory: <i><1></i> This is editable in the configuration settings.]]></phrases>
+		<phrases variable_name="avatars_add_many_description" group="admin_small_images"><![CDATA[Use the check boxes to select which avatars you wish to add. You can also define names for your avatars.]]></phrases>
 		<phrases variable_name="breadcrumb_avatars" group="admin_small_images"><![CDATA[Avatar Manager]]></phrases>
 		<phrases variable_name="breadcrumb_avatars_add" group="admin_small_images"><![CDATA[Add Avatar]]></phrases>
 		<phrases variable_name="breadcrumb_avatars_add_many" group="admin_small_images"><![CDATA[Add Multiple Avatars]]></phrases>
@@ -1929,8 +1930,8 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="cat_perms_no_user_groups" group="admin_small_images"><![CDATA[There are no user groups in the database! I have no idea why that happened...]]></phrases>
 		<phrases variable_name="cat_perms_submit" group="admin_small_images"><![CDATA[Apply Permissions]]></phrases>
 		<phrases variable_name="cat_perms_successful" group="admin_small_images"><![CDATA[Category permissions edited sucessfully!]]></phrases>
-		<phrases variable_name="cat_perms_title_avatars" group="admin_small_images"><![CDATA[Edit Avatar Category Permissions: <b><1></b>]]></phrases>
-		<phrases variable_name="cat_perms_title_post_icons" group="admin_small_images"><![CDATA[Edit Post Icon Category Permissions: <b><1></b>]]></phrases>
+		<phrases variable_name="cat_perms_title_avatars" group="admin_small_images"><![CDATA[Edit Avatar Category Permissions: <1>]]></phrases>
+		<phrases variable_name="cat_perms_title_post_icons" group="admin_small_images"><![CDATA[Edit Post Icon Category Permissions: <1>]]></phrases>
 		<phrases variable_name="cat_perms_user_group_can_use" group="admin_small_images"><![CDATA[Can Group Use Category?]]></phrases>
 		<phrases variable_name="cat_positions_updated" group="admin_small_images"><![CDATA[Category positions were updated sucessfully!]]></phrases>
 		<phrases variable_name="delete_cat_error_deleting_category" group="admin_small_images"><![CDATA[There was an error deleting this category. Images were already removed/moved.]]></phrases>
@@ -1989,6 +1990,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="edit_image_title_post_icons" group="admin_small_images"><![CDATA[Edit post icon: <1>]]></phrases>
 		<phrases variable_name="edit_image_update_error" group="admin_small_images"><![CDATA[There was an error updating this image!]]></phrases>
 		<phrases variable_name="edit_image_upload" group="admin_small_images"><![CDATA[Upload new image]]></phrases>
+		<phrases variable_name="emoticons_add_many_description" group="admin_small_images"><![CDATA[Use the check boxes to select which emoticons you wish to add. You can also define names and emoticon codes before saving.]]></phrases>
 		<phrases variable_name="error_delete_image_cat_last_one" group="admin_small_images"><![CDATA[You cannot remove the last remaining category.]]></phrases>
 		<phrases variable_name="error_updating_cat_positions" group="admin_small_images"><![CDATA[There was an error updating category positions!]]></phrases>
 		<phrases variable_name="error_updating_image_order" group="admin_small_images"><![CDATA[There was an error updating an image order number!]]></phrases>
@@ -2088,6 +2090,8 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="image_main_new_cat_title_avatars" group="admin_small_images"><![CDATA[Create New Avatar Category]]></phrases>
 		<phrases variable_name="image_main_new_cat_title_emoticons" group="admin_small_images"><![CDATA[Create New Emoticon Category]]></phrases>
 		<phrases variable_name="image_main_new_cat_title_post_icons" group="admin_small_images"><![CDATA[Create New Post Icon Category]]></phrases>
+		<phrases variable_name="image_move_multiple_images_image" group="admin_small_images"><![CDATA[Image]]></phrases>
+		<phrases variable_name="image_move_multiple_image_name" group="admin_small_images"><![CDATA[Name]]></phrases>
 		<phrases variable_name="image_move_multiple_title_avatars" group="admin_small_images"><![CDATA[Move Multiple Avatars: <1> (Page <2> of <3>)]]></phrases>
 		<phrases variable_name="image_move_multiple_title_emoticons" group="admin_small_images"><![CDATA[Move Multiple Emoticons: <1> (Page <2> of <3>)]]></phrases>
 		<phrases variable_name="image_move_multiple_title_post_icons" group="admin_small_images"><![CDATA[Move Multiple Post Icons: <1> (Page <2> of <3>)]]></phrases>
@@ -2125,10 +2129,12 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="invalid_image_cat_id" group="admin_small_images"><![CDATA[Specified image category was not found!]]></phrases>
 		<phrases variable_name="invalid_image_image_id" group="admin_small_images"><![CDATA[Specified image was not found!]]></phrases>
 		<phrases variable_name="move_multiple_cat_doesnt_exist" group="admin_small_images"><![CDATA[<b><1></b>: Category specified to move to does not exist.]]></phrases>
-		<phrases variable_name="move_multiple_done_message" group="admin_small_images"><![CDATA[<b><1></b>: Was moved sucessfully!]]></phrases>
+		<phrases variable_name="move_multiple_done_message" group="admin_small_images"><![CDATA[Moved <1> images!]]></phrases>
 		<phrases variable_name="move_multiple_done_title" group="admin_small_images"><![CDATA[Moved...]]></phrases>
 		<phrases variable_name="move_multiple_dropdown_text" group="admin_small_images"><![CDATA[Move to]]></phrases>
 		<phrases variable_name="move_multiple_error_database" group="admin_small_images"><![CDATA[<b><1></b>: There was an error changing the category ID value in the database.]]></phrases>
+		<phrases variable_name="move_multiple_error_none_selected" group="admin_small_images"><![CDATA[No images were selected to be moved.]]></phrases>
+		<phrases variable_name="move_multiple_none_selected" group="admin_small_images"><![CDATA[You haven't selected any images to move.]]></phrases>
 		<phrases variable_name="move_multiple_no_images_avatars" group="admin_small_images"><![CDATA[There are no avatars in this category!]]></phrases>
 		<phrases variable_name="move_multiple_no_images_emoticons" group="admin_small_images"><![CDATA[There are no emoticons in this category!]]></phrases>
 		<phrases variable_name="move_multiple_no_images_post_icons" group="admin_small_images"><![CDATA[There are no post icons in this category!]]></phrases>
@@ -2137,6 +2143,7 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="page_title_avatars" group="admin_small_images"><![CDATA[Avatar Manager]]></phrases>
 		<phrases variable_name="page_title_emoticons" group="admin_small_images"><![CDATA[Emoticon Manager]]></phrases>
 		<phrases variable_name="page_title_post_icons" group="admin_small_images"><![CDATA[Post Icon Manager]]></phrases>
+		<phrases variable_name="post_icons_add_many_description" group="admin_small_images"><![CDATA[Use the check boxes to select which post icons you wish to add. You can also define names for your post icons before saving.]]></phrases>
 		<phrases variable_name="upload_image_error_file_exists" group="admin_small_images"><![CDATA[The file uploaded already exists: <1>]]></phrases>
 		<phrases variable_name="upload_image_error_file_not_found" group="admin_small_images"><![CDATA[The file specified was not found: <1>]]></phrases>
 		<phrases variable_name="upload_image_error_not_image" group="admin_small_images"><![CDATA[File was not detected as being an image.]]></phrases>

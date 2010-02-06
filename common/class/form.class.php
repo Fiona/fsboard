@@ -139,6 +139,8 @@ class form
 
 					if(isset($request[$id]))
 						$this -> form_state["#".$id]['value'] = (is_array($request[$id]) ? $request[$id] : trim($request[$id]));
+					elseif($info['type'] == "results_table")
+						$this -> form_state["#".$id]['value'] = array();
 					else
 						$this -> form_state["#".$id]['value'] = "";
 
@@ -359,7 +361,7 @@ class form
 
 					case "results_table":
 
-						if(isset($info['results_table_checkboxes']))
+						if(isset($info['results_table_checkboxes']) && isset($info['results_table_value_key']))
 						{
 							$info['results_table_settings']['columns'] = array(
 								"checkboxes" => array(
@@ -473,8 +475,7 @@ class form
 	{
 
 		global $template_global_forms;
-
-		return $template_global_forms -> form_field_checkbox($id, $info, $this -> form_state);
+		return $template_global_forms -> form_field_checkbox($id."[]", $info, $this -> form_state, $raw_data[$info['results_table_value_key']]);
 
 	}
 

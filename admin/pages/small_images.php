@@ -231,6 +231,14 @@ if(!count($output -> error_messages))
 			page_add_multiple_small_images($image_settings, $page_matches['category_id']);
 			break;
 
+		case "move_multiple":
+			page_move_multiple_small_images($image_settings, $page_matches['category_id']);
+			break;
+
+		case "permissions":
+			page_edit_permissions_small_images_category($image_settings, $page_matches['category_id']);
+			break;
+
 		case "edit":
 			if(isset($page_matches['image_id']))
 				page_edit_small_images($image_settings, $page_matches['category_id'], $page_matches['image_id']);
@@ -2178,12 +2186,12 @@ function page_add_multiple_small_images($image_settings, $category_id)
 			"meta" => array(
 				"title" => $output -> page_title,
 				"name" => "small_images_".$image_settings['type']."_add_multiple_step2",
+				"description" => $lang[$image_settings['type'].'_add_many_description'],
 				"extra_title_contents_left" => (
 					$output -> help_button("", True).
 					$template_admin -> form_header_icon($image_settings['type'])
 					),
-//				'validation_func' => "form_add_multiple_small_images_validate",
-//				'complete_func' => "form_add_multiple_small_images_complete",
+				'complete_func' => "form_add_multiple_small_images_step2_complete",
 				"data_image_settings" => $image_settings
 				) + $form_state_meta,
 			)
@@ -2229,7 +2237,8 @@ function page_add_multiple_small_images($image_settings, $category_id)
 		"#images" => array(
 			"type" => "results_table",
 			"results_table_settings" => $results_table,
-			"results_table_checkboxes" => True
+			"results_table_checkboxes" => True,
+			"results_table_value_key" => "filename"
 			),
 		"#submit" => array(
 			"value" => $lang['add_many_add_submit'],
@@ -2274,7 +2283,7 @@ function table_add_multiple_images_name($row_data, $form)
 	global $template_global_forms;
 
 	return $template_global_forms -> form_field_text(
-		"",
+		"image_name[".$row_data['filename']."]",
 		array(
 			"value" => strrev(_substr(strchr(strrev($row_data['filename']), "."), 1 )),
 			"size" => 30
@@ -2298,7 +2307,7 @@ function table_add_multiple_images_emoticon_code($row_data, $form)
 	global $template_global_forms;
 
 	return $template_global_forms -> form_field_text(
-		"",
+		"emoticon_code[".$row_data['filename']."]",
 		array(
 			"value" => ":".strrev(_substr(strchr(strrev($row_data['filename']), "."), 1 )).":",
 			"size" => 15
@@ -2308,6 +2317,103 @@ function table_add_multiple_images_emoticon_code($row_data, $form)
 
 }
 
+
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding multiple images
+ *
+ * @param object $form
+ */
+function form_add_multiple_small_images_step2_complete($form)
+{
+
+	global $lang, $output, $page_matches;
+
+	if(!count($form -> form_state['#images']['value']))
+	{
+		$form -> set_error(NULL, $lang['add_many_error_none_selected']);
+		return;
+	}
+
+	// Get together all of our new images
+	$new_images = array();
+	foreach($form -> form_state['#images']['value'] as $filename)
+	{
+
+		// Ensure we have a name
+		if(!isset($_POST['image_name'][$filename]) || !trim($_POST['image_name'][$filename]))
+			continue;
+
+		// Check the path actually exists and it is an image
+		if(!file_exists(ROOT.$_GET['path'].$filename) || !getimagesize(ROOT.$_GET['path'].$filename))
+			continue;
+
+		// Get together all the info that will go into the DB
+		$i = array(
+			"filename" => $_GET['path'].$filename,
+			"name" => $_POST['image_name'][$filename],
+			"cat_id" => $page_matches['category_id'],
+			"type" => $form -> form_state['meta']['data_image_settings']['type'],
+			);
+
+		// Emoticon only checks
+		if($form -> form_state['meta']['data_image_settings']['type'] == "emoticons")
+		{
+
+			if(!isset($_POST['emoticon_code'][$filename]) || !trim($_POST['emoticon_code'][$filename]))
+				continue;
+
+			// Ensure that emoticons don't have the same codes
+			$check_code = small_images_get_emoticon_by_code($_POST['emoticon_code'][$filename]);
+			
+			if($check_code !== False)
+				continue;
+
+			$i['emoticon_code'] = $_POST['emoticon_code'][$filename];
+
+		}
+
+		// everything went better than expected
+		$new_images[] = $i;
+
+	}
+
+	// Make sure we have enough valid images :)
+	if(!count($new_images))
+	{
+		$form -> set_error(NULL, $lang['add_many_error_none_selected']);
+		return;
+	}
+
+	// Go through them all and add them! Hurrah.
+	$total_added = 0;
+
+	foreach($new_images as $image)
+	{
+		// The ternary is for skipping cache rebuilds until the last image
+		// is added - cache rebuilding is a hefty procedure.
+		$add_result = small_images_add_image($image, $image['type'], ($total_added == count($new_images)-1 ? False : True));
+
+		if($add_result !== False)
+			$total_added++;
+		
+	}
+
+	log_admin_action("small_images", "add_multiple", "Added ".$total_added." small images");
+
+	// We've done here
+	$form -> form_state['meta']['redirect'] = array(
+		'url' => l(
+			"admin/".$form -> form_state['meta']['data_image_settings']['type']."/view/".
+			$page_matches['category_id']."/"
+			),
+		'message' => $output -> replace_number_tags($lang['add_many_done_message'], $total_added)
+		);
+
+}
 
 /*
 
@@ -3005,6 +3111,7 @@ function do_delete_image()
 //***********************************************
 // Adding many images to a cat
 //***********************************************
+/*
 function page_add_many_images()
 {
 
@@ -3235,12 +3342,13 @@ function page_add_many_images()
         image_view_page_select($images_per_page, $total_images, "", $image_info);
                  
 }
-
+*/
 
 
 //***********************************************
 // Actually adding many images to a cat now
 //***********************************************
+/*
 function do_add_many_images()
 {
 
@@ -3418,7 +3526,7 @@ function do_add_many_images()
 	page_add_many_images();
 
 }
-
+*/
 
 
 //***********************************************
@@ -3957,10 +4065,121 @@ function do_edit_image()
 
 
 
+/**
+ * Page for moving multiple images
+ */
+function page_move_multiple_small_images($image_settings, $category_id)
+{
+
+	global $lang, $output, $template_admin;
+
+	// oh crumbs
+	$output -> page_title = $lang['breadcrumb_'.$image_settings['type'].'_move_multiple'];
+
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_'.$image_settings['type'].'_move_multiple'],
+		l("admin/".$image_settings['type']."/move_multiple/".$category_id."/")
+		);
+
+
+	// Get alternate categories for the dropdown
+	$raw_category_data = small_images_get_categories($image_settings['type']);
+	unset($raw_category_data[$category_id]);
+
+	$category_data = array();
+
+	foreach($raw_category_data as $id => $cat_info)
+		$category_data[$id] = $cat_info['name'];
+
+
+	// Define form and table and liiiink
+	$form = new form(
+		array(
+			"meta" => array(
+				"title" => $output -> page_title,
+				"name" => "small_images_".$image_settings['type']."_move_multiple",
+//				"description" => $lang[$image_settings['type'].'_add_many_description'],
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon($image_settings['type'])
+					),
+				'validation_func' => "form_move_multiple_small_images_validation",
+				'complete_func' => "form_move_multiple_small_images_complete",
+				"data_image_settings" => $image_settings
+				),
+			)
+		);
+
+	// Define the table
+	$image_data = small_images_get_image_by_category($category_id, $image_settings['type']);
+
+	$results_table = array(
+		"no_results_message" => $lang['image_view_no_images_'.$image_settings['type']],
+
+		"data" => $image_data,
+		"items_per_page" => count($image_data),
+		"default_sort" => "name",
+
+		"columns" => array(
+			"image" => array(
+				"name" => $lang['image_move_multiple_images_image'],
+				"content_callback" => "table_move_multiple_images_image",
+				"align" => "center"
+				),
+			"name" => array(
+				"name" => $lang['image_move_multiple_image_name'],
+				"db_column" => "name"
+				)
+			)
+		);
+
+	$form -> form_state += array(
+		"#images" => array(
+			"type" => "results_table",
+			"results_table_settings" => $results_table,
+			"results_table_checkboxes" => True,
+			"results_table_value_key" => "id"
+			),
+		"#new_category" => array(
+			"name" => $lang['move_multiple_dropdown_text'],
+			"type" => "dropdown",
+			"options" => $category_data,
+			"required" => True
+			),
+		"#submit" => array(
+			"value" => $lang['images_main_action_move_multiple'],
+			"type" => "submit"
+			)
+		);
+
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the moving multilpe images table. (Image)
+ *
+ * @param object $row_data
+ */
+function table_move_multiple_images_image($row_data)
+{
+
+	global $cache;
+
+	return "<img src=\"".$cache -> cache['config']['board_url']."/".$row_data['filename']."\" alt=\"".$row_data['name']."\" />";
+
+}
+
+
 
 //***********************************************
 // Page for moving multiple images
 //***********************************************
+/*
 function page_move_multiple()
 {
 
@@ -4141,12 +4360,79 @@ function page_move_multiple()
         image_view_page_select($images_per_page, $total_images, $get_id);
                          
 }
+*/
 
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for moving multiple images
+ *
+ * @param object $form
+ */
+function form_move_multiple_small_images_validation($form)
+{
+
+	global $lang, $output, $page_matches;
+
+	// Make sure we select some
+	if(!count($form -> form_state['#images']['value']))
+		$form -> set_error(NULL, $lang['move_multiple_error_none_selected']);
+
+	// Make sure the category exists
+	if(small_images_get_category_by_id($form -> form_state['#new_category']['value'], $form -> form_state['meta']['data_image_settings']['type']) === False)
+		$form -> set_error('new_category', $lang['invalid_image_cat_id']);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for moving multiple images
+ *
+ * @param object $form
+ */
+function form_move_multiple_small_images_complete($form)
+{
+
+	global $lang, $output, $page_matches;
+
+	// Move all of our new images
+	$count = 0;
+
+	foreach($form -> form_state['#images']['value'] as $image_id)
+	{
+
+		$move = small_images_edit_image(
+			$image_id, 
+			array("cat_id" => $form -> form_state['#new_category']['value']),
+			$form -> form_state['meta']['data_image_settings']['type'],
+			$page_matches['category_id']);
+
+		if($move === True)
+			$count++;
+
+	}
+
+	log_admin_action("small_images", "move_multiple", "Moved ".$count." small images.");
+
+	// Redirect
+	$form -> form_state['meta']['redirect'] = array(
+		'url' => l(
+			"admin/".$form -> form_state['meta']['data_image_settings']['type']."/view/".
+			$form -> form_state['#new_category']['value']."/"
+			),
+		'message' => $output -> replace_number_tags($lang['move_multiple_done_message'], $count)
+		);
+	
+}
 
 
 //***********************************************
 // Actually moving multiple the images
 //***********************************************
+/*
 function do_move_multiple()
 {
 
@@ -4288,13 +4574,91 @@ function do_move_multiple()
 			
 }
 
+*/
 
+/**
+ * Page for editing an existing categories user group permissions.
+ */
+function page_edit_permissions_small_images_category($image_settings, $category_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the category
+	$category_info = small_images_get_category_by_id($category_id, $image_settings['type']);
+
+	if($category_info === False)
+	{
+		$output -> set_error_message($lang['invalid_image_cat_id']);
+		page_view_small_images_categories($image_settings);
+		return;
+	}
+
+	// No permissions for emoticons
+	if($category_info['type'] == "emoticons")
+	{
+		$output -> set_error_message($lang['cat_perms_emoticons_no']);
+		page_view_small_images_categories($image_settings);
+		return;
+	}
+
+	// Get current permission values
+	$current_denied_user_groups = small_images_get_category_permissions($category_id, $image_settings['type']);
+
+	// Get all user groups
+	include ROOT."admin/common/funcs/user_groups.funcs.php";
+	$groups = user_groups_get_groups();
+
+	// Show the page
+	$output -> page_title = $output -> replace_number_tags($lang['cat_perms_title_'.$image_settings['type']], $category_info['name']);
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_category_perms'],
+		l("admin/".$image_settings['type']."/permissions/".$category_id."/")
+		);
+
+	// Put the form up
+	$form = new form(
+		array(
+			"meta" => array(
+				"name" => "small_images_category_".$image_settings['type']."_edit_permissions",
+				"title" => $output -> page_title,
+				"description" => $lang['cat_perms_message_'.$image_settings['type']],
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon($image_settings['type'])
+					),
+				'complete_func' => "form_edit_permissions_small_images_category_complete",
+				"data_category_info" => $category_info,
+				"data_image_settings" => $image_settings,
+				"data_user_groups" => $groups
+				),
+			)
+		);
+
+	// Put fields in for each user group
+	foreach($groups as $group_id => $group_info)
+		$form -> form_state['#group_'.$group_id] = array(
+			'type' => 'yesno',
+			'name' => $group_info['name'],
+			'value' => (in_array($group_id, $current_denied_user_groups) ? "0" : "1")
+			);
+
+	// Plop submit button on the end
+	$form -> form_state['#submit'] = array(
+		'type' => "submit",
+		'value' => $lang['cat_perms_submit']
+		);
+
+	$output -> add($form -> render());
+
+}
 
 
 
 //***********************************************
 // Category permissions!
 //***********************************************
+/*
 function page_category_permissions()
 {
 
@@ -4406,11 +4770,48 @@ function page_category_permissions()
         );
         
 }
+*/
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing a categories permissions
+ *
+ * @param object $form
+ */
+function form_edit_permissions_small_images_category_complete($form)
+{
+
+	global $lang, $output, $page_matches;
+
+	// Gather up all the groups that are now denied
+	$denied_groups = array();
+
+	foreach($form -> form_state['meta']['data_user_groups'] as $group_id => $junk)
+		if(isset($form -> form_state['#group_'.$group_id]) && !$form -> form_state['#group_'.$group_id]['value'])
+			$denied_groups[] = $group_id;
+
+	// Save the new permissions
+	$update = small_images_edit_category_permissions($form -> form_state['meta']['data_category_info']['id'], $denied_groups);
+
+	if($update !== True)
+		return;
+
+	log_admin_action("small_images", "permissions", "Edited category permissions (".$form -> form_state['meta']['data_image_settings']['type']."): ".$form -> form_state['meta']['data_category_info']['name']);
+
+	// Redirect
+	$form -> form_state['meta']['redirect'] = array(
+		'url' => l("admin/".$form -> form_state['meta']['data_image_settings']['type']."/"),
+		'message' => $lang['cat_perms_successful']
+		);
+
+}
 
 
 //***********************************************
 // Saving category permissions!
 //***********************************************
+/*
 function do_category_permissions()
 {
 
@@ -4493,7 +4894,7 @@ function do_category_permissions()
         $output -> redirect(ROOT."admin/index.php?m=".$_GET['m'], $lang['cat_perms_successful']);
         
 }
-
+*/
 
 
 //***********************************************
