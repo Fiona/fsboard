@@ -78,6 +78,22 @@ $(document).ready(function()
 
 	/*
 	 ******************
+	 * MULTI CHECK TABLES
+	 ******************
+	 */
+	$("form table tr.results_table_header input[name=select_all_checkbox]").click(
+		function()
+		{
+			var checkboxes = $(this).parent().parent().parent().find("input:checkbox");
+			if($(this).is(':checked'))
+				checkboxes.attr("checked", "checked");
+			else
+				checkboxes.attr("checked", "");
+		}
+	);
+
+	/*
+	 ******************
 	 * HELP BUTTON
 	 ******************
 	 */
