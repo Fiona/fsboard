@@ -410,9 +410,11 @@ class parser
 	function do_emoticon_parse($text)
 	{
 
+		global $cache;
+
 		if(count($this -> emoticon_cache) > 0)
 			foreach($this -> emoticon_cache as $emote)
-				$text = preg_replace("/(?<=^|\s|\>)".preg_quote($emote['code'], '#')."(?=$|\s|\>)/m", '<img src="'.ROOT.$emote['image'].'" style="border:none" alt="'.$emote['name'].'" />', $text);
+				$text = preg_replace("/(?<=^|\s|\>)".preg_quote($emote['code'], '#')."(?=$|\s|\>)/m", '<img src="'.$cache -> cache['config']['board_url']."/".$emote['image'].'" style="border:none" alt="'.$emote['name'].'" />', $text);
 
 		return $text;
                                 
