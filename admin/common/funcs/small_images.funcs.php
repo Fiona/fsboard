@@ -101,7 +101,7 @@ function small_images_get_category_by_id($category_id, $type)
  *   using set_error_message. If this is not wanted for whatever reason
  *   setting this to True will stop them appearing.
  *
- * @return bool False on failure.
+ * @return bool|int False on failure or the ID of the new category.
  */
 function small_images_add_category($category_data, $suppress_errors = False)
 {
@@ -124,10 +124,12 @@ function small_images_add_category($category_data, $suppress_errors = False)
 		return False;
 	}
 
+	$new_id = $db -> insert_id();
+
 	// Update cache
 	$cache -> update_cache("small_image_cats");
 
-	return True;
+	return $new_id;
 
 }
 
@@ -240,32 +242,37 @@ function small_images_delete_category(
 	else
 	{
 
-		// We're moving images into another category then :)
-		$update = $db -> basic_update(
-			array(
-				"table" => "small_images",
-				"data" => array("cat_id" => $new_category_id),
-				"where" => "`cat_id` = ".(int)$category_data['id']." AND `type`='".$category_data['type']."'",
-				)
-			);
-
-		if(!$update)
+		if($category_data['image_num'])
 		{
-			if(!$suppress_errors)
-				$output -> set_error_message($lang['delete_cat_error_moving_images']);
-			return $lang['delete_cat_error_moving_images'];
-		}
 
-		// Update count numbers of the new category
-		$db -> basic_update(
-			array(
-				"table" => "small_image_cat",
-				"data" => array(
-					"image_num" => "`image_num` = `image_num` + ".(int)$category_data['image_num'],
-					),
-				"where" => "`id` = ".(int)$new_category_id
-				)
-			);
+			// We're moving images into another category then :)
+			$update = $db -> basic_update(
+				array(
+					"table" => "small_images",
+					"data" => array("cat_id" => $new_category_id),
+					"where" => "`cat_id` = ".(int)$category_data['id']." AND `type`='".$category_data['type']."'",
+					)
+				);
+			
+			if(!$update)
+			{
+				if(!$suppress_errors)
+					$output -> set_error_message($lang['delete_cat_error_moving_images']);
+				return $lang['delete_cat_error_moving_images'];
+			}
+			
+			// Update count numbers of the new category
+			$db -> basic_update(
+				array(
+					"table" => "small_image_cat",
+					"data" => array(
+						"image_num" => "`image_num` + ".(int)$category_data['image_num'],
+						),
+					"where" => "`id` = ".(int)$new_category_id
+					)
+				);
+
+		}
 
 		// Update users with this avatar
 		if($category_data['type'] == "avatars")
@@ -776,36 +783,117 @@ function small_images_delete_small_image($image_info, $type, $suppress_errors = 
 }
 
 
-//***********************************************
-// Takes a bit of XML, generates the image categories defined
-// and creates the images themselves, file and db wise
-//***********************************************
-function import_images_xml($xml_contents, $image_type, $save_images_path, $overwrite_images, $ignore_version = false)
+/**
+ * Will return the XML data for small images. You need to pass in an array of 
+ * group arrays 
+ *
+ * @var array $config_groups This is an array of groups. Usually supplied by a function
+ *   like small_images_get_categories();
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ * @var string $xml_root The name of the root node for this type.
+ *
+ * @return string The contents of the XML file for importing.
+ */
+function small_images_get_exported_small_images($image_groups, $type, $xml_root)
+{
+	
+	// Start XMLing
+	$xml = new xml;
+	$xml -> export_xml_start();
+	$xml -> export_xml_root($xml_root);
+
+	// Wander through all of the categories
+	foreach($image_groups as $image_group_id => $image_group_info)
+	{
+
+		// XML group for each category
+		$xml -> export_xml_start_group(
+			"image_cat",
+			array(
+				"name" => $image_group_info['name'],
+				"order" => $image_group_info['order']
+				)
+			);
+
+		$images = small_images_get_image_by_category($image_group_id, $type);
+
+		if(!count($images))
+		{
+			$xml -> export_xml_generate_group();
+			continue;
+		}
+
+		// Each image has a node on the group
+		foreach($images as $image_data)
+		{
+
+			if(!file_exists(ROOT.$image_data['filename']))
+				continue;
+				
+			// We embed the data for the image in base64
+			$h = fopen(ROOT.$image_data['filename'], "rb");
+			
+			$image_data['data'] = chunk_split(
+				base64_encode(
+					fread($h, filesize(ROOT.$image_data['filename']))
+					)
+				);
+			
+			fclose($h);
+
+			// Finish creating the node
+			$xml_entry = array(
+				"name" => $image_data['name'],
+				"order" => $image_data['order'],
+				"filename" => _substr(strrchr($image_data['filename'], "/"), 1)
+			);
+			
+			if($type == "emoticons")
+				$xml_entry['emoticon_code'] = $image_data['emoticon_code'];
+			else				
+				$xml_entry['min_posts'] = $image_data['min_posts'];
+
+			$xml -> export_xml_add_group_entry("image", $xml_entry, $image_data['data']);
+
+		}
+
+		$xml -> export_xml_generate_group();
+
+	}
+
+	// Finish XML'ing and chuck the file out
+	$xml -> export_xml_generate();
+
+	return $xml -> export_xml;
+
+}
+
+
+
+/**
+ * Given the XML for a previously exported set of small images this will
+ * create categores and image including files.
+ *
+ * @var string $xml_contents XML for the file we wish to get images from.
+ * @var string $type Type of image this is.
+ *   (avatars, emoticons, post_icons)
+ * @var string $xml_root The root XML node. (avatars_file, emoticons_file or post_icons_file)
+ * @var string $save_images_path The path we'll be saving images to.
+ * @var bool $overwrite_images If we want to ovewrite any images that already exist when we import.
+ * @var bool $ignore_version Normally this will check the FSBoard version that the XML 
+ *   file was created with and error. We can skip this check if neccessary.
+ *
+ * @return bool|string True on succes and False on failure. If the method returns "VERSION" then there is
+ *   a version mismatch.
+ */
+function small_images_import_images_xml($xml_contents, $image_type, $xml_root, $save_images_path, $overwrite_images, $ignore_version = false)
 {
 
-
-	global $db;
-	
-	// Image type check
-	switch($image_type)
-	{
-	
-	case "avatars":
-		$xml_root = "avatars_file";
-		break;
-	
-	case "emoticons":
-		$xml_root = "emoticons_file";
-		break;
-	
-	case "post_icons":
-		$xml_root = "post_icons_file";
-	
-	}
+	global $db, $cache;
 
     // Start parser
 	$xml = new xml;
-	
 	$xml -> import_root_name = $xml_root;
 	$xml -> import_group_name = "image_cat";
 	
@@ -817,17 +905,13 @@ function import_images_xml($xml_contents, $image_type, $save_images_path, $overw
 	
 	// Nothing?
 	if(count($xml -> import_xml_values['image_cat']) < 1)
-		return true;
+		return True;
 
 
-	// **********************
 	// Go through each category              
-	// **********************
 	foreach($xml -> import_xml_values['image_cat'] as $cat)
 	{
 
-		$image_cat_count = 0;
-		
 		// Stick it in! So to speak.               
 		$cat_insert = array(
 			'name'	=> $cat['ATTRS']['name'],
@@ -835,27 +919,20 @@ function import_images_xml($xml_contents, $image_type, $save_images_path, $overw
 			'order'	=> $cat['ATTRS']['order']
 			);
 
-		if(!$db -> basic_insert("small_image_cat", $cat_insert))
-			return false;
+		$cat_id = small_images_add_category($cat_insert);
 
-		// Get the ID
-		$cat_id = $db -> insert_id();
+		if($cat_id === False)
+			return False;
 
 		// Create directory
 		if(!is_dir(ROOT.$save_images_path))
 			@mkdir(ROOT.$save_images_path, 0777);
 
-		// Log it!
-		if(!defined("INSTALL"))
-			log_admin_action(CURRENT_MODE, "doimport", "Imported image set (".$image_type."): ".trim($cat_insert['name']));
-
 		// No images in this group?
 		if(count($cat['image']) < 1)
 			continue;
 
-		// **********************
 		// Obviously we have images in this group
-		// **********************
 		foreach($cat['image'] as $id => $image)
 		{
 
@@ -870,7 +947,12 @@ function import_images_xml($xml_contents, $image_type, $save_images_path, $overw
 				unlink(ROOT.$save_images_path.$image['ATTRS']['filename']);
 
 			// Remove from DB
-			$db -> basic_delete("small_images", "type='".$image_type."' and filename='".$save_images_path.$image['ATTRS']['filename']."'");
+			$db -> basic_delete(
+				array(
+					"table" => "small_images",
+					"where" => "`type` = '".$image_type."' and `filename` ='".$db -> escape_string($save_images_path.$image['ATTRS']['filename'])."'"
+					)
+				);
 
 			// Get data first
 			$image_data = preg_replace("/\r\n/", "", $image['CONTENT']);
@@ -900,26 +982,24 @@ function import_images_xml($xml_contents, $image_type, $save_images_path, $overw
 					else
 						$image_insert['min_posts'] = $image['ATTRS']['min_posts'];
 
-					if(!$db -> basic_insert("small_images", $image_insert))
-						return false;
+					$image = small_images_add_image($image_insert, $image_type, True, True);
 
-					$image_cat_count++;
+					if($image !== True)
+						return False;
 		
 				}
 	
 			}
 
 		}
-
-		// Update category count
-		if($image_cat_count > 0)
-			$db -> basic_update("small_image_cat", array("image_num" => $image_cat_count), "id = '".$cat_id."'");
                                 
 	}
+
+	$cache -> update_cache("small_image_cats");
+	$cache -> update_cache($image_type);
         
 	return true;
         
 }
-
 
 ?>

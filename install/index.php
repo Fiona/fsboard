@@ -879,7 +879,7 @@ case 10:
 	if(!defined("DUMMY_MODE"))
 	{
                 
-		if(!import_images_xml($xml, "avatars", "upload/avatar/", true, true))
+		if(!small_images_import_images_xml($xml, "avatars", "avatars_file", "upload/avatar/", True, True))
 		{        
 			$output -> page_output .= $output -> install_step_action(false, $lang['step_10_inserting_avatars_data'], $lang['step_10_fail']);
 			$install_step_fail = true;
@@ -906,7 +906,7 @@ case 10:
 	if(!defined("DUMMY_MODE"))
 	{
                 
-		if(!import_images_xml($xml, "emoticons", "upload/emoticon/", true, true))
+		if(!small_images_import_images_xml($xml, "emoticons", "emoticons_file", "upload/emoticon/", True, True))
 		{        
 			$output -> page_output .= $output -> install_step_action(false, $lang['step_10_inserting_emoticons_data'], $lang['step_10_fail']);
 			$install_step_fail = true;
@@ -933,7 +933,7 @@ case 10:
 	if(!defined("DUMMY_MODE"))
 	{
                 
-		if(!import_images_xml($xml, "post_icons", "upload/post_icon/", true, true))
+		if(!small_images_import_images_xml($xml, "post_icons", "post_icons_file", "upload/post_icon/", True, True))
 		{        
 			$output -> page_output .= $output -> install_step_action(false, $lang['step_10_inserting_post_icons_data'], $lang['step_10_fail']);
 			$install_step_fail = true;
