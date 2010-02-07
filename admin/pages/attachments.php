@@ -548,7 +548,7 @@ function form_edit_filetypes_complete($form)
 /**
  * Confirmation page to remove a filetype.
  *
- * @var $reputation_id ID of the rep we're deleting.
+ * @var $filetype_id_id ID of the filetype we're deleting.
  */
 function page_delete_filetypes($filetype_id)
 {
@@ -598,8 +598,8 @@ function page_delete_filetypes($filetype_id)
  * ---------------------
  * Completion funciton for deleting a filetype
  *
- * @param int $reputation_id The ID of the rep being deleted.
- * @param string $name Name of the rep. (For logging.)
+ * @param int $filetype_id The ID of the filetype being deleted.
+ * @param string $name Name of the filetype. (For logging.)
  */
 function attachments_delete_filetype_complete($filetype_id, $name)
 {
