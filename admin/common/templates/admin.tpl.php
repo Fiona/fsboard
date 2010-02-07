@@ -562,8 +562,8 @@ END;
 		// *****************
 		// BBCode
 		// *****************
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
-		$return .= $this -> generate_menu_header("bbcode", "*** ");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
+		$return .= $this -> generate_menu_header("bbcode");
 
 		$return .= $this -> generate_menu_move_a_bit();
 				

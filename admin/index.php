@@ -258,6 +258,16 @@ $mode_file_list = array(
 		"page" => "small_images"
 	),
 
+	// ----------------
+	// Custom BBCode
+	// ----------------
+	'bbcode(/(?<mode>add))?' => array(
+		"page" => "bbcode"
+	),
+	'bbcode/(?<mode>edit|delete)/(?<bbcode_id>[0-9]+)' => array(
+		"page" => "bbcode"
+	),
+
 	// --------------------
 	// Waiting to be refactored pages
 	// --------------------
@@ -274,7 +284,6 @@ $mode_file_list = array(
 	'moderators'    => 'moderators.php',
 	'tasks'         => 'tasks.php',
 	'tasklogs'      => 'tasks_logs.php',
-	'bbcode'        => 'bbcode.php',
 	'wordfilter'    => 'wordfilter.php',
 	'plugins'		=> 'plugins.php',
 	'undelete'		=> 'undelete.php'

@@ -28,509 +28,537 @@ if(!defined("FSBOARD"))
 	die("Script has not been initialised correctly! (FSBOARD not defined)");
 
 
-//***********************************************
-// include my words
-//***********************************************
+
+// This file was refactored to Preemptive Strike 1.0
 load_language_group("admin_bbcode");
 
+$output -> add_breadcrumb($lang['breadcrumb_bbcode'], l("admin/bbcode/"));
 
-$output -> add_breadcrumb($lang['breadcrumb_bbcode'], "index.php?m=bbcode");
 
-$secondary_mode = $_GET['m2'];
+// General page functions
+include ROOT."admin/common/funcs/bbcode.funcs.php";
 
-switch($secondary_mode)
+
+// Work out where we need to be
+$mode = isset($page_matches['mode']) ? $page_matches['mode'] : "";
+
+switch($mode)
 {
 
-        case "add":
-                page_add_edit_bbcode(true);
-                break;
+	case "add":
+		page_add_bbcode();
+		break;
                 
-        case "doadd":
-                do_add_bbcode();
-                break;
-
-        case "edit":
-                page_add_edit_bbcode();
-                break;
+	case "edit":
+		page_edit_bbcode($page_matches['bbcode_id']);
+		break;
                 
-        case "doedit":
-                do_edit_bbcode();
-                break;
-
-        case "delete":
-                do_delete_bbcode();
-                break;
+	case "delete":
+		page_delete_bbcode($page_matches['bbcode_id']);
+		break;
                 
-        default:
-                page_main();
+	default:
+		page_view_bbcode();
 
 }
 
 
-//***********************************************
-// The BBcode listing
-//***********************************************
-function page_main()
+/**
+ * Main table view
+ */
+function page_view_bbcode()
 {
 
-        global $lang, $output, $db;
-        
-        // *********************
-        // Set page title
-        // *********************
-        $output -> page_title = $lang['bbcode_main_title'];
+	global $lang, $output, $template_admin;
 
-        // Create class
-        $table = new table_generate;
-        $form = new form_generate;
+	$output -> page_title = $lang['bbcode_main_title'];
 
+	// Define the table
+	$results_table = new results_table(
+		array(
+			"title" => $template_admin -> form_header_icon("bbcode").$lang['bbcode_main_title'],
+			"description" => $lang['bbcode_main_message'],
+			"no_results_message" => $lang['no_bbcode'],
+			"title_button" => array(
+				"type" => "add",
+				"text" => $lang['add_bbcode_button'],
+				"url" => l("admin/bbcode/add/")
+				),
 
-        // ********************
-        // Start table
-        // ********************
-        $output -> add(
-                $form -> start_form("dummyform", "", "post").
-                $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
+			"db_table" => "bbcode",
+			"db_extra_what" => array("tag"),
+			"default_sort" => "tag",
 
-                $table -> add_basic_row($lang['bbcode_main_title'], "strip1",  "", "left", "100%", "4").
-                $table -> add_basic_row($lang['bbcode_main_message'], "normalcell",  "padding : 5px", "left", "100%", "4").
-                
-                $table -> add_row(
-                        array(
-                                array($lang['bbcode_main_name'], "auto"),
-                                array($lang['bbcode_main_tag'], "auto"),
-                                array($lang['bbcode_main_example'], "auto"),
-                                array($lang['bbcode_main_actions'], "auto")
-                        )
-                , "strip2")
-        );
-        
+			"columns" => array(
+				"name" => array(
+					"name" => $lang['bbcode_main_name'],
+					"db_column" => 'name',
+					"sortable" => True
+					),
+				"tag" => array(
+					"name" => $lang['bbcode_main_tag'],
+					"content_callback" => 'table_view_bbcode_tag_callback',
+					"sortable" => True
+					),
+				"example" => array(
+					"name" => $lang['bbcode_main_example'],
+					"db_column" => 'example'
+					),
+				"actions" => array(
+					"content_callback" => 'table_view_bbcode_actions_callback'
+					)
+				)
+			)
+		);
 
-        // ********************
-        // Grab all code
-        // ********************
-        $db -> query("select * from ".$db -> table_prefix."bbcode order by `tag` asc");
+	$output -> add($results_table -> render());
 
-        // No bbcode?
-        if( $db -> num_rows() < 1)
-               $output -> add(
-                        $table -> add_basic_row("<b>".$lang['no_bbcode']."</b>", "normalcell",  "padding : 10px", "center")
-                );        
-                
-        else
-        {
+	// Test bbcode form
+	$form = new form(
+		array(
+			"meta" => array(
+				"name" => "test_bbcode",
+				"title" => $lang['bbcode_test_title'],
+				"description" => $lang['bbcode_test_description'],
+				"complete_func" => "form_test_bbcode_complete"
+				),
+			"#text" => array(
+				"type" => "textarea",
+				"name" => $lang['bbcode_test_form_text'],
+				"required" => True
+				),
+			"#submit" => array(
+				"type" => "submit",
+				"value" => $lang['bbcode_test_form_submit']
+				)
+			)
+		);
 
-                // *************************
-                // Go through each code if we have some
-                // *************************
-                while($b_array = $db-> fetch_array())
-                {
-
-                        // Linky linky to actions
-                        $actions = "
-                        <a href=\"".ROOT."admin/index.php?m=bbcode&amp;m2=edit&amp;id=".$b_array['id']."\" title=\"".$lang['bbcode_main_edit']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-edit.png\"></a>
-                        <a href=\"".ROOT."admin/index.php?m=bbcode&amp;m2=delete&amp;id=".$b_array['id']."\" onclick=\"return confirm('".$lang['delete_bbcode_confirm']."')\" title=\"".$lang['bbcode_main_delete']."\">
-                        <img border=\"0\" style=\"vertical-align:bottom;\" src=\"".IMGDIR."/button-delete.png\"></a>";
-
-                        $output -> add(
-                                $table -> add_row(
-                                        array(
-                                                array($b_array['name'], "auto"),
-                                                array("[<b>".$b_array['tag']."</b>]", "auto"),
-                                                array($b_array['example'], "auto"),
-                                                array($actions, "auto")
-                                        )
-                                , "normalcell")
-                        );
-                        
-                }
-
-        }
-
-        // ********************
-        // End table
-        // ********************
-        $output -> add(
-                $table -> add_basic_row(
-                        $form -> button("addbbcode", $lang['add_bbcode_button'], "submitbutton", "onclick=\"return window.location = '".ROOT."admin/index.php?m=bbcode&m2=add';\"")
-                , "strip3", "", "center", "100%").
-                $table -> end_table().
-                $form -> end_form()
-        );
-                        
-}
-
-
-
-//***********************************************
-// Form for adding or editing bbcode
-//***********************************************
-function page_add_edit_bbcode($adding = false, $bbcode_info = "")
-{
-
-        global $output, $lang, $db, $template_admin;
-
-        // Create classes
-        $table = new table_generate;
-        $form = new form_generate;
-
-        // ***************************
-        // Need different headers
-        // ***************************
-        if($adding)
-        {
-
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['add_bbcode_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_bbcode_add'], "index.php?m=bbcode&m2=add");
-
-                $output -> add(
-                        $form -> start_form("addbbcode", ROOT."admin/index.php?m=bbcode&amp;m2=doadd", "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
-                        // ---------------
-                        // Title and info
-                        // ---------------
-                        $table -> add_basic_row($lang['add_bbcode_title'], "strip1",  "", "left", "100%", "2").
-                        $table -> add_basic_row($lang['add_bbcode_message'], "normalcell",  "padding : 5px", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['add_bbcode_submit'];
-
-        }
-        else
-        {
-
-                // **************************
-                // Grab the code
-                // **************************
-                $get_id = trim($_GET['id']);
-                
-                // No ID
-                if($get_id == '')
-                {
-                        $output -> add($template_admin -> critical_error($lang['invalid_bbcode_id']));
-                        page_main();
-                        return;
-                }
-                        
-                // Grab wanted task
-                $db -> query("select * from ".$db -> table_prefix."bbcode where id='".$get_id."'");
-        
-                // Die if it doesn't exist
-                if($db -> num_rows() == 0)
-                {
-                        $output -> add($template_admin -> critical_error($lang['invalid_bbcode_id']));
-                        page_main();
-                        return;
-                }
-
-                $bbcode_info = $db -> fetch_array();
-        
-                // *********************
-                // Set page title
-                // *********************
-                $output -> page_title = $lang['edit_bbcode_title'];
-
-		$output -> add_breadcrumb($lang['breadcrumb_bbcode_edit'], "index.php?m=bbcode&m2=edit");
-
-                $output -> add(
-                        $form -> start_form("editbbcode", ROOT."admin/index.php?m=bbcode&amp;m2=doedit&amp;id=".$get_id, "post").
-                        $table -> start_table("", "margin-top : 10px; border-collapse : collapse;", "center", "95%").
-                        // ---------------
-                        // Title and info
-                        // ---------------
-                        $table -> add_basic_row($lang['edit_bbcode_title'], "strip1",  "", "left", "100%", "2")
-                );
-
-                $submit_lang = $lang['edit_bbcode_submit'];
-        
-        }
-
-        // ***************************
-        // Print the form
-        // ***************************
-        $output -> add(
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_name'], "50%"),
-                                array($form -> input_text("name", $bbcode_info['name']), "50%")
-                        )
-                , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_description']."<br /><font class=\"small_text\">".$lang['add_bbcode_description_desc']."</font>", "50%"),
-                                array($form -> input_textbox("description", $bbcode_info['description']), "50%")
-                        )
-                , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_example']."<br /><font class=\"small_text\">".$lang['add_bbcode_example_desc']."</font>", "50%"),
-                                array($form -> input_textbox("example", $bbcode_info['example']), "50%")
-                        )
-                , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_button_image']."<br /><font class=\"small_text\">".$lang['add_bbcode_example_desc']."</font>", "50%"),
-                                array($form -> input_text("button_image", $bbcode_info['button_image']), "50%")
-                        )
-                , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_tag']."<br /><font class=\"small_text\">".$lang['add_bbcode_tag_desc']."</font>", "50%"),
-                                array("[ ".$form -> input_text("tag", $bbcode_info['tag'], "inputtext", "50%")." ]", "50%")
-                        )
-                , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_use_param']."<br /><font class=\"small_text\">".$lang['add_bbcode_use_param_desc']."</font>", "50%"),
-                                array($form -> input_yesno("use_param", $bbcode_info['use_param']), "50%")
-                        )
-                , "normalcell").
-                $table -> add_row(
-                        array(
-                                array($lang['add_bbcode_replacement']."<br /><font class=\"small_text\">".$lang['add_bbcode_replacement_desc']."</font>", "50%"),
-                                array($form -> input_textbox("replacement", $bbcode_info['replacement']), "50%")
-                        )
-                , "normalcell").
-
-                // -----------
-                // Submit Button
-                // -----------
-                $table -> add_basic_row($form -> submit("submit", $submit_lang), "strip3", "", "center", "100%", "2").
-                $table -> end_table().
-                $form -> end_form()
-        );   
-                
-}
-
-
-//***********************************************
-// Add the BBCode
-//***********************************************
-function do_add_bbcode()
-{
-
-        global $output, $lang, $db, $template_admin, $cache;
-
-
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $bbcode_info = array(
-                "name"                  => $_POST['name'],
-                "description"           => $_POST['description'],
-                "example"               => $_POST['example'],
-                "button_image"          => $_POST['button_image'],
-                "tag"                   => $_POST['tag'],
-                "use_param"             => $_POST['use_param'],
-                "replacement"           => $_POST['replacement']
-        );
-
-        // ***************************
-        // Check there's something in the tag and stuff
-        // ***************************
-        if(trim($bbcode_info['tag']) == "" || trim($bbcode_info['replacement']) == "")
-        {
-                $output -> add($template_admin -> normal_error($lang['add_bbcode_tag_empty']));
-                page_add_edit_bbcode(true, $bbcode_info);
-                return;
-        }               
-
-        // *********************
-        // Check tag doesn't already exist
-        // *********************
-        $db -> query("select id from ".$db -> table_prefix."bbcode where tag='".$bbcode_info['tag']."'");
-
-        // Die if it does
-        if($db -> num_rows() > 0)
-        {
-                $output -> add($template_admin -> critical_error($lang['bbcode_tag_already_exists']));
-                page_add_edit_bbcode(true, $bbcode_info);
-                return;
-        }
-
-        // ***************************
-        // Add it!
-        // ***************************
-        if(!$db -> basic_insert("bbcode", $bbcode_info))
-        {
-                $output -> add($template_admin -> critical_error($lang['add_bbcode_error']));
-                page_add_edit_bbcode(true, $bbcode_info);
-                return;
-        }               
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("custom_bbcode");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("bbcode", "doadd", "Added BBCode: ".$bbcode_info['tag']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=bbcode", $lang['bbcode_created_sucessfully']);
+	$output -> add($form -> render());
 
 }
 
 
-//***********************************************
-// Edit a BBCode
-//***********************************************
-function do_edit_bbcode()
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the custom bbcode view actions.
+ *
+ * @param object $row_data
+ */
+function table_view_bbcode_tag_callback($row_data)
+{
+	return "[<b>".$row_data['tag']."</b>]";
+}
+
+
+/**
+ * RESULTS TABLE FUNCTION
+ * ----------------------
+ * Content callback for the custom bbcode view actions.
+ *
+ * @param object $row_data
+ */
+function table_view_bbcode_actions_callback($row_data)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $lang, $template_global_results_table;
 
-        // **************************
-        // Grab the code
-        // **************************
-        $get_id = trim($_GET['id']);
-        
-        // No ID
-        if($get_id == '')
-        {
-                $output -> add($template_admin -> critical_error($lang['invalid_bbcode_id']));
-                page_main();
-                return;
-        }
-                
-        // Grab wanted task
-        $db -> query("select id from ".$db -> table_prefix."bbcode where id='".$get_id."'");
-
-        // Die if it doesn't exist
-        if($db -> num_rows() == 0)
-        {
-                $output -> add($template_admin -> critical_error($lang['invalid_bbcode_id']));
-                page_main();
-                return;
-        }
-
-        // **********************
-        // Get stuff from the post
-        // **********************
-        $bbcode_info = array(
-                "name"                  => $_POST['name'],
-                "description"           => $_POST['description'],
-                "example"               => $_POST['example'],
-                "button_image"          => $_POST['button_image'],
-                "tag"                   => $_POST['tag'],
-                "use_param"             => $_POST['use_param'],
-                "replacement"           => $_POST['replacement']
-        );
-
-        // ***************************
-        // Check there's something in the tag and stuff
-        // ***************************
-        if(trim($bbcode_info['tag']) == "" || trim($bbcode_info['replacement']) == "")
-        {
-                $output -> add($template_admin -> normal_error($lang['add_bbcode_tag_empty']));
-                page_add_edit_bbcode(false, $bbcode_info);
-                return;
-        }               
-
-        // *********************
-        // Check tag doesn't already exist
-        // *********************
-        $db -> query("select id from ".$db -> table_prefix."bbcode where tag='".$bbcode_info['tag']."' and id <> '".$get_id."'");
-
-        // Die if it does
-        if($db -> num_rows() > 0)
-        {
-                $output -> add($template_admin -> critical_error($lang['bbcode_tag_already_exists']));
-                page_add_edit_bbcode(false, $bbcode_info);
-                return;
-        }
-
-        // *********************
-        // Do the query
-        // *********************
-        if(!$db -> basic_update("bbcode", $bbcode_info, "id='".$get_id."'"))        
-        {
-                $output -> add($template_admin -> critical_error($lang['error_editing_bbcode']));
-                page_main();
-                return;
-        }
-        
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("custom_bbcode");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("bbcode", "doedit", "Edited BBCode: ".$bbcode_info['tag']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=bbcode", $lang['bbcode_edited_sucessfully']);
+	return (
+		$template_global_results_table -> action_button(
+			"edit",
+			$lang['bbcode_main_edit'],
+			l("admin/bbcode/edit/".$row_data['id']."/")
+			).
+		$template_global_results_table -> action_button(
+			"delete",
+			$lang['bbcode_main_delete'],
+			l("admin/bbcode/delete/".$row_data['id']."/")
+			)
+		);
 
 }
 
 
-//***********************************************
-// Nuke some BBcode
-//***********************************************
-function do_delete_bbcode()
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for testing bbcode
+ *
+ * @param object $form
+ */
+function form_test_bbcode_complete($form)
 {
 
-        global $output, $lang, $db, $template_admin, $cache;
+	global $lang, $output, $parser, $template_global;
 
-        // **************************
-        // Grab the code
-        // **************************
-        $get_id = trim($_GET['id']);
-        
-        // No ID
-        if($get_id == '')
-        {
-                $output -> add($template_admin -> critical_error($lang['invalid_bbcode_id']));
-                page_main();
-                return;
-        }
-                
-        // Grab wanted task
-        $db -> query("select id,tag from ".$db -> table_prefix."bbcode where id='".$get_id."'");
+	$parser -> options(True, True, True, True, True, True);
 
-        // Die if it doesn't exist
-        if($db -> num_rows() == 0)
-        {
-                $output -> add($template_admin -> critical_error($lang['invalid_bbcode_id']));
-                page_main();
-                return;
-        }
-        
-        $bbcode_info = $db -> fetch_array();
-
-        // ********************
-        // Delete it
-        // ********************
-        $db -> query("DELETE FROM ".$db -> table_prefix."bbcode WHERE id='".$get_id."'");
-
-        // ***************************
-        // Update cache
-        // ***************************
-        $cache -> update_cache("custom_bbcode");
-        
-        // ***************************
-        // Log it!
-        // ***************************
-        log_admin_action("bbcode", "dodelete", "Removed BBCode: ".$bbcode_info['tag']);
-
-        // ***************************
-        // Done
-        // ***************************
-        $output -> redirect(ROOT."admin/index.php?m=bbcode", $lang['bbcode_deleted_sucessfully']);
+	$output -> add(
+		$template_global -> message(
+			$lang['bbcode_test_result'],
+			$parser -> do_parser($form -> form_state['#text']['value'])
+			)
+		);
 
 }
+
+
+/**
+ * Page for creating a new custom bbcode
+ */
+function page_add_bbcode()
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	$output -> page_title = $lang['add_bbcode_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_bbcode_add'],
+		l("admin/bbcode/add/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_bbcode("add")
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * This is the form definition for adding/editing bbcode
+ *
+ * @param string $type The type of request. "add" or "edit".
+ * @param array $initial_data Array of data directly from the database that will
+ *   be used to populate the fields initially.
+ */
+function form_add_edit_bbcode($type, $initial_data = NULL)
+{
+
+	global $lang, $output, $template_admin;
+
+	// Form definition
+	$form_data = array(
+			"meta" => array(
+				"name" => "bbcode_".$type,
+				"extra_title_contents_left" => (
+					$output -> help_button("", True).
+					$template_admin -> form_header_icon("bbcode")
+					),
+				"initial_data" => $initial_data
+				),
+
+			"#name" => array(
+				"name" => $lang['add_bbcode_name'],
+				"type" => "text",
+				"required" => True
+				),
+			"#description" => array(
+				"name" => $lang['add_bbcode_description'],
+				"description" => $lang['add_bbcode_description_desc'],
+				"type" => "textarea"
+				),
+			"#example" => array(
+				"name" => $lang['add_bbcode_example'],
+				"description" => $lang['add_bbcode_example_desc'],
+				"type" => "textarea"
+				),
+			"#button_image" => array(
+				"name" => $lang['add_bbcode_button_image'],
+				"description" => $lang['add_bbcode_button_image_desc'],
+				"type" => "text"
+				),
+			"#tag" => array(
+				"name" => $lang['add_bbcode_tag'],
+				"description" => $lang['add_bbcode_tag_desc'],
+				"type" => "text",
+				"required" => True,
+				'extra_field_contents_left' => "[ ",
+				'extra_field_contents_right' => " ]"
+				),
+			"#use_param" => array(
+				"name" => $lang['add_bbcode_use_param'],
+				"description" => $lang['add_bbcode_use_param_desc'],
+				"type" => "yesno"
+				),
+			"#replacement" => array(
+				"name" => $lang['add_bbcode_replacement'],
+				"description" => $lang['add_bbcode_replacement_desc'],
+				"type" => "textarea",
+				"required" => True
+				),
+
+			"#submit" => array(
+				"type" => "submit"
+				)
+		);
+
+	// Make alterations to the form based on the mode we're in before sending back
+	if($type == "add")
+	{
+		$form_data['meta']['title'] = $lang['add_bbcode_title'];
+		$form_data['meta']['description'] = $lang['add_bbcode_message'];
+		$form_data['meta']['validation_func'] = "form_add_bbcode_validate";
+		$form_data['meta']['complete_func'] = "form_add_bbcode_complete";
+		$form_data['#submit']['value'] = $lang['add_bbcode_submit'];
+	}
+	elseif($type == "edit")
+	{
+		$form_data['meta']['title'] = $lang['edit_bbcode_title'];
+		$form_data['meta']['validation_func'] = "form_edit_bbcode_validate";
+		$form_data['meta']['complete_func'] = "form_edit_bbcode_complete";
+		$form_data['#submit']['value'] = $lang['edit_bbcode_submit'];
+	}
+
+	return $form_data;
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for adding bbcode
+ *
+ * @param object $form
+ */
+function form_add_bbcode_validate($form)
+{
+
+	global $lang;
+
+	if(custom_bbcode_get_bbcode_by_tag($form -> form_state['#tag']['value']) !== False)
+		$form -> set_error("tag", $lang['bbcode_tag_already_exists']);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for adding bbcode
+ *
+ * @param object $form
+ */
+function form_add_bbcode_complete($form)
+{
+
+	global $lang, $output;
+
+	// Add the filetype
+	$new_id = custom_bbcode_add_bbcode(
+        array(
+			"name" 			=> $form -> form_state['#name']['value'],
+			"description" 	=> $form -> form_state['#description']['value'],
+			"example" 		=> $form -> form_state['#example']['value'],
+			"button_image" 	=> $form -> form_state['#button_image']['value'],
+			"tag" 			=> $form -> form_state['#tag']['value'],
+			"use_param" 	=> $form -> form_state['#use_param']['value'],
+			"replacement" 	=> $form -> form_state['#replacement']['value']
+			)
+		);
+
+	if($new_id === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"bbcode",
+		"add",
+		"Added new custom BBCode ".$form -> form_state['#tag']['value']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/bbcode/"),
+		$lang['bbcode_created_sucessfully']
+		);
+
+}
+
+
+/**
+ * Page for editing an existing bbcode
+ */
+function page_edit_bbcode($bbcode_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the BBCode
+	$bbcode_info = custom_bbcode_get_bbcode_by_id($bbcode_id);
+
+	if($bbcode_info === False)
+	{
+		$output -> set_error_message($lang['invalid_bbcode_id']);
+		page_view_bbcode();
+		return;
+	}
+
+	// Show the page
+	$output -> page_title = $lang['edit_bbcode_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_bbcode_edit'],
+		l("admin/bbcode/edit/".$bbcode_id."/")
+		);
+
+	// Put the form up
+	$form = new form(
+		form_add_edit_bbcode("edit", $bbcode_info)
+		);
+
+	$output -> add($form -> render());
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Validation funciton for editing bbcode
+ *
+ * @param object $form
+ */
+function form_edit_bbcode_validate($form)
+{
+
+	global $lang;
+
+	if(custom_bbcode_get_bbcode_by_tag($form -> form_state['#tag']['value'], $form -> form_state['meta']['initial_data']['id']) !== False)
+		$form -> set_error("tag", $lang['bbcode_tag_already_exists']);
+
+}
+
+
+/**
+ * FORM FUNCTION
+ * --------------
+ * Completion funciton for editing bbcode
+ *
+ * @param object $form
+ */
+function form_edit_bbcode_complete($form)
+{
+
+	global $lang, $output;
+
+	// Edit the filetype
+	$update = custom_bbcode_edit_bbcode(
+		$form -> form_state['meta']['initial_data']['id'],
+        array(
+			"name" 			=> $form -> form_state['#name']['value'],
+			"description" 	=> $form -> form_state['#description']['value'],
+			"example" 		=> $form -> form_state['#example']['value'],
+			"button_image" 	=> $form -> form_state['#button_image']['value'],
+			"tag" 			=> $form -> form_state['#tag']['value'],
+			"use_param" 	=> $form -> form_state['#use_param']['value'],
+			"replacement" 	=> $form -> form_state['#replacement']['value']
+			)
+		);
+
+	if($update === False)
+		return False;
+
+	// Log
+	log_admin_action(
+		"bbcode",
+		"edit",
+		"Edited custom BBCode: ".$form -> form_state['#tag']['value']
+		);
+
+	// Redirect...
+	$output -> redirect(
+		l("admin/bbcode/"),
+		$lang['bbcode_edited_sucessfully']
+		);
+
+}
+
+
+/**
+ * Confirmation page to remove a custom bbcode.
+ *
+ * @var $bbcode_id ID of the bbcode we're deleting.
+ */
+function page_delete_bbcode($bbcode_id)
+{
+
+	global $output, $lang, $db, $template_admin;
+
+	// Select the filetype
+	$bbcode_info = custom_bbcode_get_bbcode_by_id($bbcode_id);
+
+	if($bbcode_info === False)
+	{
+		$output -> set_error_message($lang['invalid_bbcode_id']);
+		page_view_bbcode();
+		return;
+	}
+
+	// Show the confirmation page
+	$output -> page_title = $lang['delete_bbcode_title'];
+	$output -> add_breadcrumb(
+		$lang['breadcrumb_bbcode_delete'],
+		l("admin/bbcode/delete/".$bbcode_id."/")
+		);
+
+
+	$output -> add(
+		$output -> confirmation_page(
+			array(
+				"title" => $output -> page_title,
+				"extra_title_contents_left" => $template_admin -> form_header_icon("bbcode"),
+				"description" => $output -> replace_number_tags(
+					$lang['delete_bbcode_message'],
+					sanitise_user_input($bbcode_info['name'])
+					),
+				"callback" => "delete_bbcode_complete",
+				"arguments" => array($bbcode_id, $bbcode_info['name']),
+				"confirm_redirect" => l("admin/bbcode/"),
+				"cancel_redirect" => l("admin/bbcode/")
+				)
+			)
+		);
+
+}
+
+
+
+
+/**
+ * CONFIRMATION CALLBACK
+ * ---------------------
+ * Completion funciton for deleting a custom bbcode
+ *
+ * @param int $bbcode_id The ID of the bbcode being deleted.
+ * @param string $name Name of the bbcode. (For logging.)
+ */
+function delete_bbcode_complete($bbcode_id, $name)
+{
+
+	global $output, $lang;
+
+	// Delete and check the response
+	$return = custom_bbcode_delete_bbcode($bbcode_id);
+
+	if($return === True)
+	{
+
+        // Log it
+        log_admin_action("bbcode", "delete", "Deleted bbcode: ".$name);
+		return True;
+
+	}
+	else
+		return False;
+
+}
+
 
 ?>

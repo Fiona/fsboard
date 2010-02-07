@@ -286,7 +286,7 @@ class parser
                         
 			$modifiers = (isset($tag_array['modifiers'])) ? $tag_array['modifiers'] : "is";
                         
-			if(isset($tag_array['option']))
+			if(isset($tag_array['option']) && $tag_array['option'])
 			{
 				$search = (isset($tag_array['search'])) ? $tag_array['search'] : '#\['.$tag_name.'\=(.*?)](.+?)\[/'.$tag_name.'\]#'.$modifiers;
                                 
@@ -616,8 +616,8 @@ class parser
 				{
 					$option = false;
 					$cache_entry['replacement'] = str_ireplace("{content}", "\\1", $cache_entry['replacement']);
-				}
-                                
+				}                                
+
 				$this -> tag_cache[$cache_entry['tag']] = array(
 					"replace" => $cache_entry['replacement'],
 					"option" => $option                                        
@@ -628,8 +628,6 @@ class parser
 		}
 		 
 	}
-
-
         
         
 	/*

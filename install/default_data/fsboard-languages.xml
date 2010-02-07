@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="06-02-10 1:05 am">
+<languages_file fsboard_version="0.1" time="07-02-10 2:46 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -745,20 +745,29 @@ For example, the BBCode <b>[altimage=param] content [/altimage]</b> would need s
 		<phrases variable_name="add_bbcode_use_param_desc" group="admin_bbcode"><![CDATA[Makes this code require a parameter, for instance <b>[tag=parameter] content [/tag]</b> as opposed to <b>[tag] content [/tag]</b>]]></phrases>
 		<phrases variable_name="bbcode_created_sucessfully" group="admin_bbcode"><![CDATA[Custom BBCode created sucessfully!]]></phrases>
 		<phrases variable_name="bbcode_deleted_sucessfully" group="admin_bbcode"><![CDATA[BBCode tag was deleted!]]></phrases>
+		<phrases variable_name="bbcode_delete_fail" group="admin_bbcode"><![CDATA[There was an error removing this BBCode.]]></phrases>
 		<phrases variable_name="bbcode_edited_sucessfully" group="admin_bbcode"><![CDATA[BBCode edited sucessfully!]]></phrases>
 		<phrases variable_name="bbcode_main_actions" group="admin_bbcode"><![CDATA[Actions]]></phrases>
-		<phrases variable_name="bbcode_main_delete" group="admin_bbcode"><![CDATA[Delete]]></phrases>
-		<phrases variable_name="bbcode_main_edit" group="admin_bbcode"><![CDATA[Edit]]></phrases>
+		<phrases variable_name="bbcode_main_delete" group="admin_bbcode"><![CDATA[Delete Custom BBCode]]></phrases>
+		<phrases variable_name="bbcode_main_edit" group="admin_bbcode"><![CDATA[Edit Custom BBCode]]></phrases>
 		<phrases variable_name="bbcode_main_example" group="admin_bbcode"><![CDATA[Example]]></phrases>
 		<phrases variable_name="bbcode_main_message" group="admin_bbcode"><![CDATA[BBCode is the formatting system built into FSBoard and most other message board software. Here you can define your own BBCode that will be used in addition to what is already built-in.]]></phrases>
 		<phrases variable_name="bbcode_main_name" group="admin_bbcode"><![CDATA[Name]]></phrases>
 		<phrases variable_name="bbcode_main_tag" group="admin_bbcode"><![CDATA[Tag]]></phrases>
 		<phrases variable_name="bbcode_main_title" group="admin_bbcode"><![CDATA[Custom BBCode]]></phrases>
 		<phrases variable_name="bbcode_tag_already_exists" group="admin_bbcode"><![CDATA[This BBCode tag already exists!]]></phrases>
+		<phrases variable_name="bbcode_test_description" group="admin_bbcode"><![CDATA[You can easily test any custom BBCode without posting anything to your message board by entering it here. The result will be displayed as it would be on your message board.]]></phrases>
+		<phrases variable_name="bbcode_test_form_submit" group="admin_bbcode"><![CDATA[Test]]></phrases>
+		<phrases variable_name="bbcode_test_form_text" group="admin_bbcode"><![CDATA[Text to parse]]></phrases>
+		<phrases variable_name="bbcode_test_result" group="admin_bbcode"><![CDATA[BBCode Test Result]]></phrases>
+		<phrases variable_name="bbcode_test_title" group="admin_bbcode"><![CDATA[Test BBCode Parser]]></phrases>
 		<phrases variable_name="breadcrumb_bbcode" group="admin_bbcode"><![CDATA[Custom BBCode]]></phrases>
 		<phrases variable_name="breadcrumb_bbcode_add" group="admin_bbcode"><![CDATA[Add BBCode]]></phrases>
+		<phrases variable_name="breadcrumb_bbcode_delete" group="admin_bbcode"><![CDATA[Delete BBCode]]></phrases>
 		<phrases variable_name="breadcrumb_bbcode_edit" group="admin_bbcode"><![CDATA[Edit BBCode]]></phrases>
 		<phrases variable_name="delete_bbcode_confirm" group="admin_bbcode"><![CDATA[Are you sure you wish to delete this BBCode? All uses of it on the message board will become unparsed.]]></phrases>
+		<phrases variable_name="delete_bbcode_message" group="admin_bbcode"><![CDATA[Are you sure you want to delete this custom BBCode? <strong><1></strong>]]></phrases>
+		<phrases variable_name="delete_bbcode_title" group="admin_bbcode"><![CDATA[Delete BBCode]]></phrases>
 		<phrases variable_name="edit_bbcode_submit" group="admin_bbcode"><![CDATA[Submit Changes]]></phrases>
 		<phrases variable_name="edit_bbcode_title" group="admin_bbcode"><![CDATA[Edit BBcode]]></phrases>
 		<phrases variable_name="error_editing_bbcode" group="admin_bbcode"><![CDATA[There was an error editing this BBCode!]]></phrases>
@@ -2018,9 +2027,9 @@ All user profile data associated with this field will be lost, <b>this cannot be
 		<phrases variable_name="ie_export_which_cat_message_post_icons" group="admin_small_images"><![CDATA[Select the post icon category you wish to export, you can export categories individually or export them all as a whole.]]></phrases>
 		<phrases variable_name="ie_export_which_cat_post_icons" group="admin_small_images"><![CDATA[Post icon category to export]]></phrases>
 		<phrases variable_name="ie_import_filename" group="admin_small_images"><![CDATA[<b>OR THIS</b> Select file from server]]></phrases>
-		<phrases variable_name="ie_import_filename_message_avatars" group="admin_small_images"><![CDATA[This is a file path that relative is to your message board root, for instance, if your file is in the includes directory you would put something like <i>includes/fsboard-avatars.xml</i>]]></phrases>
-		<phrases variable_name="ie_import_filename_message_emoticons" group="admin_small_images"><![CDATA[This is a file path that relative is to your message board root, for instance, if your file is in the includes directory you would put something like <i>includes/fsboard-emoticons.xml</i>]]></phrases>
-		<phrases variable_name="ie_import_filename_message_post_icons" group="admin_small_images"><![CDATA[This is a file path that relative is to your message board root, for instance, if your file is in the includes directory you would put something like <i>includes/fsboard-post-icons.xml</i>]]></phrases>
+		<phrases variable_name="ie_import_filename_message_avatars" group="admin_small_images"><![CDATA[This is a file path that relative is to your message board root, for instance, if your file is in the upload directory you would put something like <i>upload/fsboard-avatars.xml</i>]]></phrases>
+		<phrases variable_name="ie_import_filename_message_emoticons" group="admin_small_images"><![CDATA[This is a file path that relative is to your message board root, for instance, if your file is in the upload directory you would put something like <i>upload/fsboard-emoticons.xml</i>]]></phrases>
+		<phrases variable_name="ie_import_filename_message_post_icons" group="admin_small_images"><![CDATA[This is a file path that relative is to your message board root, for instance, if your file is in the upload directory you would put something like <i>upload/fsboard-post-icons.xml</i>]]></phrases>
 		<phrases variable_name="ie_import_message_avatars" group="admin_small_images"><![CDATA[Import a previously exported avatars file here, either upload a file to the server or use a file already uploaded. Note that files created from a later version of FSBoard will not be imported.<br />This will generate the image files and save them to <i><1></i>. This is editable in the configuration settings. <b>It must exist and be writable.</b>]]></phrases>
 		<phrases variable_name="ie_import_message_emoticons" group="admin_small_images"><![CDATA[Import a previously exported emoticons file here, either upload a file to the server or use a file already uploaded. Note that files created from a later version of FSBoard will not be imported.<br />This will generate the image files and save them to <i><1></i>. This is editable in the configuration settings. <b>It must exist and be writable.</b>]]></phrases>
 		<phrases variable_name="ie_import_message_post_icons" group="admin_small_images"><![CDATA[Import a previously exported post icons file here, either upload a file to the server or use a file already uploaded. Note that files created from a later version of FSBoard will not be imported.<br />This will generate the image files and save them to <i><1></i>. This is editable in the configuration settings. <b>It must exist and be writable.</b>]]></phrases>
