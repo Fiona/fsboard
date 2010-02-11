@@ -562,7 +562,7 @@ END;
 		// *****************
 		// BBCode
 		// *****************
-		$return .= $this -> generate_menu_entry($lang['admin_menu_bbcode'], ROOT."admin/index.php?m=bbcode");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_bbcode'], l("admin/bbcode/"));
 		$return .= $this -> generate_menu_header("bbcode");
 
 		$return .= $this -> generate_menu_move_a_bit();
@@ -570,8 +570,8 @@ END;
 		// *****************
 		// Word filter
 		// *****************
-		$return .= $this -> generate_menu_entry("*** ".$lang['admin_menu_wordfilter'], ROOT."admin/index.php?m=wordfilter");
-		$return .= $this -> generate_menu_header("wordfilter_title", "*** ");
+		$return .= $this -> generate_menu_entry($lang['admin_menu_wordfilter'], l("admin/word_filter/"));
+		$return .= $this -> generate_menu_header("wordfilter");
 				
 		$return .= "</div>";
 				

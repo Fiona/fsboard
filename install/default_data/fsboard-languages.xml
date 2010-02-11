@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<languages_file fsboard_version="0.1" time="07-02-10 2:46 pm">
+<languages_file fsboard_version="0.1" time="11-02-10 6:35 pm">
 
 	<language name="English (UK)" short_name="en" author="Fiona" charset="UTF-8" allow_user_select="1" direction="0">
 
@@ -2770,8 +2770,10 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="add_wordfilter_word_already_exists" group="admin_wordfilter"><![CDATA[A filter with this word already exists.]]></phrases>
 		<phrases variable_name="breadcrumb_wordfilter" group="admin_wordfilter"><![CDATA[Word Filter Manager]]></phrases>
 		<phrases variable_name="breadcrumb_wordfilter_add" group="admin_wordfilter"><![CDATA[Add Word Filter]]></phrases>
+		<phrases variable_name="breadcrumb_wordfilter_delete" group="admin_wordfilter"><![CDATA[Delete Word Filter]]></phrases>
 		<phrases variable_name="breadcrumb_wordfilter_edit" group="admin_wordfilter"><![CDATA[Edit Word Filter]]></phrases>
-		<phrases variable_name="delete_wordfilter_confirm" group="admin_wordfilter"><![CDATA[Are you sure you want to delete this word filter?]]></phrases>
+		<phrases variable_name="delete_wordfilter_confirm" group="admin_wordfilter"><![CDATA[Are you sure you want to delete this word filter? <strong><1></strong>]]></phrases>
+		<phrases variable_name="delete_wordfilter_title" group="admin_wordfilter"><![CDATA[Delete Word Filter]]></phrases>
 		<phrases variable_name="edit_wordfilter_submit" group="admin_wordfilter"><![CDATA[Submit Changes]]></phrases>
 		<phrases variable_name="edit_wordfilter_title" group="admin_wordfilter"><![CDATA[Edit Word Filter]]></phrases>
 		<phrases variable_name="error_editing_wordfilter" group="admin_wordfilter"><![CDATA[There was an error editing this word filter!]]></phrases>
@@ -2779,6 +2781,7 @@ This is an automated message. Please do not reply to it.]]></phrases>
 		<phrases variable_name="no_filters" group="admin_wordfilter"><![CDATA[No word filters were found!]]></phrases>
 		<phrases variable_name="wordfilter_created_sucessfully" group="admin_wordfilter"><![CDATA[Word filter created sucessfully!]]></phrases>
 		<phrases variable_name="wordfilter_deleted_sucessfully" group="admin_wordfilter"><![CDATA[Word filter was removed sucessfully!]]></phrases>
+		<phrases variable_name="wordfilter_delete_fail" group="admin_wordfilter"><![CDATA[There was a problem deleting this word filter.]]></phrases>
 		<phrases variable_name="wordfilter_edited_sucessfully" group="admin_wordfilter"><![CDATA[Word filter was edited sucessfully!]]></phrases>
 		<phrases variable_name="wordfilter_main_actions" group="admin_wordfilter"><![CDATA[Actions]]></phrases>
 		<phrases variable_name="wordfilter_main_delete" group="admin_wordfilter"><![CDATA[Delete word filter]]></phrases>

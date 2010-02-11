@@ -268,6 +268,16 @@ $mode_file_list = array(
 		"page" => "bbcode"
 	),
 
+	// ----------------
+	// Word Filter
+	// ----------------
+	'word_filter(/(?<mode>add))?' => array(
+		"page" => "word_filter"
+	),
+	'word_filter/(?<mode>edit|delete)/(?<word_filter_id>[0-9]+)' => array(
+		"page" => "word_filter"
+	),
+
 	// --------------------
 	// Waiting to be refactored pages
 	// --------------------
@@ -284,7 +294,6 @@ $mode_file_list = array(
 	'moderators'    => 'moderators.php',
 	'tasks'         => 'tasks.php',
 	'tasklogs'      => 'tasks_logs.php',
-	'wordfilter'    => 'wordfilter.php',
 	'plugins'		=> 'plugins.php',
 	'undelete'		=> 'undelete.php'
 
