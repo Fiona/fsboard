@@ -351,7 +351,7 @@ function form_add_bbcode_complete($form)
 
 	global $lang, $output;
 
-	// Add the filetype
+	// Add the bbcode
 	$new_id = custom_bbcode_add_bbcode(
         array(
 			"name" 			=> $form -> form_state['#name']['value'],
@@ -448,7 +448,7 @@ function form_edit_bbcode_complete($form)
 
 	global $lang, $output;
 
-	// Edit the filetype
+	// Edit the bbcode
 	$update = custom_bbcode_edit_bbcode(
 		$form -> form_state['meta']['initial_data']['id'],
         array(
@@ -491,7 +491,7 @@ function page_delete_bbcode($bbcode_id)
 
 	global $output, $lang, $db, $template_admin;
 
-	// Select the filetype
+	// Select the bbcode
 	$bbcode_info = custom_bbcode_get_bbcode_by_id($bbcode_id);
 
 	if($bbcode_info === False)
